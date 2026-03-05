@@ -6,7 +6,7 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://your-domain.vercel.app", // 🔧 Change to your domain
+  site: "https://0xrifki-blog.vercel.app",
   integrations: [
     tailwind({ applyBaseStyles: false }),
     mdx(),
