@@ -1,0 +1,144 @@
+---
+// src/layouts/PostLayout.astro
+// Wraps Layout.astro with post-specific chrome: header, cover image, metadata
+import Layout from "@/layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { formatDate, isoDate, readingTime } from "@/lib/utils";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { title, description, date, category, tags, cover, coverAlt } = post.data;
+const readTime = post.data.readingTime ?? readingTime(post.body);
+
+// Build absolute OG image URL (use cover if available, else default)
+const ogImage = cover
+  ? new URL(cover.src, Astro.site).toString()
+  : undefined;
+---
+
+<Layout title={title} description={description} ogImage={ogImage}>
+  <article>
+    <!-- ── Post Header ────────────────────────────────────────────────────── -->
+    <header class="mb-8 space-y-4">
+      <!-- Category pill -->
+      <div>
+        <a
+          href={`/blog/category/${category}`}
+          class="font-code inline-block rounded border border-base-overlay px-2 py-0.5 text-xs text-base-blue transition-colors hover:border-base-blue"
+        >
+          {category}
+        </a>
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-2xl font-semibold leading-tight tracking-tight text-base-text md:text-3xl">
+        {title}
+      </h1>
+
+      <!-- Description -->
+      <p class="text-base text-base-subtle">{description}</p>
+
+      <!-- Meta row -->
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 font-code text-xs text-base-muted">
+        <time datetime={isoDate(date)}>
+          {formatDate(date)}
+        </time>
+        <span aria-hidden="true">·</span>
+        <span>{readTime} min read</span>
+
+        {
+          tags.length > 0 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span class="flex flex-wrap gap-1">
+                {tags.map((tag) => (
+                  <span class="text-base-subtle">#{tag}</span>
+                ))}
+              </span>
+            </>
+          )
+        }
+      </div>
+    </header>
+
+    <!-- ── Cover Image ────────────────────────────────────────────────────── -->
+    {
+      cover && (
+        <div class="mb-10 overflow-hidden rounded-lg border border-base-overlay">
+          <Image
+            src={cover}
+            alt={coverAlt ?? title}
+            class="w-full object-cover"
+            widths={[400, 800, 1200]}
+            sizes="(min-width: 768px) 768px, 100vw"
+            loading="eager"
+          />
+        </div>
+      )
+    }
+
+    <!-- ── Post Body ──────────────────────────────────────────────────────── -->
+    <div class="prose prose-devlog max-w-none">
+      <slot />
+    </div>
+
+    <!-- ── Post Footer ────────────────────────────────────────────────────── -->
+    <footer class="mt-12 border-t border-base-overlay pt-8">
+      <!-- Tags -->
+      {
+        tags.length > 0 && (
+          <div class="mb-8 flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <a
+                href={`/blog/tag/${tag}`}
+                class="font-code rounded border border-base-overlay px-2 py-0.5 text-xs text-base-subtle transition-colors hover:border-base-subtle hover:text-base-text"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        )
+      }
+
+      <!-- Back link -->
+      <a
+        href="/blog"
+        class="font-code text-xs text-base-muted underline underline-offset-4 transition-colors hover:text-base-text"
+      >
+        ← back to posts
+      </a>
+    </footer>
+
+    <!-- ── Comments (Giscus) ──────────────────────────────────────────────── -->
+    <section class="mt-12" aria-label="Comments">
+      <div id="giscus-container">
+        <!--
+          🔧 GISCUS SETUP — see GISCUS.md in project root for full instructions.
+          After configuring at https://giscus.app, replace the script below:
+        -->
+        <script
+          is:inline
+          src="https://giscus.app/client.js"
+          data-repo="yourusername/your-repo"
+          data-repo-id="YOUR_REPO_ID"
+          data-category="Blog Comments"
+          data-category-id="YOUR_CATEGORY_ID"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="transparent_dark"
+          data-lang="en"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async
+        ></script>
+      </div>
+    </section>
+  </article>
+</Layout>

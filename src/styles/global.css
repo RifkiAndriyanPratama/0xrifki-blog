@@ -1,0 +1,117 @@
+/* src/styles/global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap");
+
+/* ─── Everblush palette ──────────────────────────────────────────────────────── */
+:root {
+  --color-bg:      #1e2326;
+  --color-bg-alt:  #181b1e;
+  --color-surface: #232a2d;
+  --color-overlay: #2d3437;
+  --color-muted:   #3d4649;
+  --color-subtle:  #5b6b6e;
+  --color-text:    #dadada;
+  --color-red:     #e67e80;
+  --color-orange:  #e69875;
+  --color-yellow:  #dbbc7f;
+  --color-green:   #a7c080;
+  --color-teal:    #83c092;
+  --color-blue:    #7fbbb3;
+  --color-purple:  #d699b6;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { @apply box-border; }
+
+  html {
+    @apply scroll-smooth;
+    background-color: var(--color-bg-alt);
+    color: var(--color-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body { @apply min-h-screen; background-color: var(--color-bg); }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar       { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg-alt); }
+  ::-webkit-scrollbar-thumb { background: var(--color-muted); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-subtle); }
+
+  ::selection {
+    background-color: rgba(127, 187, 179, 0.25);
+    color: var(--color-text);
+  }
+}
+
+/* ─── Page enter animations ─────────────────────────────────────────────────── */
+@layer components {
+  /* Every direct child of main fades + slides up on load */
+  [data-animate] {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: enterUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Typewriter cursor blink */
+  .typewriter-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    background: var(--color-teal);
+    margin-left: 3px;
+    vertical-align: text-bottom;
+    animation: blink 0.9s step-end infinite;
+  }
+
+  /* Code blocks */
+  .astro-code {
+    @apply relative rounded-lg text-sm leading-relaxed;
+    padding: 1.25rem 1.5rem !important;
+    border: 1px solid var(--color-overlay);
+  }
+
+  .astro-code .line.diff.add    { background: rgba(167, 192, 128, 0.10); }
+  .astro-code .line.diff.remove { background: rgba(230, 126, 128, 0.10); }
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────────────────────── */
+@keyframes enterUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Utilities ─────────────────────────────────────────────────────────────── */
+@layer utilities {
+  .font-code { font-family: 'JetBrains Mono', monospace; }
+
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-teal), var(--color-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-teal { box-shadow: 0 0 24px rgba(131, 192, 146, 0.12); }
+}

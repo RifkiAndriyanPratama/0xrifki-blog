@@ -1,0 +1,54 @@
+---
+// src/components/PostCard.astro
+// Compact list-row card — space-efficient, scannable
+import { formatDate, isoDate, readingTime } from "@/lib/utils";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { title, description, date, category, tags } = post.data;
+const readTime = post.data.readingTime ?? readingTime(post.body);
+---
+
+<article
+  data-slug={post.slug}
+  data-category={category}
+  class="group border-b border-base-overlay py-7 last:border-0"
+>
+  <a href={`/blog/${post.slug}`} class="block">
+    <!-- Row 1: category + date + read time -->
+    <div class="mb-2 flex items-center gap-3 font-code text-sm text-base-muted">
+      <span class="text-base-blue">{category}</span>
+      <span aria-hidden="true">·</span>
+      <time datetime={isoDate(date)}>{formatDate(date)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{readTime}m read</span>
+    </div>
+
+    <!-- Row 2: title -->
+    <h2
+      class="text-base font-semibold text-base-text transition-colors group-hover:text-base-teal md:text-lg"
+    >
+      {title}
+    </h2>
+
+    <!-- Row 3: description -->
+    <p class="mt-1.5 line-clamp-2 text-sm leading-relaxed text-base-subtle">
+      {description}
+    </p>
+
+    <!-- Row 4: tags (if any) -->
+    {
+      tags.length > 0 && (
+        <div class="mt-3 flex flex-wrap gap-2">
+          {tags.slice(0, 4).map((tag) => (
+            <span class="font-code text-xs text-base-muted">#{tag}</span>
+          ))}
+        </div>
+      )
+    }
+  </a>
+</article>

@@ -1,0 +1,119 @@
+---
+// src/pages/index.astro
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import PostCard from "@/components/PostCard.astro";
+import { sortPosts } from "@/lib/utils";
+
+const posts  = sortPosts(await getCollection("posts"));
+const recent = posts.slice(0, 5);
+---
+
+<Layout title="0xrifki">
+
+  <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+  <section class="mb-20" data-animate style="animation-delay: 0ms">
+    <p class="font-code mb-4 text-sm text-base-subtle">
+      <span class="text-base-green">❯</span> whoami
+    </p>
+
+    <h1 class="mb-5 text-4xl font-semibold leading-tight tracking-tight text-base-text md:text-5xl lg:text-6xl">
+      a developer's notebook.<br />
+      <span class="text-gradient" id="typewriter-target"></span><span class="typewriter-cursor" id="typewriter-cursor"></span>
+    </h1>
+
+    <p class="max-w-xl text-base leading-relaxed text-base-subtle md:text-lg">
+      cs student by day, terminal addict by night.<br />
+      notes on software, systems, and whatever ends up in the terminal at 2am.
+    </p>
+
+    <!-- CTA row -->
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a
+        href="/projects"
+        class="font-code rounded-lg bg-base-teal/10 border border-base-teal/30 px-4 py-2 text-sm text-base-teal transition-all hover:bg-base-teal/20 hover:border-base-teal/60"
+      >
+        view projects →
+      </a>
+      <a
+        href="/blog"
+        class="font-code rounded-lg border border-base-overlay px-4 py-2 text-sm text-base-subtle transition-all hover:border-base-subtle hover:text-base-text"
+      >
+        read blog →
+      </a>
+    </div>
+  </section>
+
+  <!-- ── Recent Posts ──────────────────────────────────────────────────────── -->
+  <section data-animate style="animation-delay: 120ms">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="font-code text-sm font-medium text-base-subtle">
+        recent posts
+      </h2>
+      <a
+        href="/blog"
+        class="font-code text-sm text-base-muted underline underline-offset-4 transition-colors hover:text-base-text"
+      >
+        all posts →
+      </a>
+    </div>
+
+    <div>
+      {recent.map((post, i) => (
+        <div data-animate style={`animation-delay: ${180 + i * 60}ms`}>
+          <PostCard post={post} />
+        </div>
+      ))}
+    </div>
+  </section>
+
+</Layout>
+
+<!-- ── Typewriter ─────────────────────────────────────────────────────────── -->
+<script>
+const PHRASES = [
+  "projects, systems & tooling.",
+  "building. breaking. shipping.",
+  "git commit -m 'fix: everything'",
+  "sudo make it work.",
+];
+
+const el     = document.getElementById("typewriter-target")!;
+const cursor = document.getElementById("typewriter-cursor")!;
+let   pi     = 0;
+let   ci     = 0;
+let   deleting = false;
+
+async function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function tick() {
+  const phrase = PHRASES[pi]!;
+
+  if (!deleting) {
+    el.textContent = phrase.slice(0, ci + 1);
+    ci++;
+    if (ci === phrase.length) {
+      deleting = true;
+      await sleep(2200);
+    } else {
+      await sleep(65);
+    }
+  } else {
+    el.textContent = phrase.slice(0, ci - 1);
+    ci--;
+    if (ci === 0) {
+      deleting = false;
+      pi = (pi + 1) % PHRASES.length;
+      await sleep(400);
+    } else {
+      await sleep(30);
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+// Start after hero fade-in
+setTimeout(tick, 600);
+</script>

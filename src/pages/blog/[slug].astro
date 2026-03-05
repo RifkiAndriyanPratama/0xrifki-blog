@@ -1,0 +1,26 @@
+---
+// src/pages/blog/[slug].astro
+// Dynamic route — one page per post in content/posts/
+import { getCollection } from "astro:content";
+import PostLayout from "@/layouts/PostLayout.astro";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props:  { post },
+  }));
+};
+
+// Props are injected by getStaticPaths above
+const { post } = Astro.props;
+
+// Render Markdown/MDX → HTML
+const { Content } = await post.render();
+---
+
+<PostLayout post={post}>
+  <Content />
+</PostLayout>

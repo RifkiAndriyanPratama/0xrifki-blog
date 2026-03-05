@@ -1,0 +1,9 @@
+{
+  "name": "devlog",
+  "description": "Personal blog built with Astro, Tailwind CSS, and Everblush theme. Static, fast, zero JS by default.",
+  "stack": ["Astro", "TypeScript", "Tailwind CSS"],
+  "github": "https://github.com/0xrifki/devlog",
+  "status": "wip",
+  "order": 1,
+  "featured": true
+}

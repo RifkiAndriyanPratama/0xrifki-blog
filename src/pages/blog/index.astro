@@ -1,0 +1,158 @@
+---
+// src/pages/blog/index.astro
+// Blog index — client-side search + category filter
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import PostCard from "@/components/PostCard.astro";
+import { sortPosts, getCategories, toSearchIndex } from "@/lib/utils";
+
+const allPosts   = await getCollection("posts");
+const posts      = sortPosts(allPosts);
+const categories = getCategories(allPosts);
+
+// Serialised search index — injected as JSON for Fuse.js
+const searchIndex = JSON.stringify(toSearchIndex(posts));
+---
+
+<Layout title="posts" description="All posts, sorted by date.">
+  <!-- ── Page Header ──────────────────────────────────────────────────────── -->
+  <div class="mb-12" data-animate style="animation-delay: 0ms">
+    <h1 class="font-code mb-2 text-2xl font-medium text-base-teal">
+      <span class="text-base-subtle">~/</span>posts
+    </h1>
+    <p class="font-code text-sm text-base-muted">{posts.length} entries</p>
+  </div>
+
+  <!-- ── Search ───────────────────────────────────────────────────────────── -->
+  <div class="mb-8" data-animate style="animation-delay: 60ms">
+    <label for="search-input" class="sr-only">Search posts</label>
+    <div class="relative">
+      <span
+        class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-code text-sm text-base-subtle"
+        aria-hidden="true"
+      >
+        /
+      </span>
+      <input
+        id="search-input"
+        type="search"
+        placeholder="search posts..."
+        class="w-full rounded-lg border border-base-overlay bg-base-surface py-3 pl-9 pr-4 font-code text-sm text-base-text placeholder-base-muted transition-colors focus:border-base-blue focus:outline-none"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+  </div>
+
+  <!-- ── Category Pills ───────────────────────────────────────────────────── -->
+  <div class="mb-10 flex" data-animate style="animation-delay: 120ms" flex-wrap gap-2">
+    <button
+      class="category-btn active font-code rounded-lg border px-4 py-1.5 text-sm transition-colors"
+      data-category="all"
+    >
+      all
+    </button>
+    {
+      categories.map((cat) => (
+        <button
+          class="category-btn font-code rounded-lg border px-4 py-1.5 text-sm transition-colors"
+          data-category={cat}
+        >
+          {cat}
+        </button>
+      ))
+    }
+  </div>
+
+  <!-- ── Post List ─────────────────────────────────────────────────────────── -->
+  <div id="post-list" class="space-y-1">
+    {posts.map((post) => <PostCard post={post} />)}
+  </div>
+
+  <!-- Empty state -->
+  <p
+    id="no-results"
+    class="hidden font-code mt-10 text-base text-base-muted"
+  >
+    no posts match that query.
+  </p>
+</Layout>
+
+<!-- ── Client-side Search (Fuse.js) ──────────────────────────────────────── -->
+<script define:vars={{ searchIndex }}>
+// Dynamically import Fuse from CDN — no bundler needed for SSG
+(async () => {
+  const Fuse = (await import("https://cdn.jsdelivr.net/npm/fuse.js@7/dist/fuse.mjs")).default;
+
+  const posts   = JSON.parse(searchIndex);
+  const fuse    = new Fuse(posts, {
+    keys:              ["title", "description", "tags", "category"],
+    threshold:         0.35,
+    includeScore:      true,
+    ignoreLocation:    true,
+    minMatchCharLength: 2,
+  });
+
+  const input     = document.getElementById("search-input");
+  const list      = document.getElementById("post-list");
+  const noResults = document.getElementById("no-results");
+  const cards     = [...list.querySelectorAll("[data-slug]")];
+
+  /** Set visibility of post cards based on a slug Set */
+  function showSlugs(slugs) {
+    let visible = 0;
+    cards.forEach((card) => {
+      const show = slugs === null || slugs.has(card.dataset.slug);
+      card.hidden = !show;
+      if (show) visible++;
+    });
+    noResults.classList.toggle("hidden", visible > 0);
+  }
+
+  // ── Search handler ──────────────────────────────────────────────────────
+  input.addEventListener("input", () => {
+    const q = input.value.trim();
+    if (!q) { showSlugs(null); return; }
+    const results = fuse.search(q).map((r) => r.item.slug);
+    showSlugs(new Set(results));
+  });
+
+  // ── Category filter ─────────────────────────────────────────────────────
+  const catBtns = document.querySelectorAll(".category-btn");
+  let   active  = "all";
+
+  const BASE_BTN = "border-base-overlay text-base-subtle hover:border-base-subtle hover:text-base-text";
+  const ACTIVE_BTN = "border-base-blue text-base-blue";
+
+  catBtns.forEach((btn) => {
+    btn.classList.add(...BASE_BTN.split(" "));
+    if (btn.dataset.category === "all") {
+      btn.classList.add(...ACTIVE_BTN.split(" "));
+    }
+
+    btn.addEventListener("click", () => {
+      active = btn.dataset.category;
+
+      // Update button styles
+      catBtns.forEach((b) => {
+        b.classList.remove(...ACTIVE_BTN.split(" "));
+        b.classList.add(...BASE_BTN.split(" "));
+      });
+      btn.classList.add(...ACTIVE_BTN.split(" "));
+      btn.classList.remove(...BASE_BTN.split(" "));
+
+      // Filter cards
+      if (active === "all") { showSlugs(null); return; }
+      const slugs = new Set(
+        posts
+          .filter((p) => p.category === active)
+          .map((p) => p.slug)
+      );
+      showSlugs(slugs);
+
+      // Also clear search
+      input.value = "";
+    });
+  });
+})();
+</script>

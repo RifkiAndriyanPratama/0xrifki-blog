@@ -1,0 +1,117 @@
+---
+// src/pages/about.astro
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="about" description="Rifki Andriyan Pratama — cs student, developer, terminal addict.">
+
+  <div class="max-w-2xl">
+
+    <!-- ── Header ──────────────────────────────────────────────────────────── -->
+    <div class="mb-14" data-animate style="animation-delay: 0ms">
+      <p class="font-code mb-4 text-sm text-base-subtle">
+        <span class="text-base-green">❯</span> cat about.md
+      </p>
+      <h1 class="text-3xl font-semibold text-base-text md:text-4xl">
+        Rifki Andriyan Pratama
+      </h1>
+      <p class="font-code mt-2 text-base text-base-teal">
+        cs student by day, terminal addict by night
+      </p>
+    </div>
+
+    <!-- ── Avatar + bio ────────────────────────────────────────────────────── -->
+    <div class="mb-14 flex flex-col gap-8 sm:flex-row sm:items-start" data-animate style="animation-delay: 80ms">
+
+      <!-- Avatar placeholder — replace src with your actual photo -->
+      <div class="shrink-0">
+        <div class="relative h-36 w-36 overflow-hidden rounded-2xl border border-base-overlay glow-teal">
+          <!-- 🔧 Replace this div with <Image src={import("../assets/rifki.jpg")} alt="Rifki" ... /> -->
+          <div class="flex h-full w-full items-center justify-center bg-base-surface">
+            <span class="font-code text-4xl font-bold text-base-teal select-none">rp</span>
+          </div>
+          <!-- Subtle corner accent -->
+          <div class="absolute bottom-0 right-0 h-8 w-8 rounded-tl-xl bg-base-teal/10"></div>
+        </div>
+      </div>
+
+      <!-- Bio -->
+      <div class="space-y-4 text-base leading-relaxed text-base-subtle">
+        <p>
+          Mahasiswa Informatika yang juga terjun langsung ke dunia kerja.
+          Suka ngulik hal-hal yang ada di balik layar — dari infrastruktur,
+          deployment pipeline, sampai hal random yang muncul di terminal jam 2 pagi.
+        </p>
+        <p>
+          Blog ini tempat aku dokumentasi project, catatan teknis, dan
+          apapun yang terasa sayang kalau cuma disimpan di kepala sendiri.
+        </p>
+        <p>
+          Kalau lo nemu sesuatu yang menarik di sini, atau mau ngobrol soal
+          tech — reach out aja.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Skills / stack ──────────────────────────────────────────────────── -->
+    <div class="mb-14" data-animate style="animation-delay: 160ms">
+      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
+        current stack
+      </h2>
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {[
+          { label: "Languages",   items: ["TypeScript", "Python", "Bash"] },
+          { label: "Frontend",    items: ["Astro", "React", "Tailwind"] },
+          { label: "Backend",     items: ["Node.js", "PostgreSQL"] },
+          { label: "DevOps",      items: ["Docker", "Nginx", "GitHub Actions"] },
+          { label: "Tools",       items: ["Neovim", "Git", "Linux"] },
+        ].map(({ label, items }) => (
+          <div class="rounded-lg border border-base-overlay bg-base-surface p-4">
+            <p class="font-code mb-2 text-xs text-base-subtle">{label}</p>
+            <div class="flex flex-wrap gap-1">
+              {items.map((item) => (
+                <span class="font-code text-xs text-base-text">{item}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- ── Contact ─────────────────────────────────────────────────────────── -->
+    <div data-animate style="animation-delay: 240ms">
+      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
+        find me
+      </h2>
+      <div class="flex flex-col gap-3 font-code text-sm">
+        {[
+          { label: "github",    href: "https://github.com/RifkiAndriyanPratama",        display: "github.com/RifkiAndriyanPratama" },
+          { label: "linkedin",  href: "https://linkedin.com/in/RifkiAndriyanPratama",   display: "linkedin.com/in/RifkiAndriyanPratama" },
+          { label: "instagram", href: "https://instagram.com/thestoriesrifkii",          display: "@thestoriesrifkii" },
+        ].map(({ label, href, display }) => (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center gap-3 text-base-subtle transition-colors hover:text-base-teal"
+          >
+            <span class="w-20 text-base-muted">{label}</span>
+            <span class="text-base-subtle group-hover:text-base-teal transition-colors">→</span>
+            <span>{display}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</Layout>
+
+<!-- ── Animate on scroll (simple IntersectionObserver) ────────────────────── -->
+<script>
+const els = document.querySelectorAll("[data-animate]");
+const obs = new IntersectionObserver(
+  (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("animated"); }),
+  { threshold: 0.1 }
+);
+els.forEach((el) => obs.observe(el));
+</script>

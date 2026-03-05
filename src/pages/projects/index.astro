@@ -1,0 +1,61 @@
+---
+// src/pages/projects/index.astro
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+
+const projects = (await getCollection("projects"))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const done     = projects.filter((p) => p.data.status === "done");
+const wip      = projects.filter((p) => p.data.status === "wip");
+const archived = projects.filter((p) => p.data.status === "archived");
+---
+
+<Layout title="projects" description="Things I've built — open source projects and experiments.">
+
+  <!-- ── Header ────────────────────────────────────────────────────────────── -->
+  <div class="mb-12">
+    <h1 class="font-code mb-2 text-2xl font-medium text-base-teal">
+      <span class="text-base-subtle">~/</span>projects
+    </h1>
+    <p class="font-code text-sm text-base-muted">{projects.length} projects</p>
+  </div>
+
+  <!-- ── WIP ───────────────────────────────────────────────────────────────── -->
+  {wip.length > 0 && (
+    <section class="mb-12">
+      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
+        in progress
+      </h2>
+      <div class="grid gap-5 sm:grid-cols-2">
+        {wip.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
+  )}
+
+  <!-- ── Done ──────────────────────────────────────────────────────────────── -->
+  {done.length > 0 && (
+    <section class="mb-12">
+      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
+        shipped
+      </h2>
+      <div class="grid gap-5 sm:grid-cols-2">
+        {done.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
+  )}
+
+  <!-- ── Archived ───────────────────────────────────────────────────────────── -->
+  {archived.length > 0 && (
+    <section>
+      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
+        archived
+      </h2>
+      <div class="grid gap-5 sm:grid-cols-2 opacity-60">
+        {archived.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
+  )}
+
+</Layout>
