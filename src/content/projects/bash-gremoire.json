@@ -1,0 +1,9 @@
+{
+  "name": "bash-grimoire",
+  "description": "A personal spellbook of Bash scripts. Conjuring automation and mastering the dark arts of the Linux terminal.",
+  "stack": ["Shell", "Bash"],
+  "github": "https://github.com/RifkiAndriyanPratama/bash-grimoire",
+  "status": "done",
+  "order": 2,
+  "featured": true
+}

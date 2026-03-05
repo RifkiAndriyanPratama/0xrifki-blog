@@ -1,0 +1,9 @@
+{
+  "name": "nvim-nvchad",
+  "description": "Konfigurasi Neovim personal berbasis NvChad. Karena editor adalah extension dari otak lo.",
+  "stack": ["Lua"],
+  "github": "https://github.com/RifkiAndriyanPratama/nvim-nvchad",
+  "status": "done",
+  "order": 4,
+  "featured": false
+}

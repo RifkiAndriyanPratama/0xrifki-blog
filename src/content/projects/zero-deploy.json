@@ -1,9 +1,0 @@
-{
-  "name": "zero-deploy",
-  "description": "Zero-downtime blue-green deployment script for single VPS. Nginx upstream swap + GitHub Actions pipeline.",
-  "stack": ["Bash", "Docker", "Nginx", "GitHub Actions"],
-  "github": "https://github.com/0xrifki/zero-deploy",
-  "status": "done",
-  "order": 2,
-  "featured": true
-}
