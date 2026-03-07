@@ -10,6 +10,8 @@ const CATEGORIES = [
   "security",
   "notes",
   "project",
+  "programming",
+  "math",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
