@@ -21,10 +21,10 @@ const fullTitle = title === siteTitle ? siteTitle : `${title} — ${siteTitle}`;
 const canonical = canonicalUrl ?? Astro.url.href;
 
 const NAV = [
-  { href: "/",        label: "home"     },
-  { href: "/blog",    label: "blog"     },
-  { href: "/projects",label: "projects" },
-  { href: "/about",   label: "about"    },
+  { href: "/",         label: "home"     },
+  { href: "/blog",     label: "blog"     },
+  { href: "/projects", label: "projects" },
+  { href: "/about",    label: "about"    },
 ];
 
 const SOCIAL = [
@@ -80,8 +80,8 @@ const SOCIAL = [
           <span class="text-base-subtle">~/</span>0xrifki
         </a>
 
-        <!-- Nav links -->
-        <ul class="flex items-center gap-1 font-code text-sm text-base-subtle">
+        <!-- Desktop nav -->
+        <ul class="hidden items-center gap-1 font-code text-sm text-base-subtle sm:flex">
           {NAV.map(({ href, label }) => (
             <li>
               <a href={href} class="rounded px-3 py-1.5 transition-colors hover:bg-base-overlay hover:text-base-text">
@@ -90,7 +90,40 @@ const SOCIAL = [
             </li>
           ))}
         </ul>
+
+        <!-- Hamburger button (mobile only) -->
+        <button
+          id="menu-btn"
+          class="flex sm:hidden flex-col justify-center items-center gap-1.5 p-2 text-base-subtle hover:text-base-text transition-colors"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+        >
+          <span class="hamburger-bar block h-px w-5 bg-current transition-all duration-300"></span>
+          <span class="hamburger-bar block h-px w-5 bg-current transition-all duration-300"></span>
+          <span class="hamburger-bar block h-px w-5 bg-current transition-all duration-300"></span>
+        </button>
+
       </nav>
+
+      <!-- Mobile menu -->
+      <div
+        id="mobile-menu"
+        class="hidden border-t border-base-overlay bg-base-bg/95 backdrop-blur-md sm:hidden"
+      >
+        <ul class="mx-auto flex max-w-5xl flex-col px-6 py-4 font-code text-sm text-base-subtle">
+          {NAV.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class="flex items-center gap-2 py-3 transition-colors hover:text-base-text border-b border-base-overlay last:border-0"
+              >
+                <span class="text-base-muted">→</span>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </header>
 
     <!-- ── Main ────────────────────────────────────────────────────────────── -->
@@ -101,13 +134,9 @@ const SOCIAL = [
     <!-- ── Footer ──────────────────────────────────────────────────────────── -->
     <footer class="border-t border-base-overlay bg-base-bg-alt">
       <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-
-        <!-- Left: copyright -->
         <span class="font-code text-sm text-base-muted">
           &copy; {new Date().getFullYear()} 0xrifki
         </span>
-
-        <!-- Right: social icons -->
         <div class="flex items-center gap-4">
           {SOCIAL.map(({ href, label, icon }) => (
             <a
@@ -116,34 +145,60 @@ const SOCIAL = [
               rel="noopener noreferrer"
               aria-label={label}
               class="text-base-muted transition-colors hover:text-base-teal"
-              set:html={icon}
-            />
+            >
+              <Fragment set:html={icon} />
+            </a>
           ))}
         </div>
-
       </div>
     </footer>
 
   </body>
 </html>
 
-<!-- ── Global animation init ─────────────────────────────────────────────── -->
 <script>
-// Kick off [data-animate] elements — CSS handles the actual animation,
-// but we add a class so elements that are already visible fire immediately
-document.addEventListener("DOMContentLoaded", () => {
-  const obs = new IntersectionObserver(
-    (entries) => entries.forEach((e) => {
-      if (e.isIntersecting) {
-        (e.target as HTMLElement).style.animationPlayState = "running";
-        obs.unobserve(e.target);
-      }
-    }),
-    { threshold: 0.05 }
-  );
-  document.querySelectorAll("[data-animate]").forEach((el) => {
-    (el as HTMLElement).style.animationPlayState = "paused";
-    obs.observe(el);
+  const btn  = document.getElementById("menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  const bars = btn.querySelectorAll(".hamburger-bar");
+
+  btn.addEventListener("click", () => {
+    const isOpen = menu.classList.toggle("hidden") === false;
+    btn.setAttribute("aria-expanded", String(isOpen));
+
+    if (isOpen) {
+      bars[0].classList.add("translate-y-[7px]", "rotate-45");
+      bars[1].classList.add("opacity-0");
+      bars[2].classList.add("-translate-y-[7px]", "-rotate-45");
+    } else {
+      bars[0].classList.remove("translate-y-[7px]", "rotate-45");
+      bars[1].classList.remove("opacity-0");
+      bars[2].classList.remove("-translate-y-[7px]", "-rotate-45");
+    }
   });
-});
+
+  menu.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      menu.classList.add("hidden");
+      btn.setAttribute("aria-expanded", "false");
+      bars[0].classList.remove("translate-y-[7px]", "rotate-45");
+      bars[1].classList.remove("opacity-0");
+      bars[2].classList.remove("-translate-y-[7px]", "-rotate-45");
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.style.animationPlayState = "running";
+          obs.unobserve(e.target);
+        }
+      }),
+      { threshold: 0.05 }
+    );
+    document.querySelectorAll("[data-animate]").forEach((el) => {
+      el.style.animationPlayState = "paused";
+      obs.observe(el);
+    });
+  });
 </script>
