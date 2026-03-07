@@ -1,6 +1,6 @@
 ---
 title: "Tipe Data di C++: Kenapa Harus Milih-Milih?"
-date: 2025-03-07
+date: 2026-03-07
 description: "Di PHP nggak pernah mikirin tipe data. Di C++ kamu dipaksa sadar bahwa setiap byte itu ada harganya."
 category: programming
 tags: [cpp, tipe-data, low-level, memory]

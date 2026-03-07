@@ -1,6 +1,6 @@
 ---
 title: "Kenapa `using namespace std` Itu Kebiasaan yang Harus Dibuang"
-date: 2025-03-07
+date: 2026-03-07
 description: "Satu baris kode yang ada di hampir semua tutorial C++ pemula — dan kenapa itu bisa jadi bom waktu di project besar."
 category: programming
 tags: [cpp, namespace, best-practices, tips]

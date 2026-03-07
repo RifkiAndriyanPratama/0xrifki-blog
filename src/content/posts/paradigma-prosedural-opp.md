@@ -1,6 +1,6 @@
 ---
 title: "Paradigma Pemrograman: Bukan Soal Syntax, Tapi Cara Kamu Mikir"
-date: 2025-03-07
+date: 2026-03-07
 description: "Apa bedanya prosedural, OOP, dan generik? Dan kenapa pilihan paradigma itu ngaruh banget ke cara kamu solve masalah."
 category: programming
 tags: [cpp, OOP, paradigma, pemrograman]
