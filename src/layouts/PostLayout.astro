@@ -325,36 +325,56 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 </Layout>
 
 <script is:inline>
+  // ── Cleanup guard — prevent stale listeners accumulating on View Transitions
+  let activeTOCListener = null;
+
   function initPost() {
-    const article = document.querySelector("article");
+    // Use the article inside the <main> to be sure we target the right page content
+    const article = document.querySelector("main article");
     if (!article) return;
 
     // ── Reading progress bar ──────────────────────────────────────────────
     const bar = document.getElementById("reading-bar");
     if (bar) {
-      window.addEventListener("scroll", () => {
+      // Remove duplicate listeners by storing a named function reference
+      const onScroll = () => {
         const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         if (docHeight > 0) {
           bar.style.width = `${(scrollTop / docHeight) * 100}%`;
         }
-      }, { passive: true });
+      };
+      window.removeEventListener("scroll", bar._onScroll);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      bar._onScroll = onScroll;
     }
 
     // ── Table of Contents ─────────────────────────────────────────────────
-    let tocLinks = [];
+    // Clear old TOC containers before rebuilding
+    ["toc-desktop", "toc-mobile"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = "";
+    });
+
+    const headings = article.querySelectorAll("h2, h3");
+    const hasTOC = headings.length >= 2;
+
+    // Show/hide TOC elements based on whether there are enough headings
+    const aside = document.querySelector("aside");
+    const details = document.querySelector("details");
+
+    if (!hasTOC) {
+      aside?.remove();
+      if (details) details.remove();
+      return;
+    }
+
+    // Build TOC links
+    const tocLinks = [];
 
     function buildTOC(containerId) {
       const container = document.getElementById(containerId);
       if (!container) return;
-
-      const headings = article.querySelectorAll("h2, h3");
-      if (headings.length < 2) {
-        container.closest("aside")?.remove();
-        const details = document.querySelector("details");
-        if (details && !details.closest("aside")) details.remove();
-        return;
-      }
 
       const ul = document.createElement("ul");
       ul.className = "space-y-1";
@@ -386,29 +406,33 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
     buildTOC("toc-mobile");
 
     // ── TOC scroll spy ────────────────────────────────────────────────────
-    if (tocLinks.length > 0) {
-      const allHeadings = article.querySelectorAll("h2, h3");
-
-      function updateActiveTOC() {
-        let currentIdx = -1;
-        const scrollY = window.scrollY + 120;
-
-        allHeadings.forEach((h, i) => {
-          if (h.offsetTop <= scrollY) currentIdx = i;
-        });
-
-        tocLinks.forEach((a, i) => {
-          a.classList.toggle("text-base-teal", i === currentIdx);
-          a.classList.toggle("font-medium", i === currentIdx);
-          if (i !== currentIdx) {
-            a.classList.remove("text-base-teal", "font-medium");
-          }
-        });
-      }
-
-      window.addEventListener("scroll", updateActiveTOC, { passive: true });
-      updateActiveTOC();
+    // Remove previous scroll spy listener to avoid duplicates
+    if (activeTOCListener) {
+      window.removeEventListener("scroll", activeTOCListener);
+      activeTOCListener = null;
     }
+
+    function updateActiveTOC() {
+      let currentIdx = -1;
+      const scrollY = window.scrollY + 120;
+
+      headings.forEach((h, i) => {
+        if (h.offsetTop <= scrollY) currentIdx = i;
+      });
+
+      tocLinks.forEach((a, i) => {
+        const isActive = i === currentIdx;
+        a.classList.toggle("text-base-teal", isActive);
+        a.classList.toggle("font-medium", isActive);
+        if (!isActive) {
+          a.classList.remove("text-base-teal", "font-medium");
+        }
+      });
+    }
+
+    activeTOCListener = updateActiveTOC;
+    window.addEventListener("scroll", updateActiveTOC, { passive: true });
+    updateActiveTOC();
 
     // ── Share / Copy link ────────────────────────────────────────────────
     const shareBtn = document.getElementById("share-btn");
@@ -426,18 +450,18 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
     }
 
     // ── Social share buttons ─────────────────────────────────────────────
-    const url = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent(document.title.replace(/ — .*$/, ""));
+    const pageUrl = encodeURIComponent(window.location.href);
+    const pageTitle = encodeURIComponent(document.title.replace(/ — .*$/, ""));
     const twitter = document.getElementById("share-twitter");
     const linkedin = document.getElementById("share-linkedin");
-    if (twitter) twitter.href = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
-    if (linkedin) linkedin.href = `https://linkedin.com/sharing/share-offsite/?url=${url}`;
+    if (twitter) twitter.href = `https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageUrl}`;
+    if (linkedin) linkedin.href = `https://linkedin.com/sharing/share-offsite/?url=${pageUrl}`;
 
     const footerShare = document.getElementById("share-btn-footer");
     if (footerShare) {
       footerShare.addEventListener("click", async () => {
         try {
-          await navigator.clipboard.writeText(decodeURIComponent(url));
+          await navigator.clipboard.writeText(decodeURIComponent(pageUrl));
           const span = footerShare.querySelector("span");
           if (span) { span.textContent = "copied!"; setTimeout(() => { span.textContent = "copy link"; }, 2000); }
         } catch {

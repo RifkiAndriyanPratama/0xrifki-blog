@@ -59,7 +59,6 @@ export default {
             },
             "pre": {
               borderRadius: "0.5rem",
-              border: `1px solid ${theme("colors.base.overlay")}`,
             },
             "a": {
               textDecoration: "underline",

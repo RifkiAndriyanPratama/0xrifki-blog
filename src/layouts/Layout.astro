@@ -274,34 +274,41 @@ const SOCIAL = [
 </html>
 
 <script>
-  const btn  = document.getElementById("menu-btn");
-  const menu = document.getElementById("mobile-menu");
-  const bars = btn.querySelectorAll(".hamburger-bar");
+  // ── Mobile menu ───────────────────────────────────────────────────────────
+  function initMenu() {
+    const btn  = document.getElementById("menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    if (!btn || !menu) return;
 
-  btn.addEventListener("click", () => {
-    const isOpen = menu.classList.toggle("hidden") === false;
-    btn.setAttribute("aria-expanded", String(isOpen));
-    if (isOpen) {
-      bars[0].classList.add("translate-y-[7px]", "rotate-45");
-      bars[1].classList.add("opacity-0");
-      bars[2].classList.add("-translate-y-[7px]", "-rotate-45");
-    } else {
-      bars[0].classList.remove("translate-y-[7px]", "rotate-45");
-      bars[1].classList.remove("opacity-0");
-      bars[2].classList.remove("-translate-y-[7px]", "-rotate-45");
-    }
-  });
+    // Remove old listeners by cloning (simplest reset)
+    const bars = btn.querySelectorAll(".hamburger-bar");
 
-  menu.querySelectorAll("a").forEach((a) => {
-    a.addEventListener("click", () => {
-      menu.classList.add("hidden");
-      btn.setAttribute("aria-expanded", "false");
-      bars[0].classList.remove("translate-y-[7px]", "rotate-45");
-      bars[1].classList.remove("opacity-0");
-      bars[2].classList.remove("-translate-y-[7px]", "-rotate-45");
+    btn.onclick = () => {
+      const isOpen = menu.classList.toggle("hidden") === false;
+      btn.setAttribute("aria-expanded", String(isOpen));
+      if (isOpen) {
+        bars[0].classList.add("translate-y-[7px]", "rotate-45");
+        bars[1].classList.add("opacity-0");
+        bars[2].classList.add("-translate-y-[7px]", "-rotate-45");
+      } else {
+        bars[0].classList.remove("translate-y-[7px]", "rotate-45");
+        bars[1].classList.remove("opacity-0");
+        bars[2].classList.remove("-translate-y-[7px]", "-rotate-45");
+      }
+    };
+
+    menu.querySelectorAll("a").forEach((a) => {
+      a.onclick = () => {
+        menu.classList.add("hidden");
+        btn.setAttribute("aria-expanded", "false");
+        bars[0].classList.remove("translate-y-[7px]", "rotate-45");
+        bars[1].classList.remove("opacity-0");
+        bars[2].classList.remove("-translate-y-[7px]", "-rotate-45");
+      };
     });
-  });
+  }
 
+  // ── Animations ────────────────────────────────────────────────────────────
   function initAnimations() {
     const obs = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
@@ -318,10 +325,7 @@ const SOCIAL = [
     });
   }
 
-  document.addEventListener("DOMContentLoaded", initAnimations);
-  document.addEventListener("astro:page-load", initAnimations);
-
-  // ── Theme toggle ────────────────────────────────────────────────────────
+  // ── Theme toggle ──────────────────────────────────────────────────────────
   function toggleTheme() {
     const isDark = document.documentElement.classList.toggle("dark");
     localStorage.setItem("theme", isDark ? "dark" : "light");
@@ -336,48 +340,52 @@ const SOCIAL = [
   function initTheme() {
     const toggle1 = document.getElementById("theme-toggle");
     const toggle2 = document.getElementById("theme-toggle-mobile");
-    if (toggle1) toggle1.addEventListener("click", toggleTheme);
-    if (toggle2) toggle2.addEventListener("click", toggleTheme);
+    if (toggle1) toggle1.onclick = toggleTheme;
+    if (toggle2) toggle2.onclick = toggleTheme;
     updateThemeIcons(document.documentElement.classList.contains("dark"));
   }
 
-  // ── Navbar auto-hide ────────────────────────────────────────────────────
+  // ── Navbar auto-hide ──────────────────────────────────────────────────────
   let lastScroll = 0;
+  let navbarScrollHandler = null;
 
   function initNavbar() {
     const navbar = document.getElementById("navbar");
     if (!navbar) return;
-    window.addEventListener("scroll", () => {
+
+    if (navbarScrollHandler) window.removeEventListener("scroll", navbarScrollHandler);
+
+    navbarScrollHandler = () => {
       const cur = window.scrollY;
       if (cur > lastScroll && cur > 80) navbar.classList.add("nav-hidden");
       else navbar.classList.remove("nav-hidden");
       lastScroll = cur;
-    }, { passive: true });
+    };
+    window.addEventListener("scroll", navbarScrollHandler, { passive: true });
   }
 
-  // ── Back to top ─────────────────────────────────────────────────────────
+  // ── Back to top ───────────────────────────────────────────────────────────
+  let backTopScrollHandler = null;
+
   function initBackToTop() {
     const backBtn = document.getElementById("back-to-top");
     if (!backBtn) return;
-    window.addEventListener("scroll", () => {
+
+    if (backTopScrollHandler) window.removeEventListener("scroll", backTopScrollHandler);
+    backBtn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+    backTopScrollHandler = () => {
       backBtn.classList.toggle("visible", window.scrollY > 400);
-    }, { passive: true });
-    backBtn.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    };
+    window.addEventListener("scroll", backTopScrollHandler, { passive: true });
   }
 
-  // ── Init all on first load & view transitions ───────────────────────────
-  function initAll() {
-    initTheme();
-    initNavbar();
-    initBackToTop();
-  }
-  document.addEventListener("DOMContentLoaded", initAll);
-  document.addEventListener("astro:page-load", initAll);
+  // ── Search ────────────────────────────────────────────────────────────────
+  let fuse = null;
+  let searchIndex = null;
+  let searchInitialized = false;
 
-  // ── Search ─────────────────────────────────────────────────────────────
-  (async function initSearch() {
+  async function initSearch() {
     const overlay = document.getElementById("search-overlay");
     const input   = document.getElementById("search-input");
     const results = document.getElementById("search-results");
@@ -387,22 +395,24 @@ const SOCIAL = [
 
     if (!overlay || !input || !results) return;
 
-    // Load search index
-    let index;
-    try {
-      const res = await fetch("/search-index.json");
-      index = await res.json();
-    } catch { return; }
+    // Load Fuse once
+    if (!fuse) {
+      try {
+        if (!searchIndex) {
+          const res = await fetch("/search-index.json");
+          searchIndex = await res.json();
+        }
+        const { default: Fuse } = await import("fuse.js");
+        fuse = new Fuse(searchIndex, {
+          keys: ["title", "description", "tags", "category"],
+          threshold: 0.35,
+          includeScore: true,
+          minMatchCharLength: 2,
+        });
+      } catch { return; }
+    }
 
-    // Init Fuse
-    const { default: Fuse } = await import("fuse.js");
-    const fuse = new Fuse(index, {
-      keys: ["title", "description", "tags", "category"],
-      threshold: 0.35,
-      includeScore: true,
-      minMatchCharLength: 2,
-    });
-
+    searchInitialized = true;
     let selectedIdx = -1;
 
     function render(query) {
@@ -470,9 +480,13 @@ const SOCIAL = [
       document.body.style.overflow = "";
     }
 
-    triggers.forEach((t) => t.addEventListener("click", openSearch));
+    // Re-attach trigger listeners
+    triggers.forEach((t) => {
+      t.onclick = openSearch;
+    });
 
-    input.addEventListener("input", () => render(input.value));
+    input.oninput = () => render(input.value);
+    input.onkeydown = null; // remove old before adding new
 
     input.addEventListener("keydown", (e) => {
       const items = results.querySelectorAll(".search-result-item");
@@ -491,27 +505,35 @@ const SOCIAL = [
       }
     });
 
-    overlay.addEventListener("click", (e) => {
+    overlay.onclick = (e) => {
       if (e.target === overlay) closeSearch();
-    });
+    };
+  }
 
-    document.addEventListener("keydown", (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-        e.preventDefault();
-        if (overlay.classList.contains("hidden")) openSearch();
-        else closeSearch();
-      }
-      if (e.key === "Escape" && !overlay.classList.contains("hidden")) {
-        closeSearch();
-      }
-      if (e.key === "/" && !overlay.classList.contains("hidden") && document.activeElement !== input) {
-        e.preventDefault();
-        input.focus();
-      }
-    });
-  })();
+  // ── Shortcuts modal ──────────────────────────────────────────────────────
+  function initShortcuts() {
+    const closeBtn = document.getElementById("shortcuts-close");
+    const modal = document.getElementById("shortcuts-modal");
+    if (closeBtn) closeBtn.onclick = () => { modal.classList.add("hidden"); modal.classList.remove("flex"); };
+    if (modal) modal.onclick = (e) => { if (e.target === e.currentTarget) { e.currentTarget.classList.add("hidden"); e.currentTarget.classList.remove("flex"); } };
+  }
 
-  // ── Global shortcuts ───────────────────────────────────────────────────
+  // ── Init all ─────────────────────────────────────────────────────────────
+  function initAll() {
+    initMenu();
+    initAnimations();
+    initTheme();
+    initNavbar();
+    initBackToTop();
+    initSearch();
+    initShortcuts();
+  }
+
+  // Run on first load & every View Transition
+  document.addEventListener("DOMContentLoaded", initAll);
+  document.addEventListener("astro:page-load", initAll);
+
+  // ── Global keyboard shortcuts ────────────────────────────────────────────
   document.addEventListener("keydown", (e) => {
     const shortcutsModal = document.getElementById("shortcuts-modal");
     const searchOverlay  = document.getElementById("search-overlay");
@@ -520,8 +542,8 @@ const SOCIAL = [
       const active = document.activeElement?.tagName;
       if (active === "INPUT" || active === "TEXTAREA") return;
       e.preventDefault();
-      shortcutsModal.classList.toggle("hidden");
-      shortcutsModal.classList.toggle("flex");
+      shortcutsModal?.classList.toggle("hidden");
+      shortcutsModal?.classList.toggle("flex");
     }
 
     if (e.key === "t" && !e.ctrlKey && !e.metaKey && !e.altKey) {
@@ -531,30 +553,35 @@ const SOCIAL = [
       toggleTheme();
     }
 
-    if (e.key === "Escape" && shortcutsModal && !shortcutsModal.classList.contains("hidden")) {
-      shortcutsModal.classList.add("hidden");
-      shortcutsModal.classList.remove("flex");
+    if (e.key === "Escape") {
+      if (shortcutsModal && !shortcutsModal.classList.contains("hidden")) {
+        shortcutsModal.classList.add("hidden");
+        shortcutsModal.classList.remove("flex");
+      }
+      if (searchOverlay && !searchOverlay.classList.contains("hidden")) {
+        searchOverlay.classList.add("hidden");
+        searchOverlay.classList.remove("flex");
+        document.body.style.overflow = "";
+      }
     }
 
     if (e.key === "s" && !e.ctrlKey && !e.metaKey) {
       const active = document.activeElement?.tagName;
       if (active === "INPUT" || active === "TEXTAREA") return;
       e.preventDefault();
+      const btn = document.querySelector("#search-btn, #search-btn-mobile");
+      if (btn && searchOverlay?.classList.contains("hidden")) btn.click();
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
       if (searchOverlay?.classList.contains("hidden")) {
         document.querySelector("#search-btn, #search-btn-mobile")?.click();
+      } else {
+        searchOverlay.classList.add("hidden");
+        searchOverlay.classList.remove("flex");
+        document.body.style.overflow = "";
       }
-    }
-  });
-
-  document.getElementById("shortcuts-close")?.addEventListener("click", () => {
-    const m = document.getElementById("shortcuts-modal");
-    m.classList.add("hidden");
-    m.classList.remove("flex");
-  });
-  document.getElementById("shortcuts-modal")?.addEventListener("click", (e) => {
-    if (e.target === e.currentTarget) {
-      e.currentTarget.classList.add("hidden");
-      e.currentTarget.classList.remove("flex");
     }
   });
 </script>

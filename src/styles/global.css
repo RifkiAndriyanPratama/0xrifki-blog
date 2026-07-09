@@ -28,9 +28,9 @@
   --color-bg:      #1e2326;
   --color-bg-alt:  #181b1e;
   --color-surface: #232a2d;
-  --color-overlay: #2d3437;
-  --color-muted:   #3d4649;
-  --color-subtle:  #5b6b6e;
+  --color-overlay: #3d4649;
+  --color-muted:   #798a8d;
+  --color-subtle:  #9aabad;
   --color-text:    #dadada;
   --color-red:     #e67e80;
   --color-orange:  #e69875;
@@ -125,23 +125,33 @@
   .gradient-border-btn:hover::before { opacity: 1; }
 
   /* ── Code blocks ──────────────────────────────────────────────────────── */
+  .code-header {
+    @apply flex items-center justify-between rounded-t-lg border border-base-overlay px-4 py-1.5 font-code text-xs text-base-muted;
+    background-color: var(--color-bg-alt);
+    border-bottom: 0;
+  }
   .astro-code {
-    @apply relative rounded-lg text-sm leading-relaxed;
+    @apply relative text-sm leading-relaxed overflow-x-auto;
     padding: 1.25rem 1.5rem !important;
     border: 1px solid var(--color-overlay);
-  }
-
-  .astro-code .line.diff.add    { background: rgba(167, 192, 128, 0.10); }
-  .astro-code .line.diff.remove { background: rgba(230, 126, 128, 0.10); }
-
-  .code-header {
-    @apply flex items-center justify-between rounded-t-lg border-x border-t border-base-overlay bg-base-surface px-4 py-1.5 font-code text-xs text-base-muted;
+    border-radius: 0.5rem;
+    background-color: var(--color-bg-alt);
   }
   .code-header + .astro-code {
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
     border-top: 0 !important;
+    margin-top: 0;
   }
+
+  .astro-code .line.diff.add::before,
+  .astro-code .line.diff.remove::before {
+    font-size: 0.75em;
+    opacity: 0.5;
+    margin-right: 0.5em;
+  }
+  .astro-code .line.diff.add::before    { content: "+"; }
+  .astro-code .line.diff.remove::before { content: "-"; }
 
   .copy-btn {
     @apply flex items-center gap-1 rounded px-2 py-0.5 text-xs text-base-muted transition-colors hover:text-base-text hover:bg-base-overlay;
