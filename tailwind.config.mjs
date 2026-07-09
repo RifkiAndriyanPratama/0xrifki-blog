@@ -8,22 +8,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Everblush — https://github.com/Everblush/everblush
         base: {
-          bg:       "#1e2326",
-          "bg-alt": "#181b1e",
-          surface:  "#232a2d",
-          overlay:  "#2d3437",
-          muted:    "#3d4649",
-          subtle:   "#5b6b6e",
-          text:     "#dadada",
-          red:      "#e67e80",
-          orange:   "#e69875",
-          yellow:   "#dbbc7f",
-          green:    "#a7c080",
-          teal:     "#83c092",
-          blue:     "#7fbbb3",
-          purple:   "#d699b6",
+          bg:       "var(--color-bg)",
+          "bg-alt": "var(--color-bg-alt)",
+          surface:  "var(--color-surface)",
+          overlay:  "var(--color-overlay)",
+          muted:    "var(--color-muted)",
+          subtle:   "var(--color-subtle)",
+          text:     "var(--color-text)",
+          red:      "var(--color-red)",
+          orange:   "var(--color-orange)",
+          yellow:   "var(--color-yellow)",
+          green:    "var(--color-green)",
+          teal:     "var(--color-teal)",
+          blue:     "var(--color-blue)",
+          purple:   "var(--color-purple)",
         },
       },
       fontFamily: {
@@ -49,7 +48,6 @@ export default {
             "--tw-prose-pre-bg":        theme("colors.base.surface"),
             "--tw-prose-th-borders":    theme("colors.base.overlay"),
             "--tw-prose-td-borders":    theme("colors.base.overlay"),
-            // Remove backtick background from inline code — Shiki handles blocks
             "code::before": { content: '""' },
             "code::after":  { content: '""' },
             "code": {
@@ -77,6 +75,37 @@ export default {
               fontStyle: "normal",
               fontFamily: theme("fontFamily.mono").join(", "),
               fontSize: "0.9em",
+              borderLeftWidth: "3px",
+              borderLeftColor: theme("colors.base.teal"),
+              backgroundColor: theme("colors.base.surface"),
+              padding: "0.75rem 1rem",
+              borderRadius: "0 0.5rem 0.5rem 0",
+            },
+            "table": {
+              borderCollapse: "separate",
+              borderSpacing: "0",
+              width: "100%",
+            },
+            "th": {
+              backgroundColor: theme("colors.base.surface"),
+              padding: "0.5rem 0.75rem",
+              fontWeight: "600",
+              fontSize: "0.875rem",
+            },
+            "td": {
+              padding: "0.5rem 0.75rem",
+              borderBottomWidth: "1px",
+              borderBottomColor: theme("colors.base.overlay"),
+            },
+            "tr:nth-child(even) td": {
+              backgroundColor: "rgba(0,0,0,0.03)",
+            },
+            ".dark tr:nth-child(even) td": {
+              backgroundColor: "rgba(255,255,255,0.02)",
+            },
+            "img": {
+              borderRadius: "0.5rem",
+              border: `1px solid ${theme("colors.base.overlay")}`,
             },
           },
         },

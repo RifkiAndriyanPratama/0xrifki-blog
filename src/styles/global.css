@@ -1,12 +1,30 @@
 /* src/styles/global.css */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap");
-
-/* ─── Everblush palette ──────────────────────────────────────────────────────── */
+/* ─── Everblush palette (Light) ──────────────────────────────────────────────── */
 :root {
+  --color-bg:      #f0f0eb;
+  --color-bg-alt:  #e8e8e2;
+  --color-surface: #fafaf5;
+  --color-overlay: #d4d4cc;
+  --color-muted:   #a0a098;
+  --color-subtle:  #6b6b63;
+  --color-text:    #2d2d28;
+  --color-red:     #c45a5c;
+  --color-orange:  #c47a50;
+  --color-yellow:  #b89a50;
+  --color-green:   #7a9e60;
+  --color-teal:    #5a9e80;
+  --color-blue:    #5a8e8a;
+  --color-purple:  #b080a0;
+}
+
+/* ─── Everblush palette (Dark) ───────────────────────────────────────────────── */
+:root.dark {
   --color-bg:      #1e2326;
   --color-bg-alt:  #181b1e;
   --color-surface: #232a2d;
@@ -56,16 +74,15 @@
   }
 }
 
-/* ─── Page enter animations ─────────────────────────────────────────────────── */
+/* ─── Components ─────────────────────────────────────────────────────────────── */
 @layer components {
-  /* Every direct child of main fades + slides up on load */
+  /* Enter animation */
   [data-animate] {
     opacity: 0;
     transform: translateY(18px);
     animation: enterUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
-  /* Typewriter cursor blink */
   .typewriter-cursor {
     display: inline-block;
     width: 2px;
@@ -76,7 +93,38 @@
     animation: blink 0.9s step-end infinite;
   }
 
-  /* Code blocks */
+  /* ── Hero background grid ─────────────────────────────────────────────── */
+  .hero-grid {
+    background-image:
+      linear-gradient(var(--color-overlay) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-overlay) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 70%);
+  }
+
+  /* ── Animated gradient border ─────────────────────────────────────────── */
+  .gradient-border-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  .gradient-border-btn::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    border-radius: inherit;
+    background: conic-gradient(
+      var(--color-teal), var(--color-blue), var(--color-purple),
+      var(--color-teal), var(--color-blue), var(--color-purple), var(--color-teal)
+    );
+    z-index: -1;
+    animation: spinGradient 4s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .gradient-border-btn:hover::before { opacity: 1; }
+
+  /* ── Code blocks ──────────────────────────────────────────────────────── */
   .astro-code {
     @apply relative rounded-lg text-sm leading-relaxed;
     padding: 1.25rem 1.5rem !important;
@@ -85,6 +133,73 @@
 
   .astro-code .line.diff.add    { background: rgba(167, 192, 128, 0.10); }
   .astro-code .line.diff.remove { background: rgba(230, 126, 128, 0.10); }
+
+  .code-header {
+    @apply flex items-center justify-between rounded-t-lg border-x border-t border-base-overlay bg-base-surface px-4 py-1.5 font-code text-xs text-base-muted;
+  }
+  .code-header + .astro-code {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-top: 0 !important;
+  }
+
+  .copy-btn {
+    @apply flex items-center gap-1 rounded px-2 py-0.5 text-xs text-base-muted transition-colors hover:text-base-text hover:bg-base-overlay;
+  }
+
+  /* ── Back to top ──────────────────────────────────────────────────────── */
+  #back-to-top {
+    @apply fixed bottom-6 right-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-base-overlay bg-base-bg text-base-muted shadow-lg transition-all duration-300;
+  }
+  #back-to-top:hover { @apply border-base-teal text-base-teal; }
+  #back-to-top.visible { @apply translate-y-0 opacity-100; }
+  #back-to-top:not(.visible) { @apply translate-y-4 opacity-0 pointer-events-none; }
+
+  /* ── Navbar auto-hide ─────────────────────────────────────────────────── */
+  #navbar {
+    transition: transform 0.3s ease;
+  }
+  #navbar.nav-hidden {
+    transform: translateY(-100%);
+  }
+
+  /* ── Search highlight ─────────────────────────────────────────────────── */
+  mark.search-highlight {
+    background: var(--color-yellow);
+    color: var(--color-text);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* ── Pull quote ───────────────────────────────────────────────────────── */
+  .pull-quote {
+    @apply my-8 border-l-4 border-base-teal bg-base-surface px-6 py-4 font-code text-base italic leading-relaxed text-base-text;
+  }
+
+  /* ── Stats counter ────────────────────────────────────────────────────── */
+  .stat-number {
+    @apply font-code text-2xl font-semibold text-base-teal md:text-3xl;
+  }
+  .stat-label {
+    @apply font-code text-xs text-base-muted uppercase tracking-wider;
+  }
+
+  /* ── Print styles ─────────────────────────────────────────────────────── */
+  @media print {
+    nav, footer, #giscus-container, #reading-bar, #back-to-top,
+    .astro-code, [data-animate] { animation: none !important; opacity: 1 !important; transform: none !important; }
+    header { position: static !important; }
+    .prose { max-width: 100% !important; }
+  }
+
+  /* ── Reduced motion ───────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 /* ─── Keyframes ─────────────────────────────────────────────────────────────── */
@@ -100,6 +215,20 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes spinGradient {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ─── Utilities ─────────────────────────────────────────────────────────────── */

@@ -1,158 +1,119 @@
 ---
 // src/pages/blog/index.astro
-// Blog index — client-side search + category filter
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import PostCard from "@/components/PostCard.astro";
-import { sortPosts, getCategories, toSearchIndex } from "@/lib/utils";
+import { sortPosts } from "@/lib/utils";
 
-const allPosts   = await getCollection("posts");
-const posts      = sortPosts(allPosts);
-const categories = getCategories(allPosts);
-
-// Serialised search index — injected as JSON for Fuse.js
-const searchIndex = JSON.stringify(toSearchIndex(posts));
+const posts    = sortPosts(await getCollection("posts"));
+const allTags  = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+const archive  = [...new Set(posts.map((p) => p.data.date.getFullYear()))].sort((a, b) => b - a);
+const total    = posts.length;
 ---
 
-<Layout title="posts" description="All posts, sorted by date.">
-  <!-- ── Page Header ──────────────────────────────────────────────────────── -->
-  <div class="mb-12" data-animate style="animation-delay: 0ms">
-    <h1 class="font-code mb-2 text-2xl font-medium text-base-teal">
-      <span class="text-base-subtle">~/</span>posts
-    </h1>
-    <p class="font-code text-sm text-base-muted">{posts.length} entries</p>
-  </div>
+<Layout title="Blog">
+  <header class="mb-10">
+    <p class="font-code mb-2 text-sm text-base-subtle">
+      <a href="/" class="underline underline-offset-2 transition-colors hover:text-base-text">~/</a>
+      <span class="text-base-muted">blog</span>
+    </p>
+    <h1 class="text-3xl font-semibold tracking-tight text-base-text md:text-4xl">/blog</h1>
+    <p class="mt-2 text-base-subtle">
+      {total} {total === 1 ? "post" : "posts"} across {allTags.length} {allTags.length === 1 ? "tag" : "tags"}
+    </p>
+  </header>
 
-  <!-- ── Search ───────────────────────────────────────────────────────────── -->
-  <div class="mb-8" data-animate style="animation-delay: 60ms">
-    <label for="search-input" class="sr-only">Search posts</label>
-    <div class="relative">
-      <span
-        class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-code text-sm text-base-subtle"
-        aria-hidden="true"
-      >
-        /
-      </span>
-      <input
-        id="search-input"
-        type="search"
-        placeholder="search posts..."
-        class="w-full rounded-lg border border-base-overlay bg-base-surface py-3 pl-9 pr-4 font-code text-sm text-base-text placeholder-base-muted transition-colors focus:border-base-blue focus:outline-none"
-        autocomplete="off"
-        spellcheck="false"
-      />
+  <!-- ── Tag cloud ─────────────────────────────────────────────────────────── -->
+  {allTags.length > 0 && (
+    <section class="mb-10">
+      <h2 class="font-code mb-3 text-xs font-medium uppercase tracking-wider text-base-muted">by tag</h2>
+      <div class="flex flex-wrap gap-2">
+        {allTags.map((tag) => (
+          <a
+            href={`/blog/tag/${tag}`}
+            class="rounded-lg bg-base-overlay px-3 py-1.5 font-code text-xs text-base-muted transition-all hover:bg-base-teal/10 hover:text-base-teal"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- ── View toggle ───────────────────────────────────────────────────────── -->
+  <div class="mb-6 flex items-center justify-between">
+    <h2 class="font-code text-sm font-medium text-base-text">all posts</h2>
+    <div class="flex gap-1 rounded-lg border border-base-overlay p-1">
+      <button id="view-grid" class="view-toggle rounded p-1.5 text-base-muted transition-colors hover:text-base-text active" aria-label="Grid view" data-view="grid">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </button>
+      <button id="view-list" class="view-toggle rounded p-1.5 text-base-muted transition-colors hover:text-base-text" aria-label="List view" data-view="list">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
     </div>
   </div>
 
-  <!-- ── Category Pills ───────────────────────────────────────────────────── -->
-  <div class="mb-10 flex flex-wrap gap-3" data-animate style="animation-delay: 120ms">
-    <button
-      class="category-btn active font-code rounded-lg border px-4 py-1.5 text-sm transition-colors"
-      data-category="all"
-    >
-      all
-    </button>
-    {
-      categories.map((cat) => (
-        <button
-          class="category-btn font-code rounded-lg border px-4 py-1.5 text-sm transition-colors"
-          data-category={cat}
-        >
-          {cat}
-        </button>
-      ))
-    }
+  <!-- ── Posts (grouped by year) ───────────────────────────────────────────── -->
+  <div id="posts-container">
+    {archive.map((year) => {
+      const yearPosts = posts.filter((p) => p.data.date.getFullYear() === year);
+      return (
+        <section class="mb-10 year-group">
+          <h2 class="font-code mb-4 text-xs font-bold uppercase tracking-wider text-base-muted">
+            {year} <span class="text-base-muted">({yearPosts.length})</span>
+          </h2>
+          <div class="view-grid grid grid-cols-1 gap-6 md:grid-cols-2" data-year={year}>
+            {yearPosts.map((post) => (
+              <PostCard post={post} variant={post.data.cover ? "default" : "compact"} />
+            ))}
+          </div>
+          <!-- List view is toggled via JS -->
+          <div class="view-list hidden" data-year={year}>
+            <div class="divide-y divide-base-overlay">
+              {yearPosts.map((post) => (
+                <PostCard post={post} variant="compact" />
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })}
   </div>
 
-  <!-- ── Post List ─────────────────────────────────────────────────────────── -->
-  <div id="post-list" class="space-y-1">
-    {posts.map((post) => <PostCard post={post} />)}
-  </div>
+  {posts.length === 0 && (
+    <div class="rounded-xl border border-dashed border-base-overlay py-20 text-center">
+      <p class="text-base-muted font-code text-sm">no posts yet</p>
+    </div>
+  )}
 
-  <!-- Empty state -->
-  <p
-    id="no-results"
-    class="hidden font-code mt-10 text-base text-base-muted"
-  >
-    no posts match that query.
-  </p>
 </Layout>
 
-<!-- ── Client-side Search (Fuse.js) ──────────────────────────────────────── -->
-<script define:vars={{ searchIndex }}>
-// Dynamically import Fuse from CDN — no bundler needed for SSG
-(async () => {
-  const Fuse = (await import("https://cdn.jsdelivr.net/npm/fuse.js@7/dist/fuse.mjs")).default;
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const gridBtn = document.getElementById("view-grid");
+    const listBtn = document.getElementById("view-list");
+    const grids   = document.querySelectorAll(".view-grid");
+    const lists   = document.querySelectorAll(".view-list");
+    const toggles = document.querySelectorAll(".view-toggle");
 
-  const posts   = JSON.parse(searchIndex);
-  const fuse    = new Fuse(posts, {
-    keys:              ["title", "description", "tags", "category"],
-    threshold:         0.35,
-    includeScore:      true,
-    ignoreLocation:    true,
-    minMatchCharLength: 2,
-  });
-
-  const input     = document.getElementById("search-input");
-  const list      = document.getElementById("post-list");
-  const noResults = document.getElementById("no-results");
-  const cards     = [...list.querySelectorAll("[data-slug]")];
-
-  /** Set visibility of post cards based on a slug Set */
-  function showSlugs(slugs) {
-    let visible = 0;
-    cards.forEach((card) => {
-      const show = slugs === null || slugs.has(card.dataset.slug);
-      card.hidden = !show;
-      if (show) visible++;
-    });
-    noResults.classList.toggle("hidden", visible > 0);
-  }
-
-  // ── Search handler ──────────────────────────────────────────────────────
-  input.addEventListener("input", () => {
-    const q = input.value.trim();
-    if (!q) { showSlugs(null); return; }
-    const results = fuse.search(q).map((r) => r.item.slug);
-    showSlugs(new Set(results));
-  });
-
-  // ── Category filter ─────────────────────────────────────────────────────
-  const catBtns = document.querySelectorAll(".category-btn");
-  let   active  = "all";
-
-  const BASE_BTN = "border-base-overlay text-base-subtle hover:border-base-subtle hover:text-base-text";
-  const ACTIVE_BTN = "border-base-blue text-base-blue";
-
-  catBtns.forEach((btn) => {
-    btn.classList.add(...BASE_BTN.split(" "));
-    if (btn.dataset.category === "all") {
-      btn.classList.add(...ACTIVE_BTN.split(" "));
+    function setView(view) {
+      toggles.forEach((t) => t.classList.remove("active"));
+      if (view === "grid") {
+        gridBtn.classList.add("active");
+        grids.forEach((g) => g.classList.remove("hidden"));
+        lists.forEach((l) => l.classList.add("hidden"));
+      } else {
+        listBtn.classList.add("active");
+        grids.forEach((g) => g.classList.add("hidden"));
+        lists.forEach((l) => l.classList.remove("hidden"));
+      }
+      localStorage.setItem("blog-view", view);
     }
 
-    btn.addEventListener("click", () => {
-      active = btn.dataset.category;
+    gridBtn.addEventListener("click", () => setView("grid"));
+    listBtn.addEventListener("click", () => setView("list"));
 
-      // Update button styles
-      catBtns.forEach((b) => {
-        b.classList.remove(...ACTIVE_BTN.split(" "));
-        b.classList.add(...BASE_BTN.split(" "));
-      });
-      btn.classList.add(...ACTIVE_BTN.split(" "));
-      btn.classList.remove(...BASE_BTN.split(" "));
-
-      // Filter cards
-      if (active === "all") { showSlugs(null); return; }
-      const slugs = new Set(
-        posts
-          .filter((p) => p.category === active)
-          .map((p) => p.slug)
-      );
-      showSlugs(slugs);
-
-      // Also clear search
-      input.value = "";
-    });
+    const saved = localStorage.getItem("blog-view");
+    if (saved === "list") setView("list");
   });
-})();
 </script>

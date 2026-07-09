@@ -5,44 +5,102 @@ import Layout from "@/layouts/Layout.astro";
 import PostCard from "@/components/PostCard.astro";
 import { sortPosts } from "@/lib/utils";
 
-const posts  = sortPosts(await getCollection("posts"));
-const recent = posts.slice(0, 5);
+const posts     = sortPosts(await getCollection("posts"));
+const projects  = await getCollection("projects");
+const featured  = posts.filter((p) => p.data.featured);
+const recent    = posts.slice(0, 5);
+
+const totalLines = posts.reduce((sum, p) => sum + (p.body?.split("\n").length ?? 0), 0);
+const totalTags  = [...new Set(posts.flatMap((p) => p.data.tags))].length;
 ---
 
 <Layout title="0xrifki">
 
   <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
-  <section class="mb-20" data-animate style="animation-delay: 0ms">
-    <p class="font-code mb-4 text-sm text-base-subtle">
-      <span class="text-base-green">❯</span> whoami
-    </p>
+  <section class="relative mb-20 overflow-hidden" data-animate style="animation-delay: 0ms">
+    <!-- Background grid pattern -->
+    <div class="hero-grid pointer-events-none absolute inset-0 opacity-40 dark:opacity-20"></div>
 
-    <h1 class="mb-5 text-4xl font-semibold leading-tight tracking-tight text-base-text md:text-5xl lg:text-6xl">
-      a developer's notebook.<br />
-      <span class="text-gradient" id="typewriter-target"></span><span class="typewriter-cursor" id="typewriter-cursor"></span>
-    </h1>
+    <div class="relative z-10">
+      <p class="font-code mb-4 text-sm text-base-subtle">
+        <span class="text-base-green">❯</span> whoami
+      </p>
 
-    <p class="max-w-xl text-base leading-relaxed text-base-subtle md:text-lg">
-      cs student by day, terminal addict by night.<br />
-      notes on software, systems, and whatever ends up in the terminal at 2am.
-    </p>
+      <div class="mb-6 flex flex-col gap-6 sm:flex-row sm:items-center">
+        <!-- Avatar -->
+        <div class="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-base-overlay sm:h-24 sm:w-24">
+          <div class="flex h-full w-full items-center justify-center bg-base-surface">
+            <span class="font-code text-3xl font-bold text-base-teal select-none">rp</span>
+          </div>
+          <div class="absolute bottom-0 right-0 h-6 w-6 rounded-tl-xl bg-base-teal/10"></div>
+        </div>
 
-    <!-- CTA row -->
-    <div class="mt-8 flex flex-wrap gap-3">
-      <a
-        href="/projects"
-        class="font-code rounded-lg bg-base-teal/10 border border-base-teal/30 px-4 py-2 text-sm text-base-teal transition-all hover:bg-base-teal/20 hover:border-base-teal/60"
-      >
-        view projects →
-      </a>
-      <a
-        href="/blog"
-        class="font-code rounded-lg border border-base-overlay px-4 py-2 text-sm text-base-subtle transition-all hover:border-base-subtle hover:text-base-text"
-      >
-        read blog →
-      </a>
+        <div>
+          <h1 class="text-4xl font-semibold leading-tight tracking-tight text-base-text md:text-5xl lg:text-6xl">
+            a developer's notebook.<br />
+            <span class="text-gradient" id="typewriter-target"></span><span class="typewriter-cursor" id="typewriter-cursor"></span>
+          </h1>
+        </div>
+      </div>
+
+      <p class="mb-6 max-w-xl text-base leading-relaxed text-base-subtle md:text-lg">
+        cs student by day, terminal addict by night.<br />
+        notes on software, systems, and whatever ends up in the terminal at 2am.
+      </p>
+
+      <!-- Stats row -->
+      <div class="mb-8 flex flex-wrap gap-8">
+        <div>
+          <p class="stat-number" data-count={posts.length}>0</p>
+          <p class="stat-label">posts</p>
+        </div>
+        <div>
+          <p class="stat-number" data-count={projects.length}>0</p>
+          <p class="stat-label">projects</p>
+        </div>
+        <div>
+          <p class="stat-number" data-count={totalLines}>0</p>
+          <p class="stat-label">lines of code</p>
+        </div>
+        <div>
+          <p class="stat-number" data-count={totalTags}>0</p>
+          <p class="stat-label">tags</p>
+        </div>
+      </div>
+
+      <!-- CTA row -->
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="/projects"
+          class="gradient-border-btn font-code relative inline-flex items-center rounded-lg bg-base-surface px-5 py-2.5 text-sm text-base-text transition-all hover:brightness-110"
+        >
+          view projects →
+        </a>
+        <a
+          href="/blog"
+          class="font-code rounded-lg border border-base-overlay px-5 py-2.5 text-sm text-base-subtle transition-all hover:border-base-subtle hover:text-base-text"
+        >
+          read blog →
+        </a>
+      </div>
     </div>
   </section>
+
+  <!-- ── Featured Posts ────────────────────────────────────────────────────── -->
+  {featured.length > 0 && (
+    <section class="mb-14" data-animate style="animation-delay: 80ms">
+      <h2 class="font-code mb-6 text-sm font-medium text-base-yellow">
+        ★ featured
+      </h2>
+      <div>
+        {featured.map((post, i) => (
+          <div data-animate style={`animation-delay: ${100 + i * 60}ms`}>
+            <PostCard post={post} />
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
 
   <!-- ── Recent Posts ──────────────────────────────────────────────────────── -->
   <section data-animate style="animation-delay: 120ms">
@@ -69,8 +127,9 @@ const recent = posts.slice(0, 5);
 
 </Layout>
 
-<!-- ── Typewriter ─────────────────────────────────────────────────────────── -->
+<!-- ── Typewriter + Stats counter ─────────────────────────────────────────── -->
 <script>
+// ── Typewriter ────────────────────────────────────────────────────────────
 const PHRASES = [
   "projects, systems & tooling.",
   "building. breaking. shipping.",
@@ -84,36 +143,46 @@ let   pi     = 0;
 let   ci     = 0;
 let   deleting = false;
 
-async function sleep(ms: number) {
-  return new Promise((r) => setTimeout(r, ms));
-}
+async function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
 async function tick() {
-  const phrase = PHRASES[pi]!;
-
+  const phrase = PHRASES[pi];
   if (!deleting) {
     el.textContent = phrase.slice(0, ci + 1);
     ci++;
-    if (ci === phrase.length) {
-      deleting = true;
-      await sleep(2200);
-    } else {
-      await sleep(65);
-    }
+    if (ci === phrase.length) { deleting = true; await sleep(2200); }
+    else { await sleep(65); }
   } else {
     el.textContent = phrase.slice(0, ci - 1);
     ci--;
-    if (ci === 0) {
-      deleting = false;
-      pi = (pi + 1) % PHRASES.length;
-      await sleep(400);
-    } else {
-      await sleep(30);
-    }
+    if (ci === 0) { deleting = false; pi = (pi + 1) % PHRASES.length; await sleep(400); }
+    else { await sleep(30); }
   }
   requestAnimationFrame(tick);
 }
-
-// Start after hero fade-in
 setTimeout(tick, 600);
+
+// ── Stats counter animation ───────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  const stats = document.querySelectorAll("[data-count]");
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.count);
+      const duration = 1200;
+      const start = performance.now();
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target).toLocaleString();
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+      obs.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  stats.forEach((s) => obs.observe(s));
+});
 </script>

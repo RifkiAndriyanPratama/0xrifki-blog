@@ -1,9 +1,12 @@
 ---
 // src/layouts/PostLayout.astro
-// Wraps Layout.astro with post-specific chrome: header, cover image, metadata
+// Wraps Layout.astro with post-specific chrome: header, cover image, metadata,
+// TOC, reading progress, prev/next nav, related posts, series, share, comments.
+import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
+import PostCard from "@/components/PostCard.astro";
 import { Image } from "astro:assets";
-import { formatDate, isoDate, readingTime } from "@/lib/utils";
+import { formatDate, isoDate, readingTime, sortPosts } from "@/lib/utils";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
@@ -11,42 +14,84 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, date, category, tags, cover, coverAlt } = post.data;
+const { title, description, date, category, tags, cover, coverAlt, updated, series, seriesOrder } = post.data;
 const readTime = post.data.readingTime ?? readingTime(post.body);
 
-// Build absolute OG image URL (use cover if available, else default)
 const ogImage = cover
   ? new URL(cover.src, Astro.site).toString()
   : undefined;
+
+// ── Prev / Next ──────────────────────────────────────────────────────────────
+const allPosts = sortPosts(await getCollection("posts"));
+const currentIdx = allPosts.findIndex((p) => p.slug === post.slug);
+const prev = currentIdx > 0 ? allPosts[currentIdx - 1] : null;
+const next = currentIdx < allPosts.length - 1 ? allPosts[currentIdx + 1] : null;
+
+// ── Related Posts (same category, exclude current, max 3) ────────────────────
+const related = allPosts
+  .filter((p) => p.slug !== post.slug && p.data.category === category)
+  .slice(0, 3);
+
+// ── Series Posts ─────────────────────────────────────────────────────────────
+const allPostsRaw = await getCollection("posts");
+const seriesPosts = series
+  ? allPostsRaw
+      .filter((p) => p.data.series === series && !p.data.draft)
+      .sort((a, b) => (a.data.seriesOrder ?? 99) - (b.data.seriesOrder ?? 99))
+  : [];
+const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 ---
 
 <Layout title={title} description={description} ogImage={ogImage}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "description": description,
+    "datePublished": isoDate(date),
+    ...(updated && { "dateModified": isoDate(updated) }),
+    "author": {
+      "@type": "Person",
+      "name": "Rifki Andriyan Pratama",
+    },
+  })} />
+
+  <!-- ── Reading Progress Bar ────────────────────────────────────────────── -->
+  <div id="reading-bar" class="fixed left-0 top-0 z-[60] h-0.5 bg-base-teal transition-[width] duration-75"></div>
+
   <article>
     <!-- ── Post Header ────────────────────────────────────────────────────── -->
     <header class="mb-8 space-y-4">
-      <!-- Category pill -->
-      <div>
+      <div class="flex flex-wrap items-center gap-2">
         <a
           href={`/blog/category/${category}`}
           class="font-code inline-block rounded border border-base-overlay px-2 py-0.5 text-xs text-base-blue transition-colors hover:border-base-blue"
         >
           {category}
         </a>
+        {post.data.featured && (
+          <span class="font-code inline-block rounded border border-base-yellow/40 px-2 py-0.5 text-xs text-base-yellow">
+            ★ Featured
+          </span>
+        )}
       </div>
 
-      <!-- Title -->
       <h1 class="text-2xl font-semibold leading-tight tracking-tight text-base-text md:text-3xl">
         {title}
       </h1>
 
-      <!-- Description -->
       <p class="text-base text-base-subtle">{description}</p>
 
-      <!-- Meta row -->
       <div class="flex flex-wrap items-center gap-x-4 gap-y-1 font-code text-xs text-base-muted">
         <time datetime={isoDate(date)}>
           {formatDate(date)}
         </time>
+        {updated && isoDate(updated) !== isoDate(date) && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>updated {formatDate(updated)}</span>
+          </>
+        )}
         <span aria-hidden="true">·</span>
         <span>{readTime} min read</span>
 
@@ -62,8 +107,47 @@ const ogImage = cover
             </>
           )
         }
+
+        <!-- Share button -->
+        <button
+          id="share-btn"
+          class="ml-auto font-code text-xs text-base-muted underline underline-offset-4 transition-colors hover:text-base-teal"
+          aria-label="Copy link to this post"
+        >
+          copy link
+        </button>
       </div>
     </header>
+
+    <!-- ── Series nav ─────────────────────────────────────────────────────── -->
+    {seriesPosts.length > 1 && (
+      <div class="mb-8 rounded-lg border border-base-overlay bg-base-surface p-4">
+        <p class="font-code text-xs font-medium uppercase tracking-wider text-base-muted">
+          Series: {series}
+        </p>
+        <p class="font-code text-xs text-base-subtle mt-1">
+          Part {seriesIdx + 1} of {seriesPosts.length}
+        </p>
+        <ol class="mt-3 space-y-1">
+          {seriesPosts.map((p, i) => (
+            <li>
+              {p.slug === post.slug ? (
+                <span class="font-code text-xs text-base-teal">
+                  {i + 1}. {p.data.title}
+                </span>
+              ) : (
+                <a
+                  href={`/blog/${p.slug}`}
+                  class="font-code text-xs text-base-muted transition-colors hover:text-base-teal"
+                >
+                  {i + 1}. {p.data.title}
+                </a>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+    )}
 
     <!-- ── Cover Image ────────────────────────────────────────────────────── -->
     {
@@ -82,8 +166,30 @@ const ogImage = cover
     }
 
     <!-- ── Post Body ──────────────────────────────────────────────────────── -->
-    <div class="prose prose-devlog max-w-none">
-      <slot />
+    <!-- TOC mobile trigger (visible on small screens) -->
+    <details class="mb-8 rounded-lg border border-base-overlay sm:hidden">
+      <summary class="cursor-pointer px-4 py-2 font-code text-sm text-base-muted transition-colors hover:text-base-text">
+        Table of Contents
+      </summary>
+      <nav class="border-t border-base-overlay px-4 py-3" id="toc-mobile"></nav>
+    </details>
+
+    <div class="flex gap-10">
+      <!-- TOC sidebar (desktop) -->
+      <aside class="hidden w-56 shrink-0 sm:block">
+        <div class="sticky top-24">
+          <h2 class="mb-3 font-code text-xs font-medium uppercase tracking-wider text-base-muted">
+            On this page
+          </h2>
+          <nav id="toc-desktop" class="space-y-1"></nav>
+        </div>
+      </aside>
+
+      <div class="min-w-0 flex-1">
+        <div class="prose prose-devlog max-w-none">
+          <slot />
+        </div>
+      </div>
     </div>
 
     <!-- ── Post Footer ────────────────────────────────────────────────────── -->
@@ -104,6 +210,50 @@ const ogImage = cover
         )
       }
 
+      <!-- Prev / Next -->
+      <nav class="mb-8 grid grid-cols-1 gap-4 border-y border-base-overlay py-6 sm:grid-cols-2">
+        <div>
+          {prev && (
+            <a
+              href={`/blog/${prev.slug}`}
+              class="group flex flex-col gap-1 rounded-lg border border-base-overlay p-4 transition-colors hover:border-base-teal"
+            >
+              <span class="font-code text-xs text-base-muted">← Previous</span>
+              <span class="font-medium text-base-text transition-colors group-hover:text-base-teal">
+                {prev.data.title}
+              </span>
+            </a>
+          )}
+        </div>
+        <div class="sm:text-right">
+          {next && (
+            <a
+              href={`/blog/${next.slug}`}
+              class="group flex flex-col gap-1 rounded-lg border border-base-overlay p-4 transition-colors hover:border-base-teal"
+            >
+              <span class="font-code text-xs text-base-muted">Next →</span>
+              <span class="font-medium text-base-text transition-colors group-hover:text-base-teal">
+                {next.data.title}
+              </span>
+            </a>
+          )}
+        </div>
+      </nav>
+
+      <!-- Related Posts -->
+      {
+        related.length > 0 && (
+          <div class="mb-8">
+            <h2 class="mb-4 font-code text-sm font-medium text-base-muted">
+              Related Posts
+            </h2>
+            <div class="space-y-1">
+              {related.map((p) => <PostCard post={p} />)}
+            </div>
+          </div>
+        )
+      }
+
       <!-- Back link -->
       <a
         href="/blog"
@@ -116,10 +266,6 @@ const ogImage = cover
     <!-- ── Comments (Giscus) ──────────────────────────────────────────────── -->
     <section class="mt-12" aria-label="Comments">
       <div id="giscus-container">
-        <!--
-          🔧 GISCUS SETUP — see GISCUS.md in project root for full instructions.
-          After configuring at https://giscus.app, replace the script below:
-        -->
         <script
           is:inline
           src="https://giscus.app/client.js"
@@ -142,3 +288,125 @@ const ogImage = cover
     </section>
   </article>
 </Layout>
+
+<script is:inline>
+  // ── Reading progress bar ──────────────────────────────────────────────────
+  const bar = document.getElementById("reading-bar");
+  if (bar) {
+    window.addEventListener("scroll", () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight > 0) {
+        bar.style.width = `${(scrollTop / docHeight) * 100}%`;
+      }
+    });
+  }
+
+  // ── Table of Contents ─────────────────────────────────────────────────────
+  function buildTOC(containerId, articleEl) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const headings = articleEl.querySelectorAll("h2, h3");
+    if (headings.length < 2) {
+      container.closest("aside")?.remove();
+      document.querySelector("details")?.remove();
+      return;
+    }
+
+    const ul = document.createElement("ul");
+    ul.className = "space-y-1";
+
+    headings.forEach((h) => {
+      const id = h.textContent
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      h.id = id;
+
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = `#${id}`;
+      a.textContent = h.textContent;
+      a.className =
+        "block text-sm transition-colors hover:text-base-teal" +
+        (h.tagName === "H3" ? " pl-4 text-base-muted" : " text-base-subtle");
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+
+    container.appendChild(ul);
+  }
+
+  const article = document.querySelector("article");
+  if (article) {
+    buildTOC("toc-desktop", article);
+    buildTOC("toc-mobile", article);
+  }
+
+  // ── Share / Copy link ────────────────────────────────────────────────────
+  const shareBtn = document.getElementById("share-btn");
+  if (shareBtn) {
+    shareBtn.addEventListener("click", async () => {
+      const url = window.location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+        shareBtn.textContent = "copied!";
+        setTimeout(() => { shareBtn.textContent = "copy link"; }, 2000);
+      } catch {
+        shareBtn.textContent = "failed";
+      }
+    });
+  }
+
+  // ── Code copy buttons ───────────────────────────────────────────────────
+  document.querySelectorAll(".astro-code").forEach((block) => {
+    const wrapper = block.closest("[class*='language-']") || block.parentElement;
+    if (wrapper && wrapper.querySelector(".copy-btn")) return;
+
+    const btn = document.createElement("button");
+    btn.className = "copy-btn";
+    btn.textContent = "copy";
+    btn.setAttribute("aria-label", "Copy code to clipboard");
+
+    btn.addEventListener("click", async () => {
+      const code = block.querySelector("code")?.textContent || block.textContent;
+      try {
+        await navigator.clipboard.writeText(code.trim());
+        btn.textContent = "copied!";
+        setTimeout(() => { btn.textContent = "copy"; }, 2000);
+      } catch {
+        btn.textContent = "failed";
+      }
+    });
+
+    const header = wrapper.querySelector(".code-header");
+    if (header) {
+      header.appendChild(btn);
+    } else if (wrapper instanceof HTMLElement) {
+      const lang = Array.from(wrapper.classList).find(c => c.startsWith("language-"))?.replace("language-", "") || "code";
+      const hdr = document.createElement("div");
+      hdr.className = "code-header";
+      hdr.innerHTML = `<span>${lang}</span>`;
+      hdr.appendChild(btn);
+      wrapper.insertBefore(hdr, block);
+    }
+  });
+
+  // ── Smooth anchor scrolling with header offset ──────────────────────────
+  document.querySelectorAll("a[href^='#']").forEach((anchor) => {
+    anchor.addEventListener("click", (e) => {
+      const id = anchor.getAttribute("href")?.slice(1);
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (target) {
+        e.preventDefault();
+        const offset = 100;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: "smooth" });
+        history.pushState(null, "", `#${id}`);
+      }
+    });
+  });
+</script>

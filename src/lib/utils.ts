@@ -41,6 +41,16 @@ export function getCategories(
   return [...new Set(cats)].sort();
 }
 
+/** Get all unique tags from posts */
+export function getTags(
+  posts: CollectionEntry<"posts">[]
+): string[] {
+  const tags = posts
+    .filter((p) => !p.data.draft)
+    .flatMap((p) => p.data.tags);
+  return [...new Set(tags)].sort();
+}
+
 /** Build a serialisable post object for client-side Fuse.js search */
 export function toSearchIndex(posts: CollectionEntry<"posts">[]) {
   return posts.map((p) => ({

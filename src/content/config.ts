@@ -30,6 +30,10 @@ const postsCollection = defineCollection({
       coverAlt:    z.string().optional(),
       draft:       z.boolean().default(false),
       readingTime: z.number().optional(),
+      updated:     z.coerce.date().optional(),
+      series:      z.string().optional(),
+      seriesOrder: z.number().optional(),
+      featured:    z.boolean().default(false),
     }),
 });
 

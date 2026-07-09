@@ -1,0 +1,33 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import PostCard from "@/components/PostCard.astro";
+import { sortPosts } from "@/lib/utils";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { tag },
+  }));
+};
+
+const { tag } = Astro.props;
+const allPosts = sortPosts(await getCollection("posts"));
+const posts = allPosts.filter((p) => p.data.tags.includes(tag));
+---
+
+<Layout title={`#${tag}`} description={`Posts tagged with #${tag}.`}>
+  <div data-animate>
+    <h1 class="font-code mb-2 text-2xl font-medium text-base-teal">
+      <span class="text-base-subtle">~/</span>posts/tag/<span class="text-base-text">{tag}</span>
+    </h1>
+    <p class="font-code text-sm text-base-muted">{posts.length} entries</p>
+  </div>
+
+  <div class="mt-10 space-y-1">
+    {posts.map((post) => <PostCard post={post} />)}
+  </div>
+</Layout>
