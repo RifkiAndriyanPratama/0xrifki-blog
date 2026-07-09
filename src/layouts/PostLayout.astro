@@ -210,6 +210,41 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         )
       }
 
+      <!-- Share -->
+      <div class="mb-8 flex flex-wrap items-center gap-3">
+        <span class="font-code text-xs text-base-muted">share</span>
+        <a
+          id="share-twitter"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-1.5 rounded-lg border border-base-overlay px-3 py-1.5 font-code text-xs text-base-muted transition-colors hover:border-base-blue hover:text-base-blue"
+          aria-label="Share on Twitter/X"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X
+        </a>
+        <a
+          id="share-linkedin"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-1.5 rounded-lg border border-base-overlay px-3 py-1.5 font-code text-xs text-base-muted transition-colors hover:border-base-blue hover:text-base-blue"
+          aria-label="Share on LinkedIn"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <button
+          id="share-btn-footer"
+          class="flex items-center gap-1.5 rounded-lg border border-base-overlay px-3 py-1.5 font-code text-xs text-base-muted transition-colors hover:border-base-teal hover:text-base-teal"
+          aria-label="Copy link to this post"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          <span>copy link</span>
+        </button>
+      </div>
+
       <!-- Prev / Next -->
       <nav class="mb-8 grid grid-cols-1 gap-4 border-y border-base-overlay py-6 sm:grid-cols-2">
         <div>
@@ -290,123 +325,216 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 </Layout>
 
 <script is:inline>
-  // ── Reading progress bar ──────────────────────────────────────────────────
-  const bar = document.getElementById("reading-bar");
-  if (bar) {
-    window.addEventListener("scroll", () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight > 0) {
-        bar.style.width = `${(scrollTop / docHeight) * 100}%`;
-      }
-    });
-  }
+  function initPost() {
+    const article = document.querySelector("article");
+    if (!article) return;
 
-  // ── Table of Contents ─────────────────────────────────────────────────────
-  function buildTOC(containerId, articleEl) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    const headings = articleEl.querySelectorAll("h2, h3");
-    if (headings.length < 2) {
-      container.closest("aside")?.remove();
-      document.querySelector("details")?.remove();
-      return;
+    // ── Reading progress bar ──────────────────────────────────────────────
+    const bar = document.getElementById("reading-bar");
+    if (bar) {
+      window.addEventListener("scroll", () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (docHeight > 0) {
+          bar.style.width = `${(scrollTop / docHeight) * 100}%`;
+        }
+      }, { passive: true });
     }
 
-    const ul = document.createElement("ul");
-    ul.className = "space-y-1";
+    // ── Table of Contents ─────────────────────────────────────────────────
+    let tocLinks = [];
 
-    headings.forEach((h) => {
-      const id = h.textContent
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
+    function buildTOC(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
 
-      h.id = id;
-
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = `#${id}`;
-      a.textContent = h.textContent;
-      a.className =
-        "block text-sm transition-colors hover:text-base-teal" +
-        (h.tagName === "H3" ? " pl-4 text-base-muted" : " text-base-subtle");
-      li.appendChild(a);
-      ul.appendChild(li);
-    });
-
-    container.appendChild(ul);
-  }
-
-  const article = document.querySelector("article");
-  if (article) {
-    buildTOC("toc-desktop", article);
-    buildTOC("toc-mobile", article);
-  }
-
-  // ── Share / Copy link ────────────────────────────────────────────────────
-  const shareBtn = document.getElementById("share-btn");
-  if (shareBtn) {
-    shareBtn.addEventListener("click", async () => {
-      const url = window.location.href;
-      try {
-        await navigator.clipboard.writeText(url);
-        shareBtn.textContent = "copied!";
-        setTimeout(() => { shareBtn.textContent = "copy link"; }, 2000);
-      } catch {
-        shareBtn.textContent = "failed";
+      const headings = article.querySelectorAll("h2, h3");
+      if (headings.length < 2) {
+        container.closest("aside")?.remove();
+        const details = document.querySelector("details");
+        if (details && !details.closest("aside")) details.remove();
+        return;
       }
-    });
-  }
 
-  // ── Code copy buttons ───────────────────────────────────────────────────
-  document.querySelectorAll(".astro-code").forEach((block) => {
-    const wrapper = block.closest("[class*='language-']") || block.parentElement;
-    if (wrapper && wrapper.querySelector(".copy-btn")) return;
+      const ul = document.createElement("ul");
+      ul.className = "space-y-1";
 
-    const btn = document.createElement("button");
-    btn.className = "copy-btn";
-    btn.textContent = "copy";
-    btn.setAttribute("aria-label", "Copy code to clipboard");
+      headings.forEach((h) => {
+        const id = h.textContent
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
 
-    btn.addEventListener("click", async () => {
-      const code = block.querySelector("code")?.textContent || block.textContent;
-      try {
-        await navigator.clipboard.writeText(code.trim());
-        btn.textContent = "copied!";
-        setTimeout(() => { btn.textContent = "copy"; }, 2000);
-      } catch {
-        btn.textContent = "failed";
-      }
-    });
+        h.id = id;
 
-    const header = wrapper.querySelector(".code-header");
-    if (header) {
-      header.appendChild(btn);
-    } else if (wrapper instanceof HTMLElement) {
-      const lang = Array.from(wrapper.classList).find(c => c.startsWith("language-"))?.replace("language-", "") || "code";
-      const hdr = document.createElement("div");
-      hdr.className = "code-header";
-      hdr.innerHTML = `<span>${lang}</span>`;
-      hdr.appendChild(btn);
-      wrapper.insertBefore(hdr, block);
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = `#${id}`;
+        a.textContent = h.textContent;
+        a.className =
+          "block text-sm transition-colors hover:text-base-teal" +
+          (h.tagName === "H3" ? " pl-4 text-base-muted" : " text-base-subtle");
+        li.appendChild(a);
+        ul.appendChild(li);
+        tocLinks.push(a);
+      });
+
+      container.appendChild(ul);
     }
-  });
 
-  // ── Smooth anchor scrolling with header offset ──────────────────────────
-  document.querySelectorAll("a[href^='#']").forEach((anchor) => {
-    anchor.addEventListener("click", (e) => {
-      const id = anchor.getAttribute("href")?.slice(1);
-      if (!id) return;
-      const target = document.getElementById(id);
-      if (target) {
-        e.preventDefault();
-        const offset = 100;
-        const top = target.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: "smooth" });
-        history.pushState(null, "", `#${id}`);
+    buildTOC("toc-desktop");
+    buildTOC("toc-mobile");
+
+    // ── TOC scroll spy ────────────────────────────────────────────────────
+    if (tocLinks.length > 0) {
+      const allHeadings = article.querySelectorAll("h2, h3");
+
+      function updateActiveTOC() {
+        let currentIdx = -1;
+        const scrollY = window.scrollY + 120;
+
+        allHeadings.forEach((h, i) => {
+          if (h.offsetTop <= scrollY) currentIdx = i;
+        });
+
+        tocLinks.forEach((a, i) => {
+          a.classList.toggle("text-base-teal", i === currentIdx);
+          a.classList.toggle("font-medium", i === currentIdx);
+          if (i !== currentIdx) {
+            a.classList.remove("text-base-teal", "font-medium");
+          }
+        });
+      }
+
+      window.addEventListener("scroll", updateActiveTOC, { passive: true });
+      updateActiveTOC();
+    }
+
+    // ── Share / Copy link ────────────────────────────────────────────────
+    const shareBtn = document.getElementById("share-btn");
+    if (shareBtn) {
+      shareBtn.addEventListener("click", async () => {
+        const url = window.location.href;
+        try {
+          await navigator.clipboard.writeText(url);
+          shareBtn.textContent = "copied!";
+          setTimeout(() => { shareBtn.textContent = "copy link"; }, 2000);
+        } catch {
+          shareBtn.textContent = "failed";
+        }
+      });
+    }
+
+    // ── Social share buttons ─────────────────────────────────────────────
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(document.title.replace(/ — .*$/, ""));
+    const twitter = document.getElementById("share-twitter");
+    const linkedin = document.getElementById("share-linkedin");
+    if (twitter) twitter.href = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+    if (linkedin) linkedin.href = `https://linkedin.com/sharing/share-offsite/?url=${url}`;
+
+    const footerShare = document.getElementById("share-btn-footer");
+    if (footerShare) {
+      footerShare.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(decodeURIComponent(url));
+          const span = footerShare.querySelector("span");
+          if (span) { span.textContent = "copied!"; setTimeout(() => { span.textContent = "copy link"; }, 2000); }
+        } catch {
+          const span = footerShare.querySelector("span");
+          if (span) span.textContent = "failed";
+        }
+      });
+    }
+
+    // ── Code copy buttons ───────────────────────────────────────────────
+    document.querySelectorAll(".astro-code").forEach((block) => {
+      const wrapper = block.closest("[class*='language-']") || block.parentElement;
+      if (wrapper && wrapper.querySelector(".copy-btn")) return;
+
+      const btn = document.createElement("button");
+      btn.className = "copy-btn";
+      btn.textContent = "copy";
+      btn.setAttribute("aria-label", "Copy code to clipboard");
+
+      btn.addEventListener("click", async () => {
+        const code = block.querySelector("code")?.textContent || block.textContent;
+        try {
+          await navigator.clipboard.writeText(code.trim());
+          btn.textContent = "copied!";
+          setTimeout(() => { btn.textContent = "copy"; }, 2000);
+        } catch {
+          btn.textContent = "failed";
+        }
+      });
+
+      const header = wrapper.querySelector(".code-header");
+      if (header) {
+        header.appendChild(btn);
+      } else if (wrapper instanceof HTMLElement) {
+        const lang = Array.from(wrapper.classList).find(c => c.startsWith("language-"))?.replace("language-", "") || "code";
+        const hdr = document.createElement("div");
+        hdr.className = "code-header";
+        hdr.innerHTML = `<span>${lang}</span>`;
+        hdr.appendChild(btn);
+        wrapper.insertBefore(hdr, block);
       }
     });
-  });
+
+    // ── Smooth anchor scrolling with header offset ──────────────────────
+    document.querySelectorAll("a[href^='#']").forEach((anchor) => {
+      anchor.addEventListener("click", (e) => {
+        const id = anchor.getAttribute("href")?.slice(1);
+        if (!id) return;
+        const target = document.getElementById(id);
+        if (target) {
+          e.preventDefault();
+          const offset = 100;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: "smooth" });
+          history.pushState(null, "", `#${id}`);
+        }
+      });
+    });
+
+    // ── Image lightbox ──────────────────────────────────────────────────
+    document.querySelectorAll(".prose img").forEach((img) => {
+      if (img.closest("a")) return;
+      img.style.cursor = "zoom-in";
+      img.addEventListener("click", () => {
+        const overlay = document.createElement("div");
+        overlay.className = "fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm cursor-zoom-out";
+        overlay.setAttribute("role", "dialog");
+        overlay.setAttribute("aria-modal", "true");
+        overlay.setAttribute("aria-label", "Image preview");
+
+        const full = document.createElement("img");
+        full.src = img.src;
+        full.alt = img.alt || "";
+        full.className = "max-h-[90vh] max-w-[90vw] rounded-lg shadow-2xl";
+
+        const close = document.createElement("button");
+        close.className = "absolute top-4 right-4 text-white/70 hover:text-white transition-colors";
+        close.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        close.setAttribute("aria-label", "Close image");
+
+        overlay.appendChild(full);
+        overlay.appendChild(close);
+
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay || e.target === close) overlay.remove();
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") { overlay.remove(); }
+        }, { once: true });
+
+        document.body.appendChild(overlay);
+        document.body.style.overflow = "hidden";
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", initPost);
+  document.addEventListener("astro:page-load", initPost);
 </script>

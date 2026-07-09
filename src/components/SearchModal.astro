@@ -1,0 +1,43 @@
+---
+// src/components/SearchModal.astro
+// Renders markup; Fuse.js logic runs client-side via <script>
+---
+
+<div
+  id="search-overlay"
+  class="fixed inset-0 z-[100] hidden items-start justify-center bg-black/50 pt-[15vh] backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Search posts"
+>
+  <div class="w-full max-w-lg rounded-xl border border-base-overlay bg-base-bg shadow-2xl">
+    <!-- Input bar -->
+    <div class="flex items-center gap-3 border-b border-base-overlay px-4 py-3">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-base-muted">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="search posts..."
+        class="flex-1 bg-transparent font-code text-sm text-base-text placeholder-base-muted outline-none"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd class="hidden shrink-0 rounded border border-base-overlay px-1.5 py-0.5 font-code text-[11px] text-base-muted sm:inline-block">ESC</kbd>
+    </div>
+
+    <!-- Results -->
+    <div id="search-results" class="max-h-[50vh] overflow-y-auto p-2">
+      <p id="search-empty" class="hidden px-3 py-6 text-center font-code text-sm text-base-muted">no results found</p>
+      <p id="search-hint" class="px-3 py-6 text-center font-code text-sm text-base-muted">type to search posts...</p>
+    </div>
+
+    <!-- Footer hint -->
+    <div class="flex items-center gap-4 border-t border-base-overlay px-4 py-2 font-code text-[11px] text-base-muted">
+      <span>↑↓ navigate</span>
+      <span>↵ open</span>
+      <span>esc close</span>
+    </div>
+  </div>
+</div>

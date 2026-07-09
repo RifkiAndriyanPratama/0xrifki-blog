@@ -46,6 +46,7 @@ const projectsCollection = defineCollection({
       description: z.string().max(160),
       stack:       z.array(z.string()).default([]),
       github:      z.string().url().optional(),
+      url:         z.string().url().optional(),
       cover:       image().optional(),
       coverAlt:    z.string().optional(),
       status:      z.enum(["wip", "done", "archived"]).default("done"),

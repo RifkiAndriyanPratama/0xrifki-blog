@@ -1,0 +1,39 @@
+---
+// src/pages/404.astro
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="404 — page not found">
+  <div class="flex flex-col items-center justify-center py-24 text-center" data-animate>
+    <p class="font-code mb-4 text-sm text-base-muted">error</p>
+    <h1 class="font-code text-6xl font-bold text-base-teal md:text-8xl">404</h1>
+    <p class="mt-4 text-base text-base-subtle">halaman yang kamu cari tidak ditemukan.</p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a
+        href="/"
+        class="gradient-border-btn font-code relative inline-flex items-center rounded-lg bg-base-surface px-5 py-2.5 text-sm text-base-text transition-all hover:brightness-110"
+      >
+        ~/home →
+      </a>
+      <a
+        href="/blog"
+        class="font-code rounded-lg border border-base-overlay px-5 py-2.5 text-sm text-base-subtle transition-all hover:border-base-subtle hover:text-base-text"
+      >
+        /blog
+      </a>
+      <a
+        href="/projects"
+        class="font-code rounded-lg border border-base-overlay px-5 py-2.5 text-sm text-base-subtle transition-all hover:border-base-subtle hover:text-base-text"
+      >
+        /projects
+      </a>
+    </div>
+
+    <pre class="mt-12 text-left font-code text-xs text-base-muted">
+      <code>
+  $ curl -s https://0xrifki.dev/this-path
+  &gt; 404 Not Found</code>
+    </pre>
+  </div>
+</Layout>

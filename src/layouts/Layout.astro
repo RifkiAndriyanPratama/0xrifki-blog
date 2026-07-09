@@ -1,6 +1,8 @@
 ---
 // src/layouts/Layout.astro
 import "@/styles/global.css";
+import SearchModal from "@/components/SearchModal.astro";
+import { ViewTransitions } from "astro:transitions";
 
 interface Props {
   title: string;
@@ -65,9 +67,13 @@ const SOCIAL = [
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image"       content={ogImage} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#83c092" />
     <link rel="alternate" type="application/rss+xml" title="0xrifki RSS" href="/rss.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" as="style" />
+    <link rel="preload" href="/favicon.svg" as="image" />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -75,6 +81,16 @@ const SOCIAL = [
       "url": Astro.site?.href ?? canonical,
       "description": description,
     })} />
+
+    <!-- View Transitions -->
+    <ViewTransitions />
+    <script is:inline>
+    document.addEventListener('astro:page-load', () => {
+      document.querySelectorAll('[data-animate]').forEach(el => {
+        el.style.animationPlayState = 'running';
+      });
+    });
+    </script>
 
     <!-- Flash-prevent: restore theme before render -->
     <script is:inline>
@@ -107,6 +123,16 @@ const SOCIAL = [
               </a>
             </li>
           ))}
+          <!-- Search -->
+          <li>
+            <button
+              id="search-btn"
+              class="rounded p-1.5 text-base-muted transition-colors hover:bg-base-overlay hover:text-base-text"
+              aria-label="Search posts"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            </button>
+          </li>
           <!-- Theme toggle -->
           <li>
             <button
@@ -122,6 +148,13 @@ const SOCIAL = [
 
         <!-- Hamburger + theme (mobile) -->
         <div class="flex items-center gap-2 sm:hidden">
+          <button
+            id="search-btn-mobile"
+            class="rounded p-1.5 text-base-muted transition-colors hover:text-base-text"
+            aria-label="Search posts"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </button>
           <button
             id="theme-toggle-mobile"
             class="rounded p-1.5 text-base-muted transition-colors hover:text-base-text"
@@ -197,6 +230,46 @@ const SOCIAL = [
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
     </button>
 
+    <!-- ── Search Modal ─────────────────────────────────────────────────────── -->
+    <SearchModal />
+
+    <!-- ── Keyboard shortcuts help ──────────────────────────────────────────── -->
+    <div
+      id="shortcuts-modal"
+      class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/50 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Keyboard shortcuts"
+    >
+      <div class="w-full max-w-sm rounded-xl border border-base-overlay bg-base-bg p-6 shadow-2xl">
+        <h2 class="font-code mb-4 text-sm font-medium text-base-text">keyboard shortcuts</h2>
+        <div class="space-y-3 font-code text-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-base-subtle">search</span>
+            <div class="flex gap-1">
+              <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">⌘K</kbd>
+              <span class="text-base-muted">or</span>
+              <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">/</kbd>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-base-subtle">toggle theme</span>
+            <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">t</kbd>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-base-subtle">close dialog</span>
+            <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">esc</kbd>
+          </div>
+        </div>
+        <button
+          id="shortcuts-close"
+          class="mt-6 w-full rounded-lg border border-base-overlay py-2 font-code text-sm text-base-muted transition-colors hover:bg-base-overlay hover:text-base-text"
+        >
+          got it
+        </button>
+      </div>
+    </div>
+
   </body>
 </html>
 
@@ -229,7 +302,7 @@ const SOCIAL = [
     });
   });
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function initAnimations() {
     const obs = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
         if (e.isIntersecting) {
@@ -243,7 +316,10 @@ const SOCIAL = [
       el.style.animationPlayState = "paused";
       obs.observe(el);
     });
-  });
+  }
+
+  document.addEventListener("DOMContentLoaded", initAnimations);
+  document.addEventListener("astro:page-load", initAnimations);
 
   // ── Theme toggle ────────────────────────────────────────────────────────
   function toggleTheme() {
@@ -257,28 +333,228 @@ const SOCIAL = [
     document.querySelectorAll("[id^='theme-icon-moon']").forEach((el) => el.classList.toggle("hidden", isDark));
   }
 
-  const toggle1 = document.getElementById("theme-toggle");
-  const toggle2 = document.getElementById("theme-toggle-mobile");
-  if (toggle1) toggle1.addEventListener("click", toggleTheme);
-  if (toggle2) toggle2.addEventListener("click", toggleTheme);
-  updateThemeIcons(document.documentElement.classList.contains("dark"));
+  function initTheme() {
+    const toggle1 = document.getElementById("theme-toggle");
+    const toggle2 = document.getElementById("theme-toggle-mobile");
+    if (toggle1) toggle1.addEventListener("click", toggleTheme);
+    if (toggle2) toggle2.addEventListener("click", toggleTheme);
+    updateThemeIcons(document.documentElement.classList.contains("dark"));
+  }
 
   // ── Navbar auto-hide ────────────────────────────────────────────────────
   let lastScroll = 0;
-  const navbar = document.getElementById("navbar");
-  window.addEventListener("scroll", () => {
-    const cur = window.scrollY;
-    if (cur > lastScroll && cur > 80) navbar.classList.add("nav-hidden");
-    else navbar.classList.remove("nav-hidden");
-    lastScroll = cur;
-  }, { passive: true });
+
+  function initNavbar() {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+    window.addEventListener("scroll", () => {
+      const cur = window.scrollY;
+      if (cur > lastScroll && cur > 80) navbar.classList.add("nav-hidden");
+      else navbar.classList.remove("nav-hidden");
+      lastScroll = cur;
+    }, { passive: true });
+  }
 
   // ── Back to top ─────────────────────────────────────────────────────────
-  const backBtn = document.getElementById("back-to-top");
-  window.addEventListener("scroll", () => {
-    backBtn.classList.toggle("visible", window.scrollY > 400);
-  }, { passive: true });
-  backBtn.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  function initBackToTop() {
+    const backBtn = document.getElementById("back-to-top");
+    if (!backBtn) return;
+    window.addEventListener("scroll", () => {
+      backBtn.classList.toggle("visible", window.scrollY > 400);
+    }, { passive: true });
+    backBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  // ── Init all on first load & view transitions ───────────────────────────
+  function initAll() {
+    initTheme();
+    initNavbar();
+    initBackToTop();
+  }
+  document.addEventListener("DOMContentLoaded", initAll);
+  document.addEventListener("astro:page-load", initAll);
+
+  // ── Search ─────────────────────────────────────────────────────────────
+  (async function initSearch() {
+    const overlay = document.getElementById("search-overlay");
+    const input   = document.getElementById("search-input");
+    const results = document.getElementById("search-results");
+    const empty   = document.getElementById("search-empty");
+    const hint    = document.getElementById("search-hint");
+    const triggers = document.querySelectorAll("#search-btn, #search-btn-mobile");
+
+    if (!overlay || !input || !results) return;
+
+    // Load search index
+    let index;
+    try {
+      const res = await fetch("/search-index.json");
+      index = await res.json();
+    } catch { return; }
+
+    // Init Fuse
+    const { default: Fuse } = await import("fuse.js");
+    const fuse = new Fuse(index, {
+      keys: ["title", "description", "tags", "category"],
+      threshold: 0.35,
+      includeScore: true,
+      minMatchCharLength: 2,
+    });
+
+    let selectedIdx = -1;
+
+    function render(query) {
+      const q = query.trim();
+      if (!q) {
+        hint.classList.remove("hidden");
+        empty.classList.add("hidden");
+        results.querySelectorAll(".search-result-item").forEach((e) => e.remove());
+        return;
+      }
+
+      hint.classList.add("hidden");
+      const matches = fuse.search(q).slice(0, 12);
+      results.querySelectorAll(".search-result-item").forEach((e) => e.remove());
+
+      if (!matches.length) {
+        empty.classList.remove("hidden");
+        return;
+      }
+      empty.classList.add("hidden");
+
+      selectedIdx = -1;
+      matches.forEach(({ item }, i) => {
+        const a = document.createElement("a");
+        a.href = `/blog/${item.slug}/`;
+        a.className = "search-result-item flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-base-overlay";
+        a.dataset.index = i;
+        a.innerHTML = `
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-sm text-base-text truncate">${highlight(item.title, q)}</div>
+            <div class="font-code text-xs text-base-muted mt-0.5">
+              ${item.date} · ${item.category} · ${item.tags?.slice(0, 2).map(t => "#" + t).join(" ") || ""}
+            </div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-base-muted"><path d="M9 18l6-6-6-6"/></svg>
+        `;
+        results.appendChild(a);
+
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          closeSearch();
+          window.location.href = a.href;
+        });
+      });
+    }
+
+    function highlight(text, query) {
+      const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+      return text.replace(re, '<mark class="search-highlight">$1</mark>');
+    }
+
+    function openSearch() {
+      overlay.classList.remove("hidden");
+      overlay.classList.add("flex");
+      setTimeout(() => input.focus(), 100);
+      document.body.style.overflow = "hidden";
+      selectedIdx = -1;
+    }
+
+    function closeSearch() {
+      overlay.classList.add("hidden");
+      overlay.classList.remove("flex");
+      input.value = "";
+      render("");
+      document.body.style.overflow = "";
+    }
+
+    triggers.forEach((t) => t.addEventListener("click", openSearch));
+
+    input.addEventListener("input", () => render(input.value));
+
+    input.addEventListener("keydown", (e) => {
+      const items = results.querySelectorAll(".search-result-item");
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        selectedIdx = Math.min(selectedIdx + 1, items.length - 1);
+        items.forEach((el, i) => el.classList.toggle("bg-base-overlay", i === selectedIdx));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        selectedIdx = Math.max(selectedIdx - 1, -1);
+        items.forEach((el, i) => el.classList.toggle("bg-base-overlay", i === selectedIdx));
+      } else if (e.key === "Enter" && selectedIdx >= 0 && items[selectedIdx]) {
+        e.preventDefault();
+        const href = items[selectedIdx].getAttribute("href");
+        if (href) { closeSearch(); window.location.href = href; }
+      }
+    });
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeSearch();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        if (overlay.classList.contains("hidden")) openSearch();
+        else closeSearch();
+      }
+      if (e.key === "Escape" && !overlay.classList.contains("hidden")) {
+        closeSearch();
+      }
+      if (e.key === "/" && !overlay.classList.contains("hidden") && document.activeElement !== input) {
+        e.preventDefault();
+        input.focus();
+      }
+    });
+  })();
+
+  // ── Global shortcuts ───────────────────────────────────────────────────
+  document.addEventListener("keydown", (e) => {
+    const shortcutsModal = document.getElementById("shortcuts-modal");
+    const searchOverlay  = document.getElementById("search-overlay");
+
+    if (e.key === "?" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const active = document.activeElement?.tagName;
+      if (active === "INPUT" || active === "TEXTAREA") return;
+      e.preventDefault();
+      shortcutsModal.classList.toggle("hidden");
+      shortcutsModal.classList.toggle("flex");
+    }
+
+    if (e.key === "t" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const active = document.activeElement?.tagName;
+      if (active === "INPUT" || active === "TEXTAREA") return;
+      e.preventDefault();
+      toggleTheme();
+    }
+
+    if (e.key === "Escape" && shortcutsModal && !shortcutsModal.classList.contains("hidden")) {
+      shortcutsModal.classList.add("hidden");
+      shortcutsModal.classList.remove("flex");
+    }
+
+    if (e.key === "s" && !e.ctrlKey && !e.metaKey) {
+      const active = document.activeElement?.tagName;
+      if (active === "INPUT" || active === "TEXTAREA") return;
+      e.preventDefault();
+      if (searchOverlay?.classList.contains("hidden")) {
+        document.querySelector("#search-btn, #search-btn-mobile")?.click();
+      }
+    }
+  });
+
+  document.getElementById("shortcuts-close")?.addEventListener("click", () => {
+    const m = document.getElementById("shortcuts-modal");
+    m.classList.add("hidden");
+    m.classList.remove("flex");
+  });
+  document.getElementById("shortcuts-modal")?.addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) {
+      e.currentTarget.classList.add("hidden");
+      e.currentTarget.classList.remove("flex");
+    }
   });
 </script>

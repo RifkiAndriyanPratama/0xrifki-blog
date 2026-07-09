@@ -243,4 +243,52 @@
   }
 
   .glow-teal { box-shadow: 0 0 24px rgba(131, 192, 146, 0.12); }
+
+  .card-grid-pattern {
+    background-image:
+      linear-gradient(var(--color-overlay) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-overlay) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* ── GitHub-style alerts ─────────────────────────────────────────────────── */
+  .alert-blockquote { @apply border-l-4!; }
+  .alert-note    { border-left-color: var(--color-blue)!important; }
+  .alert-note > p:first-child { color: var(--color-blue); font-weight: 600; }
+  .alert-tip     { border-left-color: var(--color-green)!important; }
+  .alert-tip > p:first-child { color: var(--color-green); font-weight: 600; }
+  .alert-warning { border-left-color: var(--color-orange)!important; }
+  .alert-warning > p:first-child { color: var(--color-orange); font-weight: 600; }
+  .alert-danger  { border-left-color: var(--color-red)!important; }
+  .alert-danger > p:first-child { color: var(--color-red); font-weight: 600; }
+
+  /* ── View transitions ──────────────────────────────────────────────────── */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.25s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  ::view-transition-old(root) {
+    animation-name: vt-fade-out;
+  }
+  ::view-transition-new(root) {
+    animation-name: vt-fade-in;
+  }
+
+  @keyframes vt-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  @keyframes vt-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 0.01ms !important;
+    }
+  }
 }

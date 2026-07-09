@@ -4,27 +4,45 @@ import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 
-const projects = (await getCollection("projects"))
+const allProjects = (await getCollection("projects"))
   .sort((a, b) => a.data.order - b.data.order);
 
-const done     = projects.filter((p) => p.data.status === "done");
-const wip      = projects.filter((p) => p.data.status === "wip");
-const archived = projects.filter((p) => p.data.status === "archived");
+const featured = allProjects.filter((p) => p.data.featured);
+const done     = allProjects.filter((p) => p.data.status === "done" && !p.data.featured);
+const wip      = allProjects.filter((p) => p.data.status === "wip" && !p.data.featured);
+const archived = allProjects.filter((p) => p.data.status === "archived");
+const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 ---
 
-<Layout title="projects" description="Things I've built — open source projects and experiments.">
+<Layout title="projects" description="Things I've built — open source projects and experiments." data-animate>
 
   <!-- ── Header ────────────────────────────────────────────────────────────── -->
-  <div class="mb-12">
-    <h1 class="font-code mb-2 text-2xl font-medium text-base-teal">
-      <span class="text-base-subtle">~/</span>projects
-    </h1>
-    <p class="font-code text-sm text-base-muted">{projects.length} projects</p>
-  </div>
+  <header class="mb-12" data-animate>
+    <p class="font-code mb-2 text-sm text-base-subtle">
+      <a href="/" class="underline underline-offset-2 transition-colors hover:text-base-text">~/</a>
+      <span class="text-base-muted">projects</span>
+    </p>
+    <h1 class="text-3xl font-semibold tracking-tight text-base-text md:text-4xl">/projects</h1>
+    <p class="mt-2 text-base-subtle">
+      {allProjects.length} {allProjects.length === 1 ? "project" : "projects"} across {stacks.length} technologies
+    </p>
+  </header>
 
-  <!-- ── WIP ───────────────────────────────────────────────────────────────── -->
+  <!-- ── Featured ──────────────────────────────────────────────────────────── -->
+  {featured.length > 0 && (
+    <section class="mb-14" data-animate>
+      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-yellow">
+        ★ featured
+      </h2>
+      <div class="grid gap-5 sm:grid-cols-2">
+        {featured.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
+  )}
+
+  <!-- ── In Progress ───────────────────────────────────────────────────────── -->
   {wip.length > 0 && (
-    <section class="mb-12">
+    <section class="mb-12" data-animate>
       <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
         in progress
       </h2>
@@ -34,9 +52,9 @@ const archived = projects.filter((p) => p.data.status === "archived");
     </section>
   )}
 
-  <!-- ── Done ──────────────────────────────────────────────────────────────── -->
+  <!-- ── Shipped ───────────────────────────────────────────────────────────── -->
   {done.length > 0 && (
-    <section class="mb-12">
+    <section class="mb-12" data-animate>
       <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
         shipped
       </h2>
@@ -46,9 +64,9 @@ const archived = projects.filter((p) => p.data.status === "archived");
     </section>
   )}
 
-  <!-- ── Archived ───────────────────────────────────────────────────────────── -->
+  <!-- ── Archived ──────────────────────────────────────────────────────────── -->
   {archived.length > 0 && (
-    <section>
+    <section data-animate>
       <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
         archived
       </h2>
