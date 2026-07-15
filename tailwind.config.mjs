@@ -33,7 +33,7 @@ export default {
         devlog: {
           css: {
             "--tw-prose-body":          theme("colors.base.text"),
-            "--tw-prose-headings":      theme("colors.base.teal"),
+            "--tw-prose-headings":      theme("colors.base.text"),
             "--tw-prose-lead":          theme("colors.base.subtle"),
             "--tw-prose-links":         theme("colors.base.blue"),
             "--tw-prose-bold":          theme("colors.base.text"),
@@ -48,6 +48,42 @@ export default {
             "--tw-prose-pre-bg":        theme("colors.base.surface"),
             "--tw-prose-th-borders":    theme("colors.base.overlay"),
             "--tw-prose-td-borders":    theme("colors.base.overlay"),
+
+            fontSize: "1.0625rem",
+            lineHeight: "1.75",
+
+            "p": {
+              marginTop: "1.25em",
+              marginBottom: "1.25em",
+            },
+
+            "h2": {
+              fontSize: "1.5rem",
+              fontWeight: "600",
+              marginTop: "2em",
+              marginBottom: "0.5em",
+              lineHeight: "1.3",
+            },
+            "h3": {
+              fontSize: "1.25rem",
+              fontWeight: "600",
+              marginTop: "1.5em",
+              marginBottom: "0.5em",
+              lineHeight: "1.35",
+            },
+            "h2 + h3": {
+              marginTop: "0",
+            },
+
+            "ul, ol": {
+              marginTop: "1em",
+              marginBottom: "1em",
+            },
+            "li": {
+              marginTop: "0.125em",
+              marginBottom: "0.125em",
+            },
+
             "code::before": { content: '""' },
             "code::after":  { content: '""' },
             "code": {
@@ -59,6 +95,8 @@ export default {
             },
             "pre": {
               borderRadius: "0.5rem",
+              marginTop: "1.5em",
+              marginBottom: "1.5em",
             },
             "a": {
               textDecoration: "underline",
@@ -77,8 +115,10 @@ export default {
               borderLeftWidth: "3px",
               borderLeftColor: theme("colors.base.teal"),
               backgroundColor: theme("colors.base.surface"),
-              padding: "0.75rem 1rem",
+              padding: "1rem 1.25rem",
               borderRadius: "0 0.5rem 0.5rem 0",
+              marginTop: "1.5em",
+              marginBottom: "1.5em",
             },
             "table": {
               borderCollapse: "separate",
@@ -97,14 +137,17 @@ export default {
               borderBottomColor: theme("colors.base.overlay"),
             },
             "tr:nth-child(even) td": {
-              backgroundColor: "rgba(0,0,0,0.03)",
-            },
-            ".dark tr:nth-child(even) td": {
-              backgroundColor: "rgba(255,255,255,0.02)",
+              backgroundColor: "var(--color-overlay)",
             },
             "img": {
               borderRadius: "0.5rem",
               border: `1px solid ${theme("colors.base.overlay")}`,
+              marginTop: "1.5em",
+              marginBottom: "1.5em",
+            },
+            "hr": {
+              marginTop: "2em",
+              marginBottom: "2em",
             },
           },
         },

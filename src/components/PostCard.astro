@@ -1,5 +1,6 @@
 ---
 // src/components/PostCard.astro
+import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
@@ -12,24 +13,25 @@ const { data, slug } = post;
 const isCompact = variant === "compact";
 ---
 
-<article class="group relative post-card card-hover">
+<article class="group relative flex flex-col overflow-hidden rounded-xl border border-base-overlay bg-base-surface transition-all duration-200 hover:border-base-teal/40 hover:shadow-lg hover:shadow-base-teal/5">
   <a href={`/blog/${slug}/`} class="no-underline!">
-    <div class="flex flex-col gap-3">
+    <!-- Cover thumbnail -->
+    {data.cover && !isCompact && (
+      <div class="aspect-video overflow-hidden bg-base-overlay">
+        <Image
+          src={data.cover}
+          alt={data.title}
+          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          widths={[400, 800]}
+          sizes="(min-width: 768px) 400px, 100vw"
+          loading="lazy"
+        />
+      </div>
+    )}
 
-      <!-- Cover thumbnail -->
-      {data.cover && !isCompact && (
-        <div class="overflow-hidden rounded-xl border border-base-overlay">
-          <img
-            src={data.cover}
-            alt={data.title}
-            class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-            loading="lazy"
-          />
-        </div>
-      )}
-
+    <div class="flex flex-col gap-5 p-7">
       <!-- Meta row -->
-      <div class="flex flex-wrap items-center gap-2 font-code text-xs text-base-muted">
+      <div class="flex flex-wrap items-center gap-3 text-xs text-base-muted">
         <time datetime={data.date.toISOString()}>
           {new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" }).format(data.date)}
         </time>
@@ -54,31 +56,27 @@ const isCompact = variant === "compact";
       </div>
 
       <!-- Title & description -->
-      <h3 class={`font-semibold leading-snug text-base-text transition-colors group-hover:text-base-teal ${isCompact ? "text-base" : "text-lg"}`}>
+      <h3 class={`font-semibold leading-snug text-base-text transition-colors group-hover:text-base-teal ${isCompact ? "text-base" : "text-xl"}`}>
         {data.title}
       </h3>
 
       {!isCompact && (
-        <p class="text-sm leading-relaxed text-base-subtle line-clamp-2">
+        <p class="text-[15px] leading-relaxed text-base-subtle line-clamp-3">
           {data.description}
         </p>
       )}
 
       <!-- Tags & reading time -->
-      <div class="flex flex-wrap items-center gap-2">
+      <div class="flex flex-wrap items-center gap-3">
         {data.tags?.slice(0, 3).map((tag) => (
-          <span class="rounded bg-base-overlay px-2 py-0.5 font-code text-[11px] text-base-muted">
+          <span class="rounded bg-base-overlay px-2 py-0.5 text-xs text-base-muted">
             #{tag}
           </span>
         ))}
-        <span class="font-code text-[11px] text-base-muted">
+        <span class="text-xs text-base-muted">
           {data.readingTime} min read
         </span>
       </div>
-
     </div>
   </a>
-
-  <!-- Hover gradient border (pseudo-element driven by CSS) -->
-  <div class="gradient-border-hover pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-400 group-hover:opacity-100" aria-hidden="true"></div>
 </article>

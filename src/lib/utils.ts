@@ -53,12 +53,13 @@ export function getTags(
 
 /** Build a serialisable post object for client-side Fuse.js search */
 export function toSearchIndex(posts: CollectionEntry<"posts">[]) {
-  return posts.map((p) => ({
+  return posts.filter((p) => !p.data.draft).map((p) => ({
     slug:        p.slug,
     title:       p.data.title,
     description: p.data.description,
     category:    p.data.category,
     tags:        p.data.tags,
     date:        isoDate(p.data.date),
+    dateHuman:   formatDate(p.data.date),
   }));
 }

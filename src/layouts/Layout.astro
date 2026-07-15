@@ -72,7 +72,9 @@ const SOCIAL = [
     <link rel="alternate" type="application/rss+xml" title="0xrifki RSS" href="/rss.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" as="style" />
+    <link rel="preconnect" href="https://giscus.app" />
+    <link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" />
     <link rel="preload" href="/favicon.svg" as="image" />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -105,20 +107,25 @@ const SOCIAL = [
 
   <body class="flex min-h-screen flex-col bg-base-bg text-base-text">
 
+    <!-- ── Skip link ─────────────────────────────────────────────────────────── -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300] focus:rounded focus:bg-base-bg focus:px-4 focus:py-2 focus:text-base-text focus:outline-2 focus:outline-offset-2 focus:outline-base-teal">
+      Skip to content
+    </a>
+
     <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
-    <header id="navbar" class="sticky top-0 z-50 border-b border-base-overlay bg-base-bg/80 backdrop-blur-md">
-      <nav class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+    <header id="navbar" class="fixed left-0 right-0 top-0 z-50 border-b border-base-overlay bg-base-bg/80 backdrop-blur-md">
+      <nav class="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
 
         <!-- Wordmark -->
         <a href="/" class="font-code text-base font-semibold text-base-teal tracking-tight transition-opacity hover:opacity-70" aria-label="Home">
-          <span class="text-base-subtle">~/</span>0xrifki
+          0xrifki
         </a>
 
         <!-- Desktop nav -->
-        <ul class="hidden items-center gap-1 font-code text-sm text-base-subtle sm:flex">
+        <ul class="hidden items-center gap-1 text-sm text-base-subtle sm:flex">
           {NAV.map(({ href, label }) => (
             <li>
-              <a href={href} class="rounded px-3 py-1.5 transition-colors hover:bg-base-overlay hover:text-base-text">
+              <a href={href} class="rounded px-3 py-1.5 transition-colors hover:bg-base-overlay hover:text-base-text" aria-current={Astro.url.pathname === href ? "page" : undefined}>
                 {label}
               </a>
             </li>
@@ -165,13 +172,13 @@ const SOCIAL = [
           </button>
           <button
             id="menu-btn"
-            class="flex flex-col justify-center items-center gap-1.5 p-2 text-base-subtle hover:text-base-text transition-colors"
+            class="flex flex-col justify-center items-center gap-1 p-2.5 text-base-subtle hover:text-base-text transition-colors"
             aria-label="Toggle menu"
             aria-expanded="false"
           >
-            <span class="hamburger-bar block h-px w-5 bg-current transition-all duration-300"></span>
-            <span class="hamburger-bar block h-px w-5 bg-current transition-all duration-300"></span>
-            <span class="hamburger-bar block h-px w-5 bg-current transition-all duration-300"></span>
+            <span class="hamburger-bar block h-0.5 w-5 bg-current transition-all duration-300"></span>
+            <span class="hamburger-bar block h-0.5 w-5 bg-current transition-all duration-300"></span>
+            <span class="hamburger-bar block h-0.5 w-5 bg-current transition-all duration-300"></span>
           </button>
         </div>
 
@@ -182,12 +189,12 @@ const SOCIAL = [
         id="mobile-menu"
         class="hidden border-t border-base-overlay bg-base-bg/95 backdrop-blur-md sm:hidden"
       >
-        <ul class="mx-auto flex max-w-5xl flex-col px-6 py-4 font-code text-sm text-base-subtle">
+        <ul class="mx-auto flex max-w-5xl flex-col px-6 py-4 text-sm text-base-subtle">
           {NAV.map(({ href, label }) => (
             <li>
               <a
                 href={href}
-                class="flex items-center gap-2 py-3 transition-colors hover:text-base-text border-b border-base-overlay last:border-0"
+                class="flex items-center gap-2 py-3.5 transition-colors hover:text-base-text border-b border-base-overlay last:border-0"
               >
                 <span class="text-base-muted">→</span>
                 {label}
@@ -199,14 +206,14 @@ const SOCIAL = [
     </header>
 
     <!-- ── Main ────────────────────────────────────────────────────────────── -->
-    <main class="mx-auto w-full max-w-5xl flex-1 px-6 py-16">
+    <main id="main-content" class="mx-auto w-full max-w-5xl flex-1 px-6 py-20 pt-28">
       <slot />
     </main>
 
     <!-- ── Footer ──────────────────────────────────────────────────────────── -->
     <footer class="border-t border-base-overlay bg-base-bg-alt">
-      <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <span class="font-code text-sm text-base-muted">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-8">
+        <span class="text-sm text-base-muted">
           &copy; {new Date().getFullYear()} 0xrifki
         </span>
         <div class="flex items-center gap-4">
@@ -242,8 +249,8 @@ const SOCIAL = [
       aria-label="Keyboard shortcuts"
     >
       <div class="w-full max-w-sm rounded-xl border border-base-overlay bg-base-bg p-6 shadow-2xl">
-        <h2 class="font-code mb-4 text-sm font-medium text-base-text">keyboard shortcuts</h2>
-        <div class="space-y-3 font-code text-sm">
+        <h2 class="mb-4 text-sm font-medium text-base-text">keyboard shortcuts</h2>
+        <div class="space-y-3 text-sm">
           <div class="flex items-center justify-between">
             <span class="text-base-subtle">search</span>
             <div class="flex gap-1">
@@ -263,7 +270,7 @@ const SOCIAL = [
         </div>
         <button
           id="shortcuts-close"
-          class="mt-6 w-full rounded-lg border border-base-overlay py-2 font-code text-sm text-base-muted transition-colors hover:bg-base-overlay hover:text-base-text"
+          class="mt-6 w-full rounded-lg border border-base-overlay py-2 text-sm text-base-muted transition-colors hover:bg-base-overlay hover:text-base-text"
         >
           got it
         </button>
@@ -274,6 +281,30 @@ const SOCIAL = [
 </html>
 
 <script>
+  // ── Focus trap ───────────────────────────────────────────────────────────
+  function trapFocus(container) {
+    const focusable = container.querySelectorAll(
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    function onTab(e) {
+      if (e.key === "Tab") {
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    }
+    container.addEventListener("keydown", onTab);
+    first?.focus();
+    return () => container.removeEventListener("keydown", onTab);
+  }
+
   // ── Mobile menu ───────────────────────────────────────────────────────────
   function initMenu() {
     const btn  = document.getElementById("menu-btn");
@@ -342,6 +373,11 @@ const SOCIAL = [
     const toggle2 = document.getElementById("theme-toggle-mobile");
     if (toggle1) toggle1.onclick = toggleTheme;
     if (toggle2) toggle2.onclick = toggleTheme;
+    // Re-apply theme from localStorage (View Transitions overrides html attrs)
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") document.documentElement.classList.remove("dark");
+    else if (saved === "dark") document.documentElement.classList.add("dark");
+    else if (window.matchMedia("(prefers-color-scheme: light)").matches) document.documentElement.classList.remove("dark");
     updateThemeIcons(document.documentElement.classList.contains("dark"));
   }
 
@@ -384,6 +420,8 @@ const SOCIAL = [
   let fuse = null;
   let searchIndex = null;
   let searchInitialized = false;
+  let prevActive = null;
+  let releaseSearchTrap = null;
 
   async function initSearch() {
     const overlay = document.getElementById("search-overlay");
@@ -443,8 +481,8 @@ const SOCIAL = [
         a.innerHTML = `
           <div class="flex-1 min-w-0">
             <div class="font-medium text-sm text-base-text truncate">${highlight(item.title, q)}</div>
-            <div class="font-code text-xs text-base-muted mt-0.5">
-              ${item.date} · ${item.category} · ${item.tags?.slice(0, 2).map(t => "#" + t).join(" ") || ""}
+            <div class="text-xs text-base-muted mt-0.5">
+              ${item.dateHuman || item.date} · ${item.category} · ${item.tags?.slice(0, 2).map(t => "#" + t).join(" ") || ""}
             </div>
           </div>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-base-muted"><path d="M9 18l6-6-6-6"/></svg>
@@ -465,19 +503,23 @@ const SOCIAL = [
     }
 
     function openSearch() {
+      prevActive = document.activeElement;
       overlay.classList.remove("hidden");
       overlay.classList.add("flex");
-      setTimeout(() => input.focus(), 100);
       document.body.style.overflow = "hidden";
       selectedIdx = -1;
+      releaseSearchTrap = trapFocus(overlay);
+      setTimeout(() => input.focus(), 100);
     }
 
     function closeSearch() {
+      if (releaseSearchTrap) releaseSearchTrap();
       overlay.classList.add("hidden");
       overlay.classList.remove("flex");
       input.value = "";
       render("");
       document.body.style.overflow = "";
+      prevActive?.focus();
     }
 
     // Re-attach trigger listeners
@@ -511,11 +553,31 @@ const SOCIAL = [
   }
 
   // ── Shortcuts modal ──────────────────────────────────────────────────────
+  let releaseShortcutsTrap = null;
+
+  function openShortcuts() {
+    const modal = document.getElementById("shortcuts-modal");
+    if (!modal) return;
+    prevActive = document.activeElement;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    releaseShortcutsTrap = trapFocus(modal);
+  }
+
+  function closeShortcuts() {
+    const modal = document.getElementById("shortcuts-modal");
+    if (!modal) return;
+    if (releaseShortcutsTrap) releaseShortcutsTrap();
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    prevActive?.focus();
+  }
+
   function initShortcuts() {
     const closeBtn = document.getElementById("shortcuts-close");
     const modal = document.getElementById("shortcuts-modal");
-    if (closeBtn) closeBtn.onclick = () => { modal.classList.add("hidden"); modal.classList.remove("flex"); };
-    if (modal) modal.onclick = (e) => { if (e.target === e.currentTarget) { e.currentTarget.classList.add("hidden"); e.currentTarget.classList.remove("flex"); } };
+    if (closeBtn) closeBtn.onclick = closeShortcuts;
+    if (modal) modal.onclick = (e) => { if (e.target === e.currentTarget) closeShortcuts(); };
   }
 
   // ── Init all ─────────────────────────────────────────────────────────────
@@ -542,8 +604,11 @@ const SOCIAL = [
       const active = document.activeElement?.tagName;
       if (active === "INPUT" || active === "TEXTAREA") return;
       e.preventDefault();
-      shortcutsModal?.classList.toggle("hidden");
-      shortcutsModal?.classList.toggle("flex");
+      if (shortcutsModal?.classList.contains("hidden")) {
+        openShortcuts();
+      } else {
+        closeShortcuts();
+      }
     }
 
     if (e.key === "t" && !e.ctrlKey && !e.metaKey && !e.altKey) {
@@ -555,13 +620,14 @@ const SOCIAL = [
 
     if (e.key === "Escape") {
       if (shortcutsModal && !shortcutsModal.classList.contains("hidden")) {
-        shortcutsModal.classList.add("hidden");
-        shortcutsModal.classList.remove("flex");
+        closeShortcuts();
       }
       if (searchOverlay && !searchOverlay.classList.contains("hidden")) {
         searchOverlay.classList.add("hidden");
         searchOverlay.classList.remove("flex");
         document.body.style.overflow = "";
+        if (releaseSearchTrap) releaseSearchTrap();
+        prevActive?.focus();
       }
     }
 

@@ -9,44 +9,47 @@ import Layout from "@/layouts/Layout.astro";
 
     <!-- ── Header ──────────────────────────────────────────────────────────── -->
     <div class="mb-14" data-animate style="animation-delay: 0ms">
-      <p class="font-code mb-4 text-sm text-base-subtle">
-        <span class="text-base-green">❯</span> cat about.md
-      </p>
       <h1 class="text-3xl font-semibold text-base-text md:text-4xl">
         Rifki Andriyan Pratama
       </h1>
-      <p class="font-code mt-2 text-base text-base-teal">
-        cs student by day, terminal addict by night
+      <p class="mt-2 text-lg text-base-teal">
+        low-level enthusiast. cs student. occasional segfault survivor.
       </p>
     </div>
 
     <!-- ── Avatar + bio ────────────────────────────────────────────────────── -->
     <div class="mb-14 flex flex-col gap-8 sm:flex-row sm:items-start" data-animate style="animation-delay: 80ms">
 
-      <!-- Avatar — replace src with your actual photo when ready -->
+      <!-- Avatar -->
       <div class="shrink-0">
         <div class="relative h-36 w-36 overflow-hidden rounded-2xl border border-base-overlay glow-teal">
           <div class="flex h-full w-full items-center justify-center bg-base-surface">
             <span class="font-code text-4xl font-bold text-base-teal select-none">rp</span>
           </div>
-          <div class="absolute bottom-0 right-0 h-8 w-8 rounded-tl-xl bg-base-teal/10"></div>
         </div>
       </div>
 
       <!-- Bio -->
       <div class="space-y-4 text-base leading-relaxed text-base-subtle">
         <p>
-          Mahasiswa Informatika yang juga terjun langsung ke dunia kerja.
-          Suka ngulik hal-hal yang ada di balik layar — dari infrastruktur,
-          deployment pipeline, sampai hal random yang muncul di terminal jam 2 pagi.
+          spends more time reading core dumps than documentation.
+          interested in what happens between <code class="font-code text-xs text-base-text">mov</code>
+          and <code class="font-code text-xs text-base-text">ret</code> — memory layout, register allocation,
+          cache misses, and the occasional undefined behavior that keeps things interesting.
         </p>
         <p>
-          Blog ini tempat aku dokumentasi project, catatan teknis, dan
-          apapun yang terasa sayang kalau cuma disimpan di kepala sendiri.
+          writes C that looks like Rust, Rust that looks like C, and bash that somehow works
+          on the first try. currently nerd-sniped by kernel internals, static analysis, and
+          the never-ending quest for a zero-cost abstraction that actually costs zero.
         </p>
         <p>
-          Kalau lo nemu sesuatu yang menarik di sini, atau mau ngobrol soal
-          tech — reach out aja.
+          this blog is where i dump whatever's stuck in my head after a late-night
+          debugging session — syscall traces, build system tantrums, or that one
+          <code class="font-code text-xs text-base-text">volatile</code> qualifier that
+          took three hours to track down.
+        </p>
+        <p>
+          reach out if you want to argue about ed over emacs, or whatever.
         </p>
       </div>
     </div>
@@ -58,11 +61,11 @@ import Layout from "@/layouts/Layout.astro";
       </h2>
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {[
-          { label: "Languages",   items: ["TypeScript", "Python", "Bash"] },
-          { label: "Frontend",    items: ["Astro", "React", "Tailwind"] },
-          { label: "Backend",     items: ["Node.js", "PostgreSQL"] },
-          { label: "DevOps",      items: ["Docker", "Nginx", "GitHub Actions"] },
-          { label: "Tools",       items: ["Neovim", "Git", "Linux"] },
+          { label: "Languages",   items: ["C", "Rust", "TypeScript", "Assembly (x86_64)", "Python", "Bash"] },
+          { label: "Low-level",   items: ["Linux Kernel", "KVM", "eBPF", "PTrace", "GDB"] },
+          { label: "Infra",       items: ["Docker", "Nginx", "QEMU", "Systemd", "GitHub Actions"] },
+          { label: "Editor",      items: ["Neovim (btw)", "Helix"] },
+          { label: "Obsessions",  items: ["Memory allocators", "Static analysis", "Zero-copy", "Cache misses"] },
         ].map(({ label, items }) => (
           <div class="rounded-lg border border-base-overlay bg-base-surface p-4">
             <p class="font-code mb-2 text-xs text-base-subtle">{label}</p>
@@ -104,12 +107,3 @@ import Layout from "@/layouts/Layout.astro";
   </div>
 </Layout>
 
-<!-- ── Animate on scroll ────────────────────────────────────────────────── -->
-<script>
-const els = document.querySelectorAll("[data-animate]");
-const obs = new IntersectionObserver(
-  (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("animated"); }),
-  { threshold: 0.1 }
-);
-els.forEach((el) => obs.observe(el));
-</script>

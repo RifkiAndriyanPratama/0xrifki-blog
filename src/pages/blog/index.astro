@@ -12,12 +12,8 @@ const total    = posts.length;
 ---
 
 <Layout title="Blog">
-  <header class="mb-10">
-    <p class="font-code mb-2 text-sm text-base-subtle">
-      <a href="/" class="underline underline-offset-2 transition-colors hover:text-base-text">~/</a>
-      <span class="text-base-muted">blog</span>
-    </p>
-    <h1 class="text-3xl font-semibold tracking-tight text-base-text md:text-4xl">/blog</h1>
+  <header class="mb-14">
+    <h1 class="text-3xl font-semibold tracking-tight text-base-text md:text-4xl">Blog</h1>
     <p class="mt-2 text-base-subtle">
       {total} {total === 1 ? "post" : "posts"} across {allTags.length} {allTags.length === 1 ? "tag" : "tags"}
     </p>
@@ -25,13 +21,13 @@ const total    = posts.length;
 
   <!-- ── Tag cloud ─────────────────────────────────────────────────────────── -->
   {allTags.length > 0 && (
-    <section class="mb-10">
-      <h2 class="font-code mb-3 text-xs font-medium uppercase tracking-wider text-base-muted">by tag</h2>
+    <section class="mb-14">
+      <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-base-muted">by tag</h2>
       <div class="flex flex-wrap gap-2">
         {allTags.map((tag) => (
           <a
             href={`/blog/tag/${tag}`}
-            class="rounded-lg bg-base-overlay px-3 py-1.5 font-code text-xs text-base-muted transition-all hover:bg-base-teal/10 hover:text-base-teal"
+            class="rounded-lg bg-base-overlay px-3 py-1.5 text-xs text-base-muted transition-all hover:bg-base-teal/10 hover:text-base-teal"
           >
             #{tag}
           </a>
@@ -42,7 +38,7 @@ const total    = posts.length;
 
   <!-- ── View toggle ───────────────────────────────────────────────────────── -->
   <div class="mb-6 flex items-center justify-between">
-    <h2 class="font-code text-sm font-medium text-base-text">all posts</h2>
+    <h2 class="text-sm font-medium text-base-text">All posts</h2>
     <div class="flex gap-1 rounded-lg border border-base-overlay p-1">
       <button id="view-grid" class="view-toggle rounded p-1.5 text-base-muted transition-colors hover:text-base-text active" aria-label="Grid view" data-view="grid">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -58,11 +54,11 @@ const total    = posts.length;
     {archive.map((year) => {
       const yearPosts = posts.filter((p) => p.data.date.getFullYear() === year);
       return (
-        <section class="mb-10 year-group">
-          <h2 class="font-code mb-4 text-xs font-bold uppercase tracking-wider text-base-muted">
+        <section class="mb-14 year-group">
+          <h2 class="mb-4 text-xs font-bold uppercase tracking-wider text-base-muted">
             {year} <span class="text-base-muted">({yearPosts.length})</span>
           </h2>
-          <div class="view-grid grid grid-cols-1 gap-6 md:grid-cols-2" data-year={year}>
+          <div class="view-grid grid grid-cols-1 gap-10 md:grid-cols-2" data-year={year}>
             {yearPosts.map((post) => (
               <PostCard post={post} variant={post.data.cover ? "default" : "compact"} />
             ))}
@@ -89,12 +85,13 @@ const total    = posts.length;
 </Layout>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  function initViewToggle() {
     const gridBtn = document.getElementById("view-grid");
     const listBtn = document.getElementById("view-list");
     const grids   = document.querySelectorAll(".view-grid");
     const lists   = document.querySelectorAll(".view-list");
     const toggles = document.querySelectorAll(".view-toggle");
+    if (!gridBtn || !listBtn) return;
 
     function setView(view) {
       toggles.forEach((t) => t.classList.remove("active"));
@@ -110,10 +107,13 @@ const total    = posts.length;
       localStorage.setItem("blog-view", view);
     }
 
-    gridBtn.addEventListener("click", () => setView("grid"));
-    listBtn.addEventListener("click", () => setView("list"));
+    gridBtn.onclick = () => setView("grid");
+    listBtn.onclick = () => setView("list");
 
     const saved = localStorage.getItem("blog-view");
     if (saved === "list") setView("list");
-  });
+  }
+
+  document.addEventListener("DOMContentLoaded", initViewToggle);
+  document.addEventListener("astro:page-load", initViewToggle);
 </script>

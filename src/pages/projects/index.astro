@@ -14,15 +14,11 @@ const archived = allProjects.filter((p) => p.data.status === "archived");
 const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 ---
 
-<Layout title="projects" description="Things I've built — open source projects and experiments." data-animate>
+<Layout title="projects" description="Things I've built — open source projects and experiments.">
 
   <!-- ── Header ────────────────────────────────────────────────────────────── -->
-  <header class="mb-12" data-animate>
-    <p class="font-code mb-2 text-sm text-base-subtle">
-      <a href="/" class="underline underline-offset-2 transition-colors hover:text-base-text">~/</a>
-      <span class="text-base-muted">projects</span>
-    </p>
-    <h1 class="text-3xl font-semibold tracking-tight text-base-text md:text-4xl">/projects</h1>
+  <header class="mb-16" data-animate>
+    <h1 class="text-3xl font-semibold tracking-tight text-base-text md:text-4xl">Projects</h1>
     <p class="mt-2 text-base-subtle">
       {allProjects.length} {allProjects.length === 1 ? "project" : "projects"} across {stacks.length} technologies
     </p>
@@ -30,11 +26,11 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 
   <!-- ── Featured ──────────────────────────────────────────────────────────── -->
   {featured.length > 0 && (
-    <section class="mb-14" data-animate>
-      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-yellow">
-        ★ featured
+    <section class="mb-20" data-animate>
+      <h2 class="mb-5 text-sm font-medium uppercase tracking-wider text-base-yellow">
+        ★ Featured
       </h2>
-      <div class="grid gap-5 sm:grid-cols-2">
+      <div class="grid gap-8 sm:grid-cols-2">
         {featured.map((project) => <ProjectCard project={project} />)}
       </div>
     </section>
@@ -42,11 +38,11 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 
   <!-- ── In Progress ───────────────────────────────────────────────────────── -->
   {wip.length > 0 && (
-    <section class="mb-12" data-animate>
-      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
-        in progress
+    <section class="mb-16" data-animate>
+      <h2 class="mb-5 text-sm font-medium uppercase tracking-wider text-base-subtle">
+        In progress
       </h2>
-      <div class="grid gap-5 sm:grid-cols-2">
+      <div class="grid gap-8 sm:grid-cols-2">
         {wip.map((project) => <ProjectCard project={project} />)}
       </div>
     </section>
@@ -54,11 +50,11 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 
   <!-- ── Shipped ───────────────────────────────────────────────────────────── -->
   {done.length > 0 && (
-    <section class="mb-12" data-animate>
-      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
-        shipped
+    <section class="mb-16" data-animate>
+      <h2 class="mb-5 text-sm font-medium uppercase tracking-wider text-base-subtle">
+        Shipped
       </h2>
-      <div class="grid gap-5 sm:grid-cols-2">
+      <div class="grid gap-8 sm:grid-cols-2">
         {done.map((project) => <ProjectCard project={project} />)}
       </div>
     </section>
@@ -67,10 +63,10 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
   <!-- ── Archived ──────────────────────────────────────────────────────────── -->
   {archived.length > 0 && (
     <section data-animate>
-      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
-        archived
+      <h2 class="mb-5 text-sm font-medium uppercase tracking-wider text-base-subtle">
+        Archived
       </h2>
-      <div class="grid gap-5 sm:grid-cols-2 opacity-60">
+      <div class="grid gap-8 sm:grid-cols-2 opacity-60">
         {archived.map((project) => <ProjectCard project={project} />)}
       </div>
     </section>
