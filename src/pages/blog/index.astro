@@ -19,7 +19,6 @@ const total    = posts.length;
     </p>
   </header>
 
-  <!-- ── Tag cloud ─────────────────────────────────────────────────────────── -->
   {allTags.length > 0 && (
     <section class="mb-14">
       <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-base-muted">by tag</h2>
@@ -36,7 +35,6 @@ const total    = posts.length;
     </section>
   )}
 
-  <!-- ── View toggle ───────────────────────────────────────────────────────── -->
   <div class="mb-6 flex items-center justify-between">
     <h2 class="text-sm font-medium text-base-text">All posts</h2>
     <div class="flex gap-1 rounded-lg border border-base-overlay p-1">
@@ -49,7 +47,6 @@ const total    = posts.length;
     </div>
   </div>
 
-  <!-- ── Posts (grouped by year) ───────────────────────────────────────────── -->
   <div id="posts-container">
     {archive.map((year) => {
       const yearPosts = posts.filter((p) => p.data.date.getFullYear() === year);

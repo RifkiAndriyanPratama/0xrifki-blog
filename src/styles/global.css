@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Everblush palette (Light) ──────────────────────────────────────────────── */
+/* Light palette */
 :root {
   --color-bg:      #f4f1ea;
   --color-bg-alt:  #ece8e0;
@@ -21,7 +21,7 @@
   --color-purple:  #b080a0;
 }
 
-/* ─── Everblush palette (Dark) ───────────────────────────────────────────────── */
+/* Dark palette */
 :root.dark {
   --color-bg:      #1e2326;
   --color-bg-alt:  #181b1e;
@@ -39,7 +39,7 @@
   --color-purple:  #d699b6;
 }
 
-/* ─── Base ───────────────────────────────────────────────────────────────────── */
+/* Base resets */
 @layer base {
   *, *::before, *::after { @apply box-border; }
 
@@ -72,7 +72,7 @@
   }
 }
 
-/* ─── Components ─────────────────────────────────────────────────────────────── */
+/* Components */
 @layer components {
   /* Enter animation */
   [data-animate] {
@@ -81,7 +81,7 @@
     animation: enterUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
-  /* ── Hero background grid ─────────────────────────────────────────────── */
+  /* Hero grid */
   .hero-grid {
     background-image:
       linear-gradient(var(--color-overlay) 1px, transparent 1px),
@@ -91,12 +91,12 @@
     -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 70%);
   }
 
-  /* ── Primary button ──────────────────────────────────────────────────────── */
+  /* Button */
   .btn-primary {
     @apply relative inline-flex items-center rounded-lg border border-base-teal bg-base-surface px-5 py-2.5 text-sm text-base-text transition-all hover:brightness-110;
   }
 
-  /* ── Code blocks ──────────────────────────────────────────────────────── */
+  /* Code blocks */
   .code-header {
     @apply flex items-center justify-between rounded-t-lg border border-base-overlay px-4 py-1.5 font-code text-xs text-base-muted;
     background-color: var(--color-bg-alt);
@@ -129,7 +129,7 @@
     @apply flex items-center gap-1 rounded px-2 py-0.5 text-xs text-base-muted transition-colors hover:text-base-text hover:bg-base-overlay;
   }
 
-  /* ── Back to top ──────────────────────────────────────────────────────── */
+  /* Back to top */
   #back-to-top {
     @apply fixed bottom-6 right-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-base-overlay bg-base-bg text-base-muted shadow-lg transition-all duration-300;
   }
@@ -137,7 +137,7 @@
   #back-to-top.visible { @apply translate-y-0 opacity-100; }
   #back-to-top:not(.visible) { @apply translate-y-4 opacity-0 pointer-events-none; }
 
-  /* ── Navbar auto-hide ─────────────────────────────────────────────────── */
+  /* Navbar */
   #navbar {
     transition: transform 0.3s ease;
   }
@@ -145,7 +145,7 @@
     transform: translateY(-100%);
   }
 
-  /* ── Search highlight ─────────────────────────────────────────────────── */
+  /* Search highlight */
   mark.search-highlight {
     background: var(--color-yellow);
     color: var(--color-text);
@@ -153,12 +153,12 @@
     padding: 0 2px;
   }
 
-  /* ── Pull quote ───────────────────────────────────────────────────────── */
+  /* Pull quote */
   .pull-quote {
     @apply my-8 border-l-4 border-base-teal bg-base-surface px-6 py-4 font-code text-base italic leading-relaxed text-base-text;
   }
 
-  /* ── Stats counter ────────────────────────────────────────────────────── */
+  /* Stats */
   .stat-number {
     @apply text-2xl font-semibold text-base-teal md:text-3xl;
   }
@@ -166,7 +166,7 @@
     @apply text-xs text-base-muted uppercase tracking-wider;
   }
 
-  /* ── Print styles ─────────────────────────────────────────────────────── */
+  /* Print */
   @media print {
     nav, footer, #giscus-container, #reading-bar, #back-to-top,
     .astro-code, [data-animate] { animation: none !important; opacity: 1 !important; transform: none !important; }
@@ -174,7 +174,7 @@
     .prose { max-width: 100% !important; }
   }
 
-  /* ── Reduced motion ───────────────────────────────────────────────────── */
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -184,7 +184,7 @@
   }
 }
 
-/* ─── Keyframes ─────────────────────────────────────────────────────────────── */
+/* Keyframes */
 @keyframes enterUp {
   to { opacity: 1; transform: translateY(0); }
 }
@@ -209,7 +209,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── Utilities ─────────────────────────────────────────────────────────────── */
+/* Utilities */
 @layer utilities {
   .font-code { font-family: 'JetBrains Mono', monospace; }
 
@@ -229,7 +229,7 @@
     background-size: 24px 24px;
   }
 
-  /* ── GitHub-style alerts ─────────────────────────────────────────────────── */
+  /* Alerts */
   .alert-blockquote { @apply border-l-4!; }
   .alert-note    { border-left-color: var(--color-blue)!important; }
   .alert-note > p:first-child { color: var(--color-blue); font-weight: 600; }
@@ -240,7 +240,7 @@
   .alert-danger  { border-left-color: var(--color-red)!important; }
   .alert-danger > p:first-child { color: var(--color-red); font-weight: 600; }
 
-  /* ── View transitions ──────────────────────────────────────────────────── */
+  /* View transitions */
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 0.3s;

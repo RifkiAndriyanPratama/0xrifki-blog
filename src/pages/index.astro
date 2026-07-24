@@ -14,7 +14,6 @@ const recent    = posts.slice(0, 5);
 
 <Layout title="0xrifki">
 
-  <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
   <section class="relative mb-40 overflow-hidden" data-animate style="animation-delay: 0ms">
     <!-- Background grid pattern -->
     <div class="hero-grid pointer-events-none absolute inset-0 opacity-15 dark:opacity-10"></div>
@@ -71,7 +70,6 @@ const recent    = posts.slice(0, 5);
     </div>
   </section>
 
-  <!-- ── Featured Posts ────────────────────────────────────────────────────── -->
   {featured.length > 0 && (
     <section class="mb-20" data-animate style="animation-delay: 80ms">
       <h2 class="mb-6 text-sm font-medium text-base-yellow">
@@ -87,7 +85,6 @@ const recent    = posts.slice(0, 5);
     </section>
   )}
 
-  <!-- ── Recent Posts ──────────────────────────────────────────────────────── -->
   <section class="mb-16" data-animate style="animation-delay: 120ms">
     <div class="mb-6 flex items-center justify-between">
       <h2 class="text-sm font-medium text-base-subtle">
@@ -112,7 +109,6 @@ const recent    = posts.slice(0, 5);
 
 </Layout>
 
-<!-- ── Stats counter animation ─────────────────────────────────────────────── -->
 <script>
 function initStats() {
   const stats = document.querySelectorAll("[data-count]");

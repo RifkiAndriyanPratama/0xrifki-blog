@@ -1,7 +1,7 @@
 ---
 title: "Kenapa `using namespace std` Itu Kebiasaan yang Harus Dibuang"
 date: 2026-03-07
-description: "Satu baris kode yang ada di hampir semua tutorial C++ pemula — dan kenapa itu bisa jadi bom waktu di project besar."
+description: "Satu baris kode yang ada di hampir semua tutorial C++ pemula, dan kenapa itu bisa jadi bom waktu di project besar."
 category: programming
 tags: [cpp, namespace, best-practices, tips]
 draft: false
@@ -15,7 +15,7 @@ Hampir semua tutorial C++ untuk pemula nulis ini di baris kedua setelah `#includ
 using namespace std;
 ```
 
-Dan masuk akal kenapa — tanpa baris itu, kamu harus nulis `std::cout` instead of `cout`, `std::endl` instead of `endl`. Lebih panjang, kelihatan ribet, dan buat pemula yang baru mau ngerti syntax dasar, itu cuma noise.
+Dan masuk akal kenapa, tanpa baris itu, kamu harus nulis `std::cout` instead of `cout`, `std::endl` instead of `endl`. Lebih panjang, kelihatan ribet, dan buat pemula yang baru mau ngerti syntax dasar, itu cuma noise.
 
 Jadi semua tutorial bilang: *"Tulis ini dulu biar simpel."*
 
@@ -27,11 +27,11 @@ Masalahnya, kebiasaan itu kebawa terus. Dan di project yang lebih besar, itu bis
 
 Sebelum ngomongin masalahnya, penting ngerti dulu namespace itu ngapain.
 
-Bayangin kamu kerja di kantor besar. Ada dua karyawan bernama "Budi" — satu di divisi Marketing, satu di divisi Engineering. Kalau bos manggil "Budi!" tanpa konteks, semua orang bingung: Budi yang mana?
+Bayangin kamu kerja di kantor besar. Ada dua karyawan bernama "Budi", satu di divisi Marketing, satu di divisi Engineering. Kalau bos manggil "Budi!" tanpa konteks, semua orang bingung: Budi yang mana?
 
 Solusinya? Sebut divisinya: "Budi dari Marketing" atau "Budi dari Engineering."
 
-Namespace di C++ kerja persis kayak itu. `std::cout` artinya: `cout` yang ada di namespace `std` — bukan `cout` dari namespace lain.
+Namespace di C++ kerja persis kayak itu. `std::cout` artinya: `cout` yang ada di namespace `std`, bukan `cout` dari namespace lain.
 
 ---
 
@@ -54,9 +54,9 @@ int main() {
 }
 ```
 
-Compiler bingung. Dua namespace di-import sekaligus, dua function bernama sama — mana yang harus dipanggil?
+Compiler bingung. Dua namespace di-import sekaligus, dua function bernama sama, mana yang harus dipanggil?
 
-Itu name collision. Dan errornya bisa sangat frustrating karena nggak selalu muncul langsung — kadang muncul setelah kamu nambah library baru dan tiba-tiba ada conflict yang sebelumnya nggak ada.
+Itu name collision. Dan errornya bisa sangat frustrating karena nggak selalu muncul langsung, kadang muncul setelah kamu nambah library baru dan tiba-tiba ada conflict yang sebelumnya nggak ada.
 
 ---
 
@@ -64,9 +64,9 @@ Itu name collision. Dan errornya bisa sangat frustrating karena nggak selalu mun
 
 Di project kecil atau tutorial, kamu mungkin cuma pakai satu atau dua library. Kemungkinan collision kecil.
 
-Tapi bayangkan project besar dengan 20-30 dependency — masing-masing punya ratusan function, class, dan variable. Kemungkinan ada dua nama yang sama di dua library berbeda itu sangat nyata.
+Tapi bayangkan project besar dengan 20-30 dependency, masing-masing punya ratusan function, class, dan variable. Kemungkinan ada dua nama yang sama di dua library berbeda itu sangat nyata.
 
-Dan yang lebih susah: collision itu nggak selalu bikin error yang jelas. Kadang program tetap compile, tapi manggil function yang salah — dan itu bug yang susah banget dilacak.
+Dan yang lebih susah: collision itu nggak selalu bikin error yang jelas. Kadang program tetap compile, tapi manggil function yang salah, dan itu bug yang susah banget dilacak.
 
 ---
 
@@ -100,10 +100,10 @@ Lebih panjang diketik? Iya. Tapi kamu dan compiler sama-sama tau persis dari man
 
 Jujur, masalah `using namespace std` ini cuma satu contoh dari pola yang lebih besar: **kebiasaan yang nyaman di awal bisa jadi masalah di kemudian hari.**
 
-Di dunia pemrograman, banyak "shortcut" yang kelihatan harmless waktu project masih kecil — tapi scale poorly waktu project tumbuh. Variabel dengan nama `a`, `b`, `x`. Function yang ngerjain 5 hal sekaligus. Magic number yang hardcoded di mana-mana.
+Di dunia pemrograman, banyak "shortcut" yang kelihatan harmless waktu project masih kecil, tapi scale poorly waktu project tumbuh. Variabel dengan nama `a`, `b`, `x`. Function yang ngerjain 5 hal sekaligus. Magic number yang hardcoded di mana-mana.
 
-Semua itu terasa oke waktu kamu nulis sendiri dan masih inget semua konteksnya. Tapi enam bulan kemudian, atau waktu orang lain baca kodenya — itu mimpi buruk.
+Semua itu terasa oke waktu kamu nulis sendiri dan masih inget semua konteksnya. Tapi enam bulan kemudian, atau waktu orang lain baca kodenya, itu mimpi buruk.
 
 Biasain dari awal untuk nulis kode yang *jelas*, bukan yang *cepat*. Karena kode itu lebih sering dibaca daripada ditulis.
 
-Dan `std::cout` itu bukan ribet — itu **dokumentasi satu baris** yang bilang: *"ini dari standard library, bukan dari tempat lain."* 🔥
+Dan `std::cout` itu bukan ribet, itu **dokumentasi satu baris** yang bilang: *"ini dari standard library, bukan dari tempat lain."* 🔥

@@ -20,7 +20,6 @@ const STATUS_STYLES: Record<string, string> = {
 <article class="group relative flex flex-col overflow-hidden rounded-xl border border-base-overlay bg-base-surface transition-all duration-200 hover:border-base-teal/40 hover:shadow-lg hover:shadow-base-teal/5">
   <a href={`/projects/${project.id}`} class="no-underline!">
 
-    <!-- ── Cover image ────────────────────────────────────────────────────────── -->
     {cover ? (
       <div class="aspect-video overflow-hidden bg-base-overlay">
         <Image
@@ -41,7 +40,6 @@ const STATUS_STYLES: Record<string, string> = {
       </div>
     )}
 
-    <!-- ── Card body ──────────────────────────────────────────────────────────── -->
     <div class="flex flex-1 flex-col gap-3 p-5">
 
       <!-- Name + status -->

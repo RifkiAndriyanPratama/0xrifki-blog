@@ -16,7 +16,6 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 
 <Layout title="projects" description="Things I've built — open source projects and experiments.">
 
-  <!-- ── Header ────────────────────────────────────────────────────────────── -->
   <header class="mb-16" data-animate>
     <h1 class="text-3xl font-semibold tracking-tight text-base-text md:text-4xl">Projects</h1>
     <p class="mt-2 text-base-subtle">
@@ -24,7 +23,6 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
     </p>
   </header>
 
-  <!-- ── Featured ──────────────────────────────────────────────────────────── -->
   {featured.length > 0 && (
     <section class="mb-20" data-animate>
       <h2 class="mb-5 text-sm font-medium uppercase tracking-wider text-base-yellow">
@@ -36,7 +34,6 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
     </section>
   )}
 
-  <!-- ── In Progress ───────────────────────────────────────────────────────── -->
   {wip.length > 0 && (
     <section class="mb-16" data-animate>
       <h2 class="mb-5 text-sm font-medium uppercase tracking-wider text-base-subtle">
@@ -48,7 +45,6 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
     </section>
   )}
 
-  <!-- ── Shipped ───────────────────────────────────────────────────────────── -->
   {done.length > 0 && (
     <section class="mb-16" data-animate>
       <h2 class="mb-5 text-sm font-medium uppercase tracking-wider text-base-subtle">
@@ -60,7 +56,6 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
     </section>
   )}
 
-  <!-- ── Archived ──────────────────────────────────────────────────────────── -->
   {archived.length > 0 && (
     <section data-animate>
       <h2 class="mb-5 text-sm font-medium uppercase tracking-wider text-base-subtle">

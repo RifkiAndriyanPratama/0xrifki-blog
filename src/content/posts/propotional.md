@@ -19,13 +19,13 @@ Ternyata jawabannya: setiap kompiler, setiap CPU, dan setiap `if` statement yang
 
 ## Proposisi Itu Apa Sebenernya?
 
-Proposisi adalah pernyataan yang bisa dinilai **benar atau salah** — tidak keduanya, tidak abu-abu.
+Proposisi adalah pernyataan yang bisa dinilai **benar atau salah**, nggak ada di antaranya.
 
 - "Langit berwarna biru" → proposisi ✓
 - "Tolong tutup pintunya" → bukan proposisi ✓
 - "x + 2 = 5" → belum proposisi (tergantung nilai x)
 
-Kenapa ini penting? Karena komputer hanya bisa bekerja dengan dua nilai: **true (1) dan false (0)**. Propositional logic adalah bahasa formal yang mendeskripsikan cara kerja itu — sebelum ada bahasa pemrograman, sebelum ada transistor.
+Kenapa ini penting? Karena komputer hanya bisa bekerja dengan dua nilai: **true (1) dan false (0)**. Propositional logic adalah bahasa formal yang mendeskripsikan cara kerja itu, jauh sebelum ada bahasa pemrograman, jauh sebelum ada transistor.
 
 ---
 
@@ -40,7 +40,7 @@ Kalau kamu udah belajar C++, kamu udah pakai propositional logic tanpa sadar:
 | Negasi | ¬p | `!p` | kebalikannya |
 | Implikasi | p → q | `if (p) { q }` | jika p maka q |
 
-Setiap `if`, `while`, dan `for` yang kamu tulis adalah proposisi yang dievaluasi compiler — benar atau salah, jalan atau tidak.
+Setiap `if`, `while`, dan `for` yang kamu tulis adalah proposisi yang dievaluasi compiler: benar atau salah, jalan atau tidak.
 
 ---
 
@@ -57,7 +57,7 @@ Ambil contoh: `p ∧ q` (p AND q)
 | F | T | F |
 | F | F | F |
 
-Ini bukan cuma teori — ini literally yang terjadi di dalam CPU setiap kali dia mengevaluasi kondisi. Gate AND di hardware dibangun persis seperti tabel ini.
+Ini bukan cuma teori, ini literally yang terjadi di dalam CPU setiap kali dia mengevaluasi kondisi. Gate AND di hardware dibangun persis seperti tabel ini.
 
 Sekarang `p ∨ q` (p OR q):
 
@@ -72,11 +72,11 @@ Sekarang `p ∨ q` (p OR q):
 
 ## Ekuivalensi Logika: Cara yang Berbeda, Hasil yang Sama
 
-Dua ekspresi logika disebut **ekuivalen** kalau tabel kebenarannya identik — untuk semua kemungkinan nilai input, outputnya sama.
+Dua ekspresi logika disebut **ekuivalen** kalau tabel kebenarannya identik, untuk semua kemungkinan nilai input, outputnya sama.
 
 Notasinya: p ≡ q
 
-Contoh paling sederhana — **Double Negation**:
+Contoh paling sederhana: **Double Negation**:
 
 > ¬(¬p) ≡ p
 

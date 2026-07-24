@@ -21,18 +21,15 @@ const ogImage = cover
   ? new URL(cover.src, Astro.site).toString()
   : undefined;
 
-// ── Prev / Next ──────────────────────────────────────────────────────────────
 const allPosts = sortPosts(await getCollection("posts"));
 const currentIdx = allPosts.findIndex((p) => p.slug === post.slug);
 const prev = currentIdx > 0 ? allPosts[currentIdx - 1] : null;
 const next = currentIdx < allPosts.length - 1 ? allPosts[currentIdx + 1] : null;
 
-// ── Related Posts (same category, exclude current, max 3) ────────────────────
 const related = allPosts
   .filter((p) => p.slug !== post.slug && p.data.category === category)
   .slice(0, 3);
 
-// ── Series Posts ─────────────────────────────────────────────────────────────
 const seriesPosts = series
   ? allPosts
       .filter((p) => p.data.series === series)
@@ -55,13 +52,11 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
     },
   })} />
 
-  <!-- ── Reading Progress Bar ────────────────────────────────────────────── -->
   <div id="reading-bar" class="fixed left-0 top-0 z-[60] h-1 bg-base-teal transition-[width] duration-75"></div>
 
   <article>
     <div class="mx-auto w-full max-w-5xl">
 
-      <!-- ── Header ──────────────────────────────────────────────────────── -->
       <header class="mb-14">
         <div class="flex flex-wrap items-center gap-2 mb-5">
           <a
@@ -106,7 +101,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         )}
       </header>
 
-      <!-- ── Series nav ──────────────────────────────────────────────────── -->
       {seriesPosts.length > 1 && (
         <div class="mb-10 rounded-lg border border-base-overlay bg-base-surface p-4">
           <p class="font-code text-xs font-medium uppercase tracking-wider text-base-muted">
@@ -136,7 +130,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         </div>
       )}
 
-      <!-- ── Cover ────────────────────────────────────────────────────────── -->
       {cover && (
         <div class="mb-10 overflow-hidden rounded-lg border border-base-overlay">
           <Image
@@ -150,7 +143,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         </div>
       )}
 
-      <!-- ── TOC ──────────────────────────────────────────────────────────── -->
       <details class="mb-10 rounded-lg border border-base-overlay" id="toc-component">
         <summary class="cursor-pointer px-4 py-2.5 font-code text-sm text-base-muted transition-colors hover:text-base-text">
           Table of Contents
@@ -158,12 +150,10 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         <nav class="border-t border-base-overlay px-4 py-3" id="toc-content"></nav>
       </details>
 
-      <!-- ── Content ──────────────────────────────────────────────────────── -->
       <div class="prose prose-devlog max-w-4xl mx-auto">
         <slot />
       </div>
 
-      <!-- ── Post Footer ──────────────────────────────────────────────────── -->
       <footer class="mt-16 md:mt-20 border-t border-base-overlay pt-8">
         <!-- Tags -->
         {tags.length > 0 && (
@@ -238,7 +228,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         </a>
       </footer>
 
-      <!-- ── Comments ────────────────────────────────────────────────────────── -->
       <section class="mt-16 md:mt-20" aria-label="Comments">
         <div id="giscus-container" class="w-full min-w-0 overflow-hidden">
           <script is:inline src="https://giscus.app/client.js"
@@ -265,7 +254,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 </Layout>
 
 <script is:inline>
-  // ── Cleanup guard — prevent stale listeners accumulating on View Transitions
   let activeTOCListener = null;
 
   function initPost() {
@@ -273,7 +261,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
     const article = document.querySelector("main article");
     if (!article) return;
 
-    // ── Reading progress bar ──────────────────────────────────────────────
     const bar = document.getElementById("reading-bar");
     if (bar) {
       // Remove duplicate listeners by storing a named function reference
@@ -289,7 +276,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       bar._onScroll = onScroll;
     }
 
-    // ── Table of Contents ─────────────────────────────────────────────────
     const tocContainer = document.getElementById("toc-content");
     const tocEl = document.getElementById("toc-component");
     if (tocContainer) tocContainer.innerHTML = "";
@@ -331,7 +317,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       tocContainer.appendChild(ul);
     }
 
-    // ── TOC scroll spy ────────────────────────────────────────────────────
     // Remove previous scroll spy listener to avoid duplicates
     if (activeTOCListener) {
       window.removeEventListener("scroll", activeTOCListener);
@@ -360,7 +345,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
     window.addEventListener("scroll", updateActiveTOC, { passive: true });
     updateActiveTOC();
 
-    // ── Share / Copy link ────────────────────────────────────────────────
     const shareBtn = document.getElementById("share-btn");
     if (shareBtn) {
       shareBtn.addEventListener("click", async () => {
@@ -375,7 +359,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       });
     }
 
-    // ── Social share buttons ─────────────────────────────────────────────
     const pageUrl = encodeURIComponent(window.location.href);
     const pageTitle = encodeURIComponent(document.title.replace(/ — .*$/, ""));
     const twitter = document.getElementById("share-twitter");
@@ -397,7 +380,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       });
     }
 
-    // ── Code copy buttons ───────────────────────────────────────────────
     document.querySelectorAll(".astro-code").forEach((block) => {
       const wrapper = block.closest("[class*='language-']") || block.parentElement;
       if (wrapper && wrapper.querySelector(".copy-btn")) return;
@@ -431,7 +413,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       }
     });
 
-    // ── Smooth anchor scrolling with header offset ──────────────────────
     document.querySelectorAll("a[href^='#']").forEach((anchor) => {
       anchor.addEventListener("click", (e) => {
         const id = anchor.getAttribute("href")?.slice(1);
@@ -447,7 +428,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       });
     });
 
-    // ── Image lightbox ──────────────────────────────────────────────────
     document.querySelectorAll(".prose img").forEach((img) => {
       if (img.closest("a")) return;
       img.style.cursor = "zoom-in";

@@ -16,7 +16,6 @@ const CATEGORIES = [
 
 export type Category = (typeof CATEGORIES)[number];
 
-// ─── Posts ────────────────────────────────────────────────────────────────────
 const postsCollection = defineCollection({
   type: "content",
   schema: ({ image }) =>
@@ -37,7 +36,6 @@ const postsCollection = defineCollection({
     }),
 });
 
-// ─── Projects ─────────────────────────────────────────────────────────────────
 const projectsCollection = defineCollection({
   type: "data",
   schema: ({ image }) =>
