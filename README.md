@@ -15,7 +15,6 @@ Built with [Astro](https://astro.build) · [Tailwind CSS](https://tailwindcss.co
 | Content    | Astro Content Collections (`.md` / `.mdx`)|
 | Syntax HL  | Shiki — `tokyo-night` theme               |
 | Search     | Fuse.js (client-side)                     |
-| Comments   | Giscus (GitHub Discussions)               |
 | Deploy     | Vercel                                    |
 
 ---
@@ -73,7 +72,7 @@ devlog/
 │   │   └── posts/                # Markdown posts live here
 │   ├── layouts/
 │   │   ├── Layout.astro          # Base shell (Navbar + Footer)
-│   │   └── PostLayout.astro      # Post chrome + Giscus
+│   │   └── PostLayout.astro      # Post chrome
 │   ├── lib/
 │   │   └── utils.ts              # Shared helpers
 │   ├── pages/
@@ -89,7 +88,7 @@ devlog/
 ├── tailwind.config.mjs
 ├── tsconfig.json
 ├── vercel.json
-└── GISCUS.md                     # Giscus setup instructions
+└── GISCUS.md                     # Giscus setup instructions (deprecated)
 ```
 
 ---
@@ -108,9 +107,3 @@ vercel --prod
 ```
 
 Or connect the GitHub repo to Vercel for automatic deploys on push.
-
----
-
-## Giscus Comments
-
-See [GISCUS.md](./GISCUS.md) for the full 5-step setup guide.

@@ -168,7 +168,7 @@
 
   /* Print */
   @media print {
-    nav, footer, #giscus-container, #reading-bar, #back-to-top,
+    nav, footer, #reading-bar, #back-to-top,
     .astro-code, [data-animate] { animation: none !important; opacity: 1 !important; transform: none !important; }
     header { position: static !important; }
     .prose { max-width: 100% !important; }
