@@ -3,6 +3,7 @@ title: "Rekursif Itu Keren, Tapi Kamu Harus Tau Harganya"
 date: 2025-03-07
 description: "Rekursif kelihatan elegan dan pintar, tapi ada trade-off yang jarang dibahas di tutorial pemula."
 category: notes
+lang: "id"
 tags: [cpp, rekursif, loop, programming, performance]
 draft: false
 ---

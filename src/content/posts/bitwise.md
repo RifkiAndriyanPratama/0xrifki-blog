@@ -3,6 +3,7 @@ title: "Bitwise Operator: Skill Jadul yang Masih Relevan"
 date: 2026-03-07
 description: "Di era framework dan abstraksi tinggi, kenapa programmer masih perlu tau cara manipulasi bit langsung?"
 category: notes
+lang: "id"
 tags: [cpp, bitwise, low-level, performance, programming]
 draft: false
 ---

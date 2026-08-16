@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, date, category, tags, cover, coverAlt, updated, series, seriesOrder } = post.data;
+const { title, description, date, category, tags, cover, coverAlt, updated, series, seriesOrder, lang } = post.data;
 const readTime = post.data.readingTime ?? readingTime(post.body);
 
 const ogImage = cover
@@ -38,7 +38,7 @@ const seriesPosts = series
 const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 ---
 
-<Layout title={title} description={description} ogImage={ogImage}>
+<Layout title={title} description={description} ogImage={ogImage} lang={lang}>
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Article",

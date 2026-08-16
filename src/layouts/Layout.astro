@@ -9,6 +9,7 @@ interface Props {
   description?: string;
   ogImage?: string;
   canonicalUrl?: string;
+  lang?: string;
 }
 
 const {
@@ -16,6 +17,7 @@ const {
   description = "notes on software, systems, and whatever ends up in the terminal at 2am.",
   ogImage = "/og-default.png",
   canonicalUrl,
+  lang = "en",
 } = Astro.props;
 
 const siteTitle = "0xrifki";
@@ -79,7 +81,7 @@ const SOCIAL = [
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang={lang} class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -3,6 +3,7 @@ title: "Logika Proposisi: Bahasa yang Komputer Pahami Sebelum Kamu"
 date: 2026-03-17
 description: "Sebelum ada Python, Java, atau C++ ada logika. Dan ternyata logika itu masih hidup di setiap baris kode yang kamu tulis."
 category: math
+lang: "id"
 tags: [logic, mathematics, cs-fundamentals, programming]
 draft: false
 ---

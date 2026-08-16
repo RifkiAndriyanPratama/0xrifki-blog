@@ -24,6 +24,7 @@ const postsCollection = defineCollection({
       date:        z.coerce.date(),
       description: z.string().max(160),
       category:    z.enum(CATEGORIES),
+      lang:        z.enum(["id", "en"]).default("en"),
       tags:        z.array(z.string()).default([]),
       cover:       image().optional(),
       coverAlt:    z.string().optional(),
