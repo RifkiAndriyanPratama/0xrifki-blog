@@ -261,6 +261,13 @@
     margin-bottom: 2rem;
     color: var(--color-heading);
   }
+  .section-title::before {
+    content: "// ";
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.65em;
+    font-weight: 500;
+    color: var(--color-muted);
+  }
   .section-title .accent {
     background-image: var(--gradient-primary);
     -webkit-background-clip: text;

@@ -2,7 +2,7 @@
 // src/components/PostCard.astro
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import { formatDate, readingTime } from "@/lib/utils";
+import { readingTime } from "@/lib/utils";
 import CoverArt from "@/components/CoverArt.astro";
 
 interface Props {
@@ -27,6 +27,15 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 const tagColor = CATEGORY_COLORS[data.category] ?? "#5fedac";
 const chip = data.tags?.[0] ?? data.category;
+
+const seed = `${slug}-${data.category}`;
+let hv = 2166136261;
+for (let i = 0; i < seed.length; i++) {
+  hv ^= seed.charCodeAt(i);
+  hv = Math.imul(hv, 16777619);
+}
+const shortHash = (hv >>> 0).toString(16).padStart(8, "0").slice(0, 4);
+const isoDate = data.date.toISOString().slice(0, 10);
 ---
 
 <article class="js-card card-hover group flex flex-col p-6">
@@ -72,15 +81,14 @@ const chip = data.tags?.[0] ?? data.category;
         style="background: linear-gradient(135deg, var(--color-teal), var(--color-blue))"
         aria-hidden="true"
       >
-        <span class="flex h-full w-full items-center justify-center rounded-full bg-base-surface font-code text-xs font-bold text-base-heading">
-          rp
+        <span class="flex h-full w-full items-center justify-center rounded-full bg-base-surface font-code text-[10px] font-bold text-teal">
+          {shortHash}
         </span>
       </div>
       <div class="min-w-0">
         <p class="truncate text-sm font-medium text-base-heading">Rifki Andriyan Pratama</p>
-        <p class="flex items-center gap-1.5 text-xs text-base-muted">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"/></svg>
-          {formatDate(data.date)} · {readTime} min read
+        <p class="flex items-center gap-1.5 font-code text-xs text-base-muted">
+          <span class="text-teal">{shortHash}</span> · {isoDate} · ~{readTime}min
         </p>
       </div>
     </div>

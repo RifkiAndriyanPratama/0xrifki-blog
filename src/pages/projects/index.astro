@@ -27,7 +27,7 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 
   {featured.length > 0 && (
     <section class="mt-14" data-animate>
-      <h2 class="section-title text-left">★ Featured</h2>
+      <h2 class="section-title text-left font-code text-[1.15rem] font-semibold text-teal">[ featured ]</h2>
       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {featured.map((project) => <ProjectCard project={project} />)}
       </div>
@@ -36,7 +36,7 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 
   {wip.length > 0 && (
     <section class="mt-20" data-animate>
-      <h2 class="section-title text-left">In progress</h2>
+      <h2 class="section-title text-left font-code text-[1.15rem] font-semibold text-teal">[ wip ]</h2>
       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {wip.map((project) => <ProjectCard project={project} />)}
       </div>
@@ -45,7 +45,7 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 
   {done.length > 0 && (
     <section class="mt-20" data-animate>
-      <h2 class="section-title text-left">Shipped</h2>
+      <h2 class="section-title text-left font-code text-[1.15rem] font-semibold text-teal">[ done ]</h2>
       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {done.map((project) => <ProjectCard project={project} />)}
       </div>
@@ -54,7 +54,7 @@ const stacks   = [...new Set(allProjects.flatMap((p) => p.data.stack))].sort();
 
   {archived.length > 0 && (
     <section class="mt-20" data-animate>
-      <h2 class="section-title text-left">Archived</h2>
+      <h2 class="section-title text-left font-code text-[1.15rem] font-semibold text-teal">[ archived ]</h2>
       <div class="grid gap-8 opacity-60 md:grid-cols-2 lg:grid-cols-3">
         {archived.map((project) => <ProjectCard project={project} />)}
       </div>
