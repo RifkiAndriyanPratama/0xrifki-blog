@@ -61,18 +61,19 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         <div class="flex flex-wrap items-center gap-2 mb-5">
           <a
             href={`/blog/category/${category}`}
-            class="inline-block rounded border border-base-overlay px-2 py-0.5 text-xs text-base-blue transition-colors hover:border-base-blue"
+            class="tag-chip"
+            style="--tag-color: #5fedac"
           >
             {category}
           </a>
           {post.data.featured && (
-            <span class="inline-block rounded border border-base-yellow/40 px-2 py-0.5 text-xs text-base-yellow">
+            <span class="tag-chip" style="--tag-color: #ef7a2b">
               ★ Featured
             </span>
           )}
         </div>
 
-        <h1 class="font-code text-3xl font-semibold leading-tight tracking-tight text-base-text md:text-4xl">
+        <h1 class="text-3xl font-bold leading-tight tracking-tight text-base-heading md:text-[2.75rem] md:leading-[1.15]">
           {title}
         </h1>
 
@@ -102,7 +103,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       </header>
 
       {seriesPosts.length > 1 && (
-        <div class="mb-10 rounded-lg border border-base-overlay bg-base-surface p-4">
+        <div class="mb-10 rounded-2xl border border-base-overlay bg-base-surface p-5">
           <p class="font-code text-xs font-medium uppercase tracking-wider text-base-muted">
             Series: {series}
           </p>
@@ -131,7 +132,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       )}
 
       {cover && (
-        <div class="mb-10 overflow-hidden rounded-lg border border-base-overlay">
+        <div class="mb-10 overflow-hidden rounded-xl border border-base-overlay">
           <Image
             src={cover}
             alt={coverAlt ?? title}
@@ -143,11 +144,11 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         </div>
       )}
 
-      <details class="mb-10 rounded-lg border border-base-overlay" id="toc-component">
-        <summary class="cursor-pointer px-4 py-2.5 font-code text-sm text-base-muted transition-colors hover:text-base-text">
+      <details class="mb-10 rounded-2xl border border-base-overlay" id="toc-component">
+        <summary class="cursor-pointer px-5 py-3 text-sm font-medium text-base-subtle transition-colors hover:text-base-heading">
           Table of Contents
         </summary>
-        <nav class="border-t border-base-overlay px-4 py-3" id="toc-content"></nav>
+        <nav class="border-t border-base-overlay px-5 py-3" id="toc-content"></nav>
       </details>
 
       <div class="prose prose-devlog max-w-4xl mx-auto">
@@ -161,7 +162,8 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
             {tags.map((tag) => (
               <a
                 href={`/blog/tag/${tag}`}
-                class="font-code rounded border border-base-overlay px-2 py-0.5 text-xs text-base-subtle transition-colors hover:border-base-subtle hover:text-base-text"
+                class="tag-chip"
+                style="--tag-color: #5fedac"
               >
                 #{tag}
               </a>
@@ -172,15 +174,15 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         <!-- Share -->
         <div class="mb-8 flex flex-wrap items-center gap-3">
           <span class="font-code text-xs text-base-muted">share</span>
-          <a id="share-twitter" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 rounded-lg border border-base-overlay px-3 py-1.5 font-code text-xs text-base-muted transition-colors hover:border-base-blue hover:text-base-blue" aria-label="Share on Twitter/X">
+          <a id="share-twitter" href="#" target="_blank" rel="noopener noreferrer" class="btn-ghost" aria-label="Share on Twitter/X">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             X
           </a>
-          <a id="share-linkedin" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 rounded-lg border border-base-overlay px-3 py-1.5 font-code text-xs text-base-muted transition-colors hover:border-base-blue hover:text-base-blue" aria-label="Share on LinkedIn">
+          <a id="share-linkedin" href="#" target="_blank" rel="noopener noreferrer" class="btn-ghost" aria-label="Share on LinkedIn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn
           </a>
-          <button id="share-btn-footer" class="flex items-center gap-1.5 rounded-lg border border-base-overlay px-3 py-1.5 font-code text-xs text-base-muted transition-colors hover:border-base-teal hover:text-base-teal" aria-label="Copy link to this post">
+          <button id="share-btn-footer" class="btn-ghost" aria-label="Copy link to this post">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
             <span>copy link</span>
           </button>
@@ -190,9 +192,9 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         <nav class="mb-8 grid grid-cols-1 gap-4 border-y border-base-overlay py-6 sm:grid-cols-2">
           <div>
             {prev && (
-              <a href={`/blog/${prev.slug}`} class="group flex flex-col gap-1 rounded-lg border border-base-overlay p-4 transition-colors hover:border-base-teal">
+              <a href={`/blog/${prev.slug}`} class="group flex flex-col gap-1 rounded-xl border border-base-overlay p-4 transition-colors hover:border-base-teal">
                 <span class="font-code text-xs text-base-muted">← Previous</span>
-                <span class="font-medium text-base-text transition-colors group-hover:text-base-teal">
+                <span class="font-semibold text-base-heading transition-colors group-hover:text-base-teal">
                   {prev.data.title}
                 </span>
               </a>
@@ -200,9 +202,9 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
           </div>
           <div class="sm:text-right">
             {next && (
-              <a href={`/blog/${next.slug}`} class="group flex flex-col gap-1 rounded-lg border border-base-overlay p-4 transition-colors hover:border-base-teal">
+              <a href={`/blog/${next.slug}`} class="group flex flex-col gap-1 rounded-xl border border-base-overlay p-4 transition-colors hover:border-base-teal">
                 <span class="font-code text-xs text-base-muted">Next →</span>
-                <span class="font-medium text-base-text transition-colors group-hover:text-base-teal">
+                <span class="font-semibold text-base-heading transition-colors group-hover:text-base-teal">
                   {next.data.title}
                 </span>
               </a>
@@ -213,10 +215,10 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         <!-- Related Posts -->
         {related.length > 0 && (
           <div class="mb-8">
-            <h2 class="mb-4 text-sm font-medium text-base-muted">
+            <h2 class="mb-5 text-sm font-bold uppercase tracking-wider text-base-muted">
               Related Posts
             </h2>
-            <div class="space-y-4">
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
               {related.map((p) => <PostCard post={p} />)}
             </div>
           </div>
@@ -286,7 +288,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         a.href = `#${id}`;
         a.textContent = h.textContent;
         a.className =
-          "block truncate text-sm transition-colors hover:text-base-teal" +
+          "block truncate text-sm transition-colors hover:text-base-heading" +
           (h.tagName === "H3" ? " pl-4 text-base-muted" : " text-base-subtle");
         li.appendChild(a);
         ul.appendChild(li);
@@ -312,10 +314,10 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 
       tocLinks.forEach((a, i) => {
         const isActive = i === currentIdx;
-        a.classList.toggle("text-base-teal", isActive);
-        a.classList.toggle("font-medium", isActive);
+        a.classList.toggle("text-base-heading", isActive);
+        a.classList.toggle("font-semibold", isActive);
         if (!isActive) {
-          a.classList.remove("text-base-teal", "font-medium");
+          a.classList.remove("text-base-heading", "font-semibold");
         }
       });
     }

@@ -5,58 +5,51 @@ import Layout from "@/layouts/Layout.astro";
 
 <Layout title="about" description="Rifki Andriyan Pratama — cs student, developer, terminal addict.">
 
-  <div class="max-w-2xl">
+  <div class="mx-auto max-w-3xl">
 
-    <div class="mb-14" data-animate style="animation-delay: 0ms">
-      <h1 class="text-3xl font-semibold text-base-text md:text-4xl">
+    <header class="pt-10 text-center" data-animate>
+      <div
+        class="mx-auto flex h-24 w-24 items-center justify-center rounded-full p-[4px]"
+        style="background: linear-gradient(135deg, var(--color-teal), var(--color-blue))"
+      >
+        <span class="flex h-full w-full items-center justify-center rounded-full bg-base-surface font-code text-3xl font-bold text-gradient select-none">
+          rp
+        </span>
+      </div>
+      <h1 class="mt-6 text-4xl font-bold tracking-tight text-base-heading md:text-5xl">
         Rifki Andriyan Pratama
       </h1>
-      <p class="mt-2 text-lg text-base-teal">
+      <p class="mt-3 text-lg text-base-subtle">
         low-level enthusiast. cs student. occasional segfault survivor.
+      </p>
+    </header>
+
+    <div class="mt-14 space-y-5 text-[17px] leading-relaxed text-base-subtle" data-animate style="animation-delay: 80ms">
+      <p>
+        spends more time reading core dumps than documentation.
+        interested in what happens between <code class="font-code text-xs text-base-heading">mov</code>
+        and <code class="font-code text-xs text-base-heading">ret</code> — memory layout, register allocation,
+        cache misses, and the occasional undefined behavior that keeps things interesting.
+      </p>
+      <p>
+        writes C that looks like Rust, Rust that looks like C, and bash that somehow works
+        on the first try. currently nerd-sniped by kernel internals, static analysis, and
+        the never-ending quest for a zero-cost abstraction that actually costs zero.
+      </p>
+      <p>
+        this blog is where i dump whatever's stuck in my head after a late-night
+        debugging session — syscall traces, build system tantrums, or that one
+        <code class="font-code text-xs text-base-heading">volatile</code> qualifier that
+        took three hours to track down.
+      </p>
+      <p>
+        reach out if you want to argue about ed over emacs, or whatever.
       </p>
     </div>
 
-    <div class="mb-14 flex flex-col gap-8 sm:flex-row sm:items-start" data-animate style="animation-delay: 80ms">
-
-      <!-- Avatar -->
-      <div class="shrink-0">
-        <div class="relative h-36 w-36 overflow-hidden rounded-2xl border border-base-overlay glow-teal">
-          <div class="flex h-full w-full items-center justify-center bg-base-surface">
-            <span class="font-code text-4xl font-bold text-base-teal select-none">rp</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bio -->
-      <div class="space-y-4 text-base leading-relaxed text-base-subtle">
-        <p>
-          spends more time reading core dumps than documentation.
-          interested in what happens between <code class="font-code text-xs text-base-text">mov</code>
-          and <code class="font-code text-xs text-base-text">ret</code> — memory layout, register allocation,
-          cache misses, and the occasional undefined behavior that keeps things interesting.
-        </p>
-        <p>
-          writes C that looks like Rust, Rust that looks like C, and bash that somehow works
-          on the first try. currently nerd-sniped by kernel internals, static analysis, and
-          the never-ending quest for a zero-cost abstraction that actually costs zero.
-        </p>
-        <p>
-          this blog is where i dump whatever's stuck in my head after a late-night
-          debugging session — syscall traces, build system tantrums, or that one
-          <code class="font-code text-xs text-base-text">volatile</code> qualifier that
-          took three hours to track down.
-        </p>
-        <p>
-          reach out if you want to argue about ed over emacs, or whatever.
-        </p>
-      </div>
-    </div>
-
-    <div class="mb-14" data-animate style="animation-delay: 160ms">
-      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
-        current stack
-      </h2>
-      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <section class="mt-16" data-animate style="animation-delay: 160ms">
+      <h2 class="section-title text-left">Current stack</h2>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {[
           { label: "Languages",   items: ["C", "Rust", "TypeScript", "Assembly (x86_64)", "Python", "Bash"] },
           { label: "Low-level",   items: ["Linux Kernel", "KVM", "eBPF", "PTrace", "GDB"] },
@@ -64,23 +57,21 @@ import Layout from "@/layouts/Layout.astro";
           { label: "Editor",      items: ["Neovim (btw)", "Helix"] },
           { label: "Obsessions",  items: ["Memory allocators", "Static analysis", "Zero-copy", "Cache misses"] },
         ].map(({ label, items }) => (
-          <div class="rounded-lg border border-base-overlay bg-base-surface p-4">
-            <p class="font-code mb-2 text-xs text-base-subtle">{label}</p>
-            <div class="flex flex-wrap gap-1">
+          <div class="js-card flex flex-col gap-2 p-6">
+            <p class="font-code text-xs font-semibold uppercase tracking-widest text-base-muted">{label}</p>
+            <div class="flex flex-wrap gap-1.5">
               {items.map((item) => (
-                <span class="font-code text-xs text-base-text">{item}</span>
+                <span class="tag-chip text-xs" style="--tag-color: #5fedac">{item}</span>
               ))}
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </section>
 
-    <div data-animate style="animation-delay: 240ms">
-      <h2 class="font-code mb-5 text-xs font-medium uppercase tracking-widest text-base-subtle">
-        find me
-      </h2>
-      <div class="flex flex-col gap-3 font-code text-sm">
+    <section class="mt-16" data-animate style="animation-delay: 240ms">
+      <h2 class="section-title text-left">Find me</h2>
+      <div class="flex flex-col gap-3 text-[15px]">
         {[
           { label: "github",    href: "https://github.com/RifkiAndriyanPratama",        display: "github.com/RifkiAndriyanPratama" },
           { label: "linkedin",  href: "https://linkedin.com/in/RifkiAndriyanPratama",   display: "linkedin.com/in/RifkiAndriyanPratama" },
@@ -90,16 +81,15 @@ import Layout from "@/layouts/Layout.astro";
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            class="group flex items-center gap-3 text-base-subtle transition-colors hover:text-base-teal"
+            class="group flex items-center gap-3 text-base-subtle transition-colors hover:text-base-heading"
           >
-            <span class="w-20 text-base-muted">{label}</span>
-            <span class="text-base-subtle group-hover:text-base-teal transition-colors">→</span>
+            <span class="w-24 text-base-muted">{label}</span>
+            <span class="text-base-subtle transition-colors group-hover:text-base-teal">→</span>
             <span>{display}</span>
           </a>
         ))}
       </div>
-    </div>
+    </section>
 
   </div>
 </Layout>
-

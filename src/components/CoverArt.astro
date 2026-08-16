@@ -1,0 +1,207 @@
+---
+// src/components/CoverArt.astro
+// Deterministic SVG illustration for posts/projects without a cover image.
+// Picks a "low-level" themed motif (chip / hexdump / code / stack) from the seed.
+
+interface Props {
+  seed: string;
+  label?: string;
+}
+
+const { seed, label = "0x0" } = Astro.props;
+
+// FNV-1a hash -> seed number
+let h = 2166136261;
+for (let i = 0; i < seed.length; i++) {
+  h ^= seed.charCodeAt(i);
+  h = Math.imul(h, 16777619);
+}
+const hnum = h >>> 0;
+const uid = "cv" + hnum.toString(36);
+const variant = hnum % 4;
+
+// Deterministic PRNG (mulberry32)
+const rnd = (() => {
+  let s = hnum;
+  return () => {
+    s |= 0; s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+})();
+
+const pick = <T,>(arr: T[]): T => arr[Math.floor(rnd() * arr.length)];
+const hex = (): string => Math.floor(rnd() * 256).toString(16).padStart(2, "0");
+
+const PALETTE = ["#5fedac", "#49b3bc", "#ef7a2b", "#e8c766", "#b79df0", "#f06a6a"];
+const dim = "#8aa0b8";
+
+// Hexdump content
+const hexRows = [...Array(6)].map((_, r) => {
+  const bytes = [...Array(10)].map(() => {
+    const v = hex();
+    return { v, c: rnd() > 0.72 ? pick(PALETTE) : dim };
+  });
+  const addr = "0x" + (r * 16).toString(16).padStart(4, "0");
+  return { addr, bytes };
+});
+
+// Code content
+const codeWords = ["mov", "push", "call", "pop", "ret", "lea", "xor", "cmp", "jne", "add", "sub", "syscall", "rax", "rbx", "rcx", "rdx", "rsp", "rbp", "0x40", "0x7f", ";", "#", "(", ")"];
+const codeLines = [...Array(7)].map(() => {
+  const n = 3 + Math.floor(rnd() * 5);
+  return [...Array(n)].map(() => ({
+    t: pick(codeWords),
+    c: rnd() > 0.6 ? pick(PALETTE) : dim,
+  }));
+});
+---
+
+<svg viewBox="0 0 400 320" class="h-full w-full" role="img" aria-label={label}>
+  <defs>
+    <linearGradient id={`${uid}-bg`} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="0.55" stop-color="#111a26"/>
+      <stop offset="1" stop-color="#17222f"/>
+    </linearGradient>
+    <linearGradient id={`${uid}-accent`} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5fedac"/>
+      <stop offset="1" stop-color="#49b3bc"/>
+    </linearGradient>
+    <filter id={`${uid}-blur`} x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="320" fill={`url(#${uid}-bg)`}/>
+  <circle cx="90" cy="60" r="150" fill="#5fedac" opacity="0.10" filter={`url(#${uid}-blur)`}/>
+  <circle cx="330" cy="290" r="160" fill="#49b3bc" opacity="0.12" filter={`url(#${uid}-blur)`}/>
+
+  <!-- circuit traces -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M0 40 H 90 V 120" stroke="#49b3bc" stroke-width="1.5" opacity="0.5"/>
+    <path d="M400 60 H 320 V 150" stroke="#5fedac" stroke-width="1.5" opacity="0.5"/>
+    <path d="M20 320 V 230 H 120" stroke="#49b3bc" stroke-width="1.5" opacity="0.5"/>
+  </g>
+  <g fill="#5fedac">
+    <circle cx="90" cy="120" r="4"/>
+    <circle cx="320" cy="150" r="4" fill="#49b3bc"/>
+    <circle cx="120" cy="230" r="3" fill="#49b3bc"/>
+  </g>
+
+  <!-- ================= VARIANT: CHIP ================= -->
+  {variant === 0 && (
+    <g>
+      <g fill="#2b3a4a">
+        <rect x="168" y="66" width="10" height="14"/><rect x="192" y="66" width="10" height="14"/>
+        <rect x="216" y="66" width="10" height="14"/><rect x="240" y="66" width="10" height="14"/>
+        <rect x="168" y="244" width="10" height="14"/><rect x="192" y="244" width="10" height="14"/>
+        <rect x="216" y="244" width="10" height="14"/><rect x="240" y="244" width="10" height="14"/>
+        <rect x="134" y="96" width="14" height="10"/><rect x="134" y="122" width="14" height="10"/>
+        <rect x="134" y="148" width="14" height="10"/><rect x="134" y="174" width="14" height="10"/>
+        <rect x="286" y="96" width="14" height="10"/><rect x="286" y="122" width="14" height="10"/>
+        <rect x="286" y="148" width="14" height="10"/><rect x="286" y="174" width="14" height="10"/>
+      </g>
+      <rect x="148" y="80" width="138" height="164" rx="18" fill="#121a24" stroke={`url(#${uid}-accent)`} stroke-width="2"/>
+      <rect x="172" y="106" width="90" height="112" rx="10" fill="#0b1016" stroke="#2b3a4a" stroke-width="2"/>
+      <g fill="none" stroke-linecap="round">
+        <path d="M186 128 H 244 V 160" stroke="#5fedac" stroke-width="2"/>
+        <path d="M244 148 H 190 V 196" stroke="#49b3bc" stroke-width="2"/>
+      </g>
+      <circle cx="244" cy="160" r="5" fill="#5fedac"/>
+      <circle cx="190" cy="196" r="5" fill="#49b3bc"/>
+      <text x="217" y="262" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="13" font-weight="700" fill={`url(#${uid}-accent)`}>CORE</text>
+
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+        <text x="300" y="110" fill="#8aa0b8">rax = <tspan fill="#5fedac">{hex()}</tspan></text>
+        <text x="300" y="130" fill="#8aa0b8">rbx = <tspan fill="#49b3bc">{hex()}</tspan></text>
+        <text x="300" y="150" fill="#8aa0b8">rcx = <tspan fill="#e8c766">{hex()}</tspan></text>
+        <text x="300" y="170" fill="#8aa0b8">rdx = <tspan fill="#b79df0">{hex()}</tspan></text>
+        <text x="300" y="190" fill="#8aa0b8">rip = <tspan fill="#ef7a2b">0x4000</tspan></text>
+        <text x="300" y="210" fill="#8aa0b8">rsp = <tspan fill="#f06a6a">0x7fff</tspan></text>
+        <text x="72" y="268" fill="#49b3bc">cache line · 64 B</text>
+        <text x="72" y="288" fill="#8aa0b8">mmu page · 4 KiB</text>
+      </g>
+    </g>
+  )}
+
+  <!-- ================= VARIANT: HEXDUMP ================= -->
+  {variant === 1 && (
+    <g>
+      <rect x="52" y="48" width="296" height="220" rx="14" fill="rgba(255,255,255,0.045)" stroke="#2b3a4a"/>
+      <g font-family="ui-monospace, Menlo, monospace">
+        <circle cx="70" cy="68" r="4" fill="#f06a6a"/>
+        <circle cx="84" cy="68" r="4" fill="#e8c766"/>
+        <circle cx="98" cy="68" r="4" fill="#6ccb8c"/>
+        <text x="114" y="73" font-size="11" fill="#8aa0b8">xxd --len 0x60 ./mem.bin</text>
+      </g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+        {hexRows.map((row, r) => (
+          <text key={r} x="70" y={104 + r * 26} fill="#49b3bc">
+            {row.addr}
+            {row.bytes.map((b, i) => (
+              <tspan key={i} fill={b.c}>&nbsp;{b.v}</tspan>
+            ))}
+          </text>
+        ))}
+      </g>
+      <text x="200" y="288" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#5fedac">RSP → 0x7fffffffe2b0</text>
+    </g>
+  )}
+
+  <!-- ================= VARIANT: CODE ================= -->
+  {variant === 2 && (
+    <g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="12">
+        <text x="52" y="70" fill="#49b3bc" font-weight="700">.text</text>
+        {codeLines.map((line, i) => (
+          <text key={i} x={54 + (i % 2) * 6} y={92 + i * 28}>
+            <tspan fill="#2b3a4a">{(i + 1).toString().padStart(2, "0")} </tspan>
+            {line.map((tok, j) => (
+              <tspan key={j} fill={tok.c}>{tok.t}&nbsp;</tspan>
+            ))}
+          </text>
+        ))}
+      </g>
+      <g fill="#5fedac">
+        <circle cx="340" cy="96" r="4" opacity="0.8"/>
+        <circle cx="334" cy="168" r="5"/>
+        <circle cx="340" cy="240" r="3" opacity="0.8"/>
+      </g>
+      <path d="M336 96 H 344 V 240" stroke="#5fedac" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.5"/>
+      <text x="296" y="282" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#ef7a2b">$ gdb ./a.out</text>
+    </g>
+  )}
+
+  <!-- ================= VARIANT: STACK ================= -->
+  {variant === 3 && (
+    <g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="12">
+        <text x="60" y="70" fill="#49b3bc" font-weight="700">call stack</text>
+        <text x="60" y="292" fill="#8aa0b8">↑ grows down</text>
+      </g>
+      {[0, 1, 2, 3].map((i) => {
+        const y = 92 + i * 48;
+        const names = ["main()", "foo()", "bar()", "rec(3)"];
+        return (
+          <g key={i}>
+            <rect x="130" y={y} width="200" height="38" rx="10" fill="rgba(255,255,255,0.05)" stroke="#2b3a4a"/>
+            <text x="146" y={y + 15} font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#8aa0b8">0x7fff...e{["00","40","80","c0"][i]}</text>
+            <text x="146" y={y + 29} font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#5fedac">{names[i]}</text>
+            {i === 0 && (
+              <text x="342" y={y + 25} font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#e8c766">← RSP</text>
+            )}
+          </g>
+        );
+      })}
+      <path d="M336 108 H 312" stroke="#e8c766" stroke-width="1.5"/>
+      <text x="60" y="150" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#ef7a2b">stack overflow?</text>
+    </g>
+  )}
+
+  <!-- bottom-left label -->
+  <text x="20" y="308" font-family="ui-monospace, Menlo, monospace" font-size="11" font-weight="700" fill="#8aa0b8" letter-spacing="1">
+    {label.toUpperCase()}
+  </text>
+</svg>

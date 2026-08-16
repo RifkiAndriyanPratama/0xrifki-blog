@@ -13,7 +13,7 @@ interface Props {
 
 const {
   title,
-  description = "cs student by day, terminal addict by night. notes on software, systems, and projects.",
+  description = "notes on software, systems, and whatever ends up in the terminal at 2am.",
   ogImage = "/og-default.png",
   canonicalUrl,
 } = Astro.props;
@@ -23,10 +23,40 @@ const fullTitle = title === siteTitle ? siteTitle : `${title} — ${siteTitle}`;
 const canonical = canonicalUrl ?? Astro.url.href;
 
 const NAV = [
-  { href: "/",         label: "home"     },
-  { href: "/blog",     label: "blog"     },
-  { href: "/projects", label: "projects" },
-  { href: "/about",    label: "about"    },
+  { href: "/",         label: "Home"    },
+  { href: "/blog",     label: "Blog"    },
+  { href: "/projects", label: "Projects" },
+  { href: "/about",    label: "About"   },
+];
+
+const FOOTER_NAV = [
+  {
+    heading: "Explore",
+    links: [
+      { href: "/blog",     label: "Blog"     },
+      { href: "/projects", label: "Projects" },
+      { href: "/about",    label: "About"    },
+      { href: "/blog/tags", label: "Tags"    },
+    ],
+  },
+  {
+    heading: "Connect",
+    links: [
+      { href: "https://github.com/RifkiAndriyanPratama", label: "GitHub" },
+      { href: "https://linkedin.com/in/RifkiAndriyanPratama", label: "LinkedIn" },
+      { href: "https://instagram.com/thestoriesrifkii", label: "Instagram" },
+      { href: "/rss.xml", label: "RSS Feed" },
+    ],
+  },
+  {
+    heading: "More",
+    links: [
+      { href: "/blog/category/devops", label: "DevOps" },
+      { href: "/blog/category/systems", label: "Systems" },
+      { href: "/blog/category/programming", label: "Programming" },
+      { href: "/blog/tags", label: "All Tags" },
+    ],
+  },
 ];
 
 const SOCIAL = [
@@ -68,11 +98,11 @@ const SOCIAL = [
     <meta name="twitter:image"       content={ogImage} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#83c092" />
+    <meta name="theme-color" content="#5fedac" />
     <link rel="alternate" type="application/rss+xml" title="0xrifki RSS" href="/rss.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" />
     <link rel="preload" href="/favicon.svg" as="image" />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -109,125 +139,163 @@ const SOCIAL = [
       Skip to content
     </a>
 
-    <header id="navbar" class="fixed left-0 right-0 top-0 z-50 border-b border-base-overlay bg-base-bg/80 backdrop-blur-md">
-      <nav class="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
+    <header id="navbar" class="sticky top-0 z-50 w-full">
+      <div class="mx-auto flex max-w-[1392px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
 
         <!-- Wordmark -->
-        <a href="/" class="font-code text-base font-semibold text-base-teal tracking-tight transition-opacity hover:opacity-70" aria-label="Home">
-          0xrifki
+        <a href="/" class="flex items-center text-xl font-bold tracking-tight text-base-heading" aria-label="Home">
+          <span class="text-gradient">0x</span>rifki
         </a>
 
         <!-- Desktop nav -->
-        <ul class="hidden items-center gap-1 text-sm text-base-subtle sm:flex">
+        <nav class="hidden items-center gap-7 lg:flex" aria-label="Primary">
           {NAV.map(({ href, label }) => (
-            <li>
-              <a href={href} class="rounded px-3 py-1.5 transition-colors hover:bg-base-overlay hover:text-base-text" aria-current={Astro.url.pathname === href ? "page" : undefined}>
-                {label}
-              </a>
-            </li>
+            <a
+              href={href}
+              class="nav-link"
+              aria-current={Astro.url.pathname === href ? "page" : undefined}
+            >
+              {label}
+            </a>
           ))}
-          <!-- Search -->
-          <li>
-            <button
-              id="search-btn"
-              class="rounded p-1.5 text-base-muted transition-colors hover:bg-base-overlay hover:text-base-text"
-              aria-label="Search posts"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            </button>
-          </li>
-          <!-- Theme toggle -->
-          <li>
-            <button
-              id="theme-toggle"
-              class="ml-2 rounded p-1.5 text-base-muted transition-colors hover:bg-base-overlay hover:text-base-text"
-              aria-label="Toggle theme"
-            >
-              <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-              <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-            </button>
-          </li>
-        </ul>
+        </nav>
 
-        <!-- Hamburger + theme (mobile) -->
-        <div class="flex items-center gap-2 sm:hidden">
+        <div class="flex items-center gap-1">
+          <!-- Search -->
           <button
-            id="search-btn-mobile"
-            class="rounded p-1.5 text-base-muted transition-colors hover:text-base-text"
+            id="search-btn"
+            class="nav-icon"
             aria-label="Search posts"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247Z"/></svg>
           </button>
+          <!-- Theme toggle -->
           <button
-            id="theme-toggle-mobile"
-            class="rounded p-1.5 text-base-muted transition-colors hover:text-base-text"
+            id="theme-toggle"
+            class="nav-icon"
             aria-label="Toggle theme"
           >
-            <svg id="theme-icon-sun-mobile" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-            <svg id="theme-icon-moon-mobile" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z"/></svg>
+            <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z"/></svg>
           </button>
+
+          <!-- GitHub CTA -->
+          <a
+            href="https://github.com/RifkiAndriyanPratama"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-sm ml-2 hidden sm:inline-flex"
+          >
+            GitHub
+          </a>
+
+          <!-- Hamburger (mobile) -->
           <button
             id="menu-btn"
-            class="flex flex-col justify-center items-center gap-1 p-2.5 text-base-subtle hover:text-base-text transition-colors"
+            class="nav-icon lg:hidden"
             aria-label="Toggle menu"
             aria-expanded="false"
           >
-            <span class="hamburger-bar block h-0.5 w-5 bg-current transition-all duration-300"></span>
-            <span class="hamburger-bar block h-0.5 w-5 bg-current transition-all duration-300"></span>
-            <span class="hamburger-bar block h-0.5 w-5 bg-current transition-all duration-300"></span>
+            <svg id="menu-burger" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg id="menu-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
-
-      </nav>
+      </div>
 
       <!-- Mobile menu -->
       <div
         id="mobile-menu"
-        class="hidden border-t border-base-overlay bg-base-bg/95 backdrop-blur-md sm:hidden"
+        class="hidden border-t border-base-overlay lg:hidden"
       >
-        <ul class="mx-auto flex max-w-5xl flex-col px-6 py-4 text-sm text-base-subtle">
+        <ul class="mx-auto flex max-w-[1392px] flex-col px-4 pb-4 sm:px-6">
           {NAV.map(({ href, label }) => (
             <li>
               <a
                 href={href}
-                class="flex items-center gap-2 py-3.5 transition-colors hover:text-base-text border-b border-base-overlay last:border-0"
+                class="flex items-center gap-2 py-3.5 text-base-subtle transition-colors hover:text-base-heading"
               >
-                <span class="text-base-muted">→</span>
                 {label}
               </a>
             </li>
           ))}
+          <li class="pt-2">
+            <a
+              href="https://github.com/RifkiAndriyanPratama"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-block btn-sm"
+            >
+              GitHub
+            </a>
+          </li>
         </ul>
       </div>
     </header>
 
-    <main id="main-content" class="mx-auto w-full max-w-5xl flex-1 px-6 py-20 pt-28">
+    <main id="main-content" class="mx-auto w-full max-w-[1392px] flex-1 px-4 sm:px-6">
       <slot />
     </main>
 
-    <footer class="border-t border-base-overlay bg-base-bg-alt">
-      <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-8">
-        <span class="text-sm text-base-muted">
-          &copy; {new Date().getFullYear()} 0xrifki
-        </span>
-        <div class="flex items-center gap-4">
-          {SOCIAL.map(({ href, label, icon }) => (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              class="text-base-muted transition-colors hover:text-base-teal"
-            >
-              <Fragment set:html={icon} />
+    <footer class="mt-20 border-t border-base-overlay bg-base-bg">
+      <div class="mx-auto max-w-[1392px] px-4 py-16 sm:px-6">
+        <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
+          <!-- Brand -->
+          <div>
+            <a href="/" class="flex items-center text-2xl font-bold tracking-tight text-base-heading">
+              <span class="text-gradient">0x</span>rifki
             </a>
-          ))}
+            <p class="mt-4 max-w-sm text-[15px] leading-relaxed text-base-subtle">
+              cs student by day, terminal addict by night. notes on software, systems,
+              and whatever ends up in the terminal at 2am.
+            </p>
+            <div class="mt-6 flex items-center gap-3">
+              {SOCIAL.map(({ href, label, icon }) => (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  class="social-icon"
+                >
+                  <Fragment set:html={icon} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <!-- Nav columns -->
+          <div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            {FOOTER_NAV.map(({ heading, links }) => (
+              <div>
+                <p class="footer-nav-heading">{heading}</p>
+                <ul class="space-y-3">
+                  {links.map(({ href, label }) => (
+                    <li>
+                      <a href={href} class="footer-nav-link">{label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-base-overlay">
+        <div class="mx-auto flex max-w-[1392px] flex-wrap items-center justify-between gap-3 px-4 py-6 sm:px-6">
+          <span class="text-sm text-base-muted">
+            &copy; {new Date().getFullYear()} 0xrifki
+          </span>
+          <span class="text-sm text-base-muted">
+            Built with Astro
+          </span>
         </div>
       </div>
     </footer>
 
     <button id="back-to-top" aria-label="Back to top">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+      Back to top
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
     </button>
 
     <SearchModal />
@@ -239,8 +307,8 @@ const SOCIAL = [
       aria-modal="true"
       aria-label="Keyboard shortcuts"
     >
-      <div class="w-full max-w-sm rounded-xl border border-base-overlay bg-base-bg p-6 shadow-2xl">
-        <h2 class="mb-4 text-sm font-medium text-base-text">keyboard shortcuts</h2>
+      <div class="w-full max-w-sm rounded-2xl border border-base-overlay bg-base-bg p-6 shadow-2xl">
+        <h2 class="mb-4 text-sm font-semibold text-base-heading">keyboard shortcuts</h2>
         <div class="space-y-3 text-sm">
           <div class="flex items-center justify-between">
             <span class="text-base-subtle">search</span>
@@ -261,7 +329,7 @@ const SOCIAL = [
         </div>
         <button
           id="shortcuts-close"
-          class="mt-6 w-full rounded-lg border border-base-overlay py-2 text-sm text-base-muted transition-colors hover:bg-base-overlay hover:text-base-text"
+          class="btn btn-block mt-6"
         >
           got it
         </button>
@@ -298,32 +366,23 @@ const SOCIAL = [
   function initMenu() {
     const btn  = document.getElementById("menu-btn");
     const menu = document.getElementById("mobile-menu");
+    const burger = document.getElementById("menu-burger");
+    const close = document.getElementById("menu-close");
     if (!btn || !menu) return;
-
-    // Remove old listeners by cloning (simplest reset)
-    const bars = btn.querySelectorAll(".hamburger-bar");
 
     btn.onclick = () => {
       const isOpen = menu.classList.toggle("hidden") === false;
       btn.setAttribute("aria-expanded", String(isOpen));
-      if (isOpen) {
-        bars[0].classList.add("translate-y-[7px]", "rotate-45");
-        bars[1].classList.add("opacity-0");
-        bars[2].classList.add("-translate-y-[7px]", "-rotate-45");
-      } else {
-        bars[0].classList.remove("translate-y-[7px]", "rotate-45");
-        bars[1].classList.remove("opacity-0");
-        bars[2].classList.remove("-translate-y-[7px]", "-rotate-45");
-      }
+      burger?.classList.toggle("hidden", isOpen);
+      close?.classList.toggle("hidden", !isOpen);
     };
 
     menu.querySelectorAll("a").forEach((a) => {
       a.onclick = () => {
         menu.classList.add("hidden");
         btn.setAttribute("aria-expanded", "false");
-        bars[0].classList.remove("translate-y-[7px]", "rotate-45");
-        bars[1].classList.remove("opacity-0");
-        bars[2].classList.remove("-translate-y-[7px]", "-rotate-45");
+        burger?.classList.remove("hidden");
+        close?.classList.add("hidden");
       };
     });
   }
@@ -357,10 +416,7 @@ const SOCIAL = [
 
   function initTheme() {
     const toggle1 = document.getElementById("theme-toggle");
-    const toggle2 = document.getElementById("theme-toggle-mobile");
     if (toggle1) toggle1.onclick = toggleTheme;
-    if (toggle2) toggle2.onclick = toggleTheme;
-    // Re-apply theme from localStorage (View Transitions overrides html attrs)
     const saved = localStorage.getItem("theme");
     if (saved === "light") document.documentElement.classList.remove("dark");
     else if (saved === "dark") document.documentElement.classList.add("dark");
@@ -368,7 +424,6 @@ const SOCIAL = [
     updateThemeIcons(document.documentElement.classList.contains("dark"));
   }
 
-  let lastScroll = 0;
   let navbarScrollHandler = null;
 
   function initNavbar() {
@@ -378,12 +433,10 @@ const SOCIAL = [
     if (navbarScrollHandler) window.removeEventListener("scroll", navbarScrollHandler);
 
     navbarScrollHandler = () => {
-      const cur = window.scrollY;
-      if (cur > lastScroll && cur > 80) navbar.classList.add("nav-hidden");
-      else navbar.classList.remove("nav-hidden");
-      lastScroll = cur;
+      navbar.classList.toggle("scrolled", window.scrollY > 8);
     };
     window.addEventListener("scroll", navbarScrollHandler, { passive: true });
+    navbarScrollHandler();
   }
 
   let backTopScrollHandler = null;
@@ -413,7 +466,7 @@ const SOCIAL = [
     const results = document.getElementById("search-results");
     const empty   = document.getElementById("search-empty");
     const hint    = document.getElementById("search-hint");
-    const triggers = document.querySelectorAll("#search-btn, #search-btn-mobile");
+    const triggers = document.querySelectorAll("#search-btn");
 
     if (!overlay || !input || !results) return;
 
@@ -460,7 +513,7 @@ const SOCIAL = [
       matches.forEach(({ item }, i) => {
         const a = document.createElement("a");
         a.href = `/blog/${item.slug}/`;
-        a.className = "search-result-item flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-base-overlay";
+        a.className = "search-result-item flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-base-bg-alt";
         a.dataset.index = i;
         a.innerHTML = `
           <div class="flex-1 min-w-0">
@@ -519,11 +572,11 @@ const SOCIAL = [
       if (e.key === "ArrowDown") {
         e.preventDefault();
         selectedIdx = Math.min(selectedIdx + 1, items.length - 1);
-        items.forEach((el, i) => el.classList.toggle("bg-base-overlay", i === selectedIdx));
+        items.forEach((el, i) => el.classList.toggle("bg-base-bg-alt", i === selectedIdx));
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         selectedIdx = Math.max(selectedIdx - 1, -1);
-        items.forEach((el, i) => el.classList.toggle("bg-base-overlay", i === selectedIdx));
+        items.forEach((el, i) => el.classList.toggle("bg-base-bg-alt", i === selectedIdx));
       } else if (e.key === "Enter" && selectedIdx >= 0 && items[selectedIdx]) {
         e.preventDefault();
         const href = items[selectedIdx].getAttribute("href");
@@ -616,14 +669,14 @@ const SOCIAL = [
       const active = document.activeElement?.tagName;
       if (active === "INPUT" || active === "TEXTAREA") return;
       e.preventDefault();
-      const btn = document.querySelector("#search-btn, #search-btn-mobile");
+      const btn = document.querySelector("#search-btn");
       if (btn && searchOverlay?.classList.contains("hidden")) btn.click();
     }
 
     if ((e.ctrlKey || e.metaKey) && e.key === "k") {
       e.preventDefault();
       if (searchOverlay?.classList.contains("hidden")) {
-        document.querySelector("#search-btn, #search-btn-mobile")?.click();
+        document.querySelector("#search-btn")?.click();
       } else {
         searchOverlay.classList.add("hidden");
         searchOverlay.classList.remove("flex");

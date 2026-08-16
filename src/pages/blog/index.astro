@@ -6,111 +6,42 @@ import PostCard from "@/components/PostCard.astro";
 import { sortPosts } from "@/lib/utils";
 
 const posts    = sortPosts(await getCollection("posts"));
-const allTags  = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
-const archive  = [...new Set(posts.map((p) => p.data.date.getFullYear()))].sort((a, b) => b - a);
 const total    = posts.length;
+
+const tagCounts = new Map<string, number>();
+for (const p of posts) {
+  for (const t of p.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+}
+const allTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
 ---
 
-<Layout title="Blog">
-  <header class="mb-14">
-    <h1 class="text-3xl font-semibold tracking-tight text-base-text md:text-4xl">Blog</h1>
-    <p class="mt-2 text-base-subtle">
-      {total} {total === 1 ? "post" : "posts"} across {allTags.length} {allTags.length === 1 ? "tag" : "tags"}
+<Layout title="Blog" description={`All ${total} posts on the blog.`}>
+  <header class="py-10 text-center" data-animate>
+    <h1 class="text-4xl font-bold tracking-tight text-base-heading md:text-5xl">Blog</h1>
+    <p class="mt-3 text-lg text-base-subtle">
+      {total} {total === 1 ? "post" : "posts"} across {tagCounts.size} {tagCounts.size === 1 ? "tag" : "tags"}
     </p>
   </header>
 
   {allTags.length > 0 && (
-    <section class="mb-14">
-      <h2 class="mb-3 text-xs font-medium uppercase tracking-wider text-base-muted">by tag</h2>
-      <div class="flex flex-wrap gap-2">
-        {allTags.map((tag) => (
-          <a
-            href={`/blog/tag/${tag}`}
-            class="rounded-lg bg-base-overlay px-3 py-1.5 text-xs text-base-muted transition-all hover:bg-base-teal/10 hover:text-base-teal"
-          >
-            #{tag}
-          </a>
-        ))}
-      </div>
-    </section>
+    <div class="mt-8 flex flex-wrap justify-center gap-3" data-animate style="animation-delay: 60ms">
+      <a href="/blog" class="tag-chip" style="--tag-color: #5fedac">All</a>
+      {allTags.map(([tag]) => (
+        <a href={`/blog/tag/${tag}`} class="tag-chip" style="--tag-color: #5fedac">#{tag}</a>
+      ))}
+    </div>
   )}
 
-  <div class="mb-6 flex items-center justify-between">
-    <h2 class="text-sm font-medium text-base-text">All posts</h2>
-    <div class="flex gap-1 rounded-lg border border-base-overlay p-1">
-      <button id="view-grid" class="view-toggle rounded p-1.5 text-base-muted transition-colors hover:text-base-text active" aria-label="Grid view" data-view="grid">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      </button>
-      <button id="view-list" class="view-toggle rounded p-1.5 text-base-muted transition-colors hover:text-base-text" aria-label="List view" data-view="list">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <div id="posts-container">
-    {archive.map((year) => {
-      const yearPosts = posts.filter((p) => p.data.date.getFullYear() === year);
-      return (
-        <section class="mb-14 year-group">
-          <h2 class="mb-4 text-xs font-bold uppercase tracking-wider text-base-muted">
-            {year} <span class="text-base-muted">({yearPosts.length})</span>
-          </h2>
-          <div class="view-grid grid grid-cols-1 gap-10 md:grid-cols-2" data-year={year}>
-            {yearPosts.map((post) => (
-              <PostCard post={post} variant={post.data.cover ? "default" : "compact"} />
-            ))}
-          </div>
-          <!-- List view is toggled via JS -->
-          <div class="view-list hidden" data-year={year}>
-            <div class="divide-y divide-base-overlay">
-              {yearPosts.map((post) => (
-                <PostCard post={post} variant="compact" />
-              ))}
-            </div>
-          </div>
-        </section>
-      );
-    })}
+  <div class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" data-animate style="animation-delay: 120ms">
+    {posts.map((post) => (
+      <PostCard post={post} />
+    ))}
   </div>
 
   {posts.length === 0 && (
-    <div class="rounded-xl border border-dashed border-base-overlay py-20 text-center">
+    <div class="rounded-2xl border border-dashed border-base-overlay py-20 text-center">
       <p class="text-base-muted font-code text-sm">no posts yet</p>
     </div>
   )}
 
 </Layout>
-
-<script>
-  function initViewToggle() {
-    const gridBtn = document.getElementById("view-grid");
-    const listBtn = document.getElementById("view-list");
-    const grids   = document.querySelectorAll(".view-grid");
-    const lists   = document.querySelectorAll(".view-list");
-    const toggles = document.querySelectorAll(".view-toggle");
-    if (!gridBtn || !listBtn) return;
-
-    function setView(view) {
-      toggles.forEach((t) => t.classList.remove("active"));
-      if (view === "grid") {
-        gridBtn.classList.add("active");
-        grids.forEach((g) => g.classList.remove("hidden"));
-        lists.forEach((l) => l.classList.add("hidden"));
-      } else {
-        listBtn.classList.add("active");
-        grids.forEach((g) => g.classList.add("hidden"));
-        lists.forEach((l) => l.classList.remove("hidden"));
-      }
-      localStorage.setItem("blog-view", view);
-    }
-
-    gridBtn.onclick = () => setView("grid");
-    listBtn.onclick = () => setView("list");
-
-    const saved = localStorage.getItem("blog-view");
-    if (saved === "list") setView("list");
-  }
-
-  document.addEventListener("DOMContentLoaded", initViewToggle);
-  document.addEventListener("astro:page-load", initViewToggle);
-</script>

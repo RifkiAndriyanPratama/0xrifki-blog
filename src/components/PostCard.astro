@@ -2,81 +2,88 @@
 // src/components/PostCard.astro
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import { formatDate, readingTime } from "@/lib/utils";
+import CoverArt from "@/components/CoverArt.astro";
 
 interface Props {
   post: CollectionEntry<"posts">;
-  variant?: "default" | "compact";
 }
 
-const { post, variant = "default" } = Astro.props;
-const { data, slug } = post;
-const isCompact = variant === "compact";
+const { post } = Astro.props;
+const { data, slug, body } = post;
+const readTime = data.readingTime ?? readingTime(body);
+
+const CATEGORY_COLORS: Record<string, string> = {
+  devops:      "#5fedac",
+  web:         "#49b3bc",
+  systems:     "#ef7a2b",
+  tooling:     "#d99a1e",
+  security:    "#f02e2e",
+  notes:       "#8a6fd0",
+  project:     "#2e9e5b",
+  programming: "#49b3bc",
+  math:        "#d99a1e",
+};
+
+const tagColor = CATEGORY_COLORS[data.category] ?? "#5fedac";
+const chip = data.tags?.[0] ?? data.category;
 ---
 
-<article class="group relative flex flex-col overflow-hidden rounded-xl border border-base-overlay bg-base-surface transition-all duration-200 hover:border-base-teal/40 hover:shadow-lg hover:shadow-base-teal/5">
-  <a href={`/blog/${slug}/`} class="no-underline!">
-    <!-- Cover thumbnail -->
-    {data.cover && !isCompact && (
-      <div class="aspect-video overflow-hidden bg-base-overlay">
+<article class="js-card card-hover group flex flex-col p-6">
+  <a href={`/blog/${slug}/`} class="no-underline! flex flex-col gap-5">
+
+    <!-- Cover tile -->
+    <div class="relative aspect-[5/4] overflow-hidden rounded-lg" aria-hidden="true">
+      {data.cover ? (
         <Image
           src={data.cover}
           alt={data.title}
-          class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          widths={[400, 800]}
-          sizes="(min-width: 768px) 400px, 100vw"
+          class="h-full w-full object-cover"
+          widths={[400, 600]}
+          sizes="(min-width: 1200px) 400px, (min-width: 768px) 40vw, 100vw"
           loading="lazy"
         />
-      </div>
-    )}
-
-    <div class="flex flex-col gap-5 p-7">
-      <!-- Meta row -->
-      <div class="flex flex-wrap items-center gap-3 text-xs text-base-muted">
-        <time datetime={data.date.toISOString()}>
-          {new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" }).format(data.date)}
-        </time>
-        {data.updated && data.updated.getTime() !== data.date.getTime() && (
-          <>
-            <span class="text-base-muted">·</span>
-            <span class="text-base-yellow">updated</span>
-          </>
-        )}
-        {data.category && (
-          <>
-            <span class="text-base-muted">·</span>
-            <span class="text-base-teal">{data.category}</span>
-          </>
-        )}
-        {data.featured && (
-          <>
-            <span class="text-base-muted">·</span>
-            <span class="text-base-orange">★ featured</span>
-          </>
-        )}
-      </div>
-
-      <!-- Title & description -->
-      <h3 class={`font-semibold leading-snug text-base-text transition-colors group-hover:text-base-teal ${isCompact ? "text-base" : "text-xl"}`}>
-        {data.title}
-      </h3>
-
-      {!isCompact && (
-        <p class="text-[15px] leading-relaxed text-base-subtle line-clamp-3">
-          {data.description}
-        </p>
+      ) : (
+        <CoverArt seed={`${slug}-${data.category}`} label={data.category} />
       )}
+    </div>
 
-      <!-- Tags & reading time -->
-      <div class="flex flex-wrap items-center gap-3">
-        {data.tags?.slice(0, 3).map((tag) => (
-          <span class="rounded bg-base-overlay px-2 py-0.5 text-xs text-base-muted">
-            #{tag}
-          </span>
-        ))}
-        <span class="text-xs text-base-muted">
-          {data.readingTime} min read
+    <!-- Tag chip -->
+    <div>
+      <span class="tag-chip" style={`--tag-color: ${tagColor}`}>
+        {chip}
+      </span>
+    </div>
+
+    <!-- Title -->
+    <h3 class="text-2xl font-bold leading-snug text-base-heading">
+      <span class="title-link">{data.title}</span>
+    </h3>
+
+    <!-- Excerpt -->
+    <p class="line-clamp-4 text-[15px] leading-relaxed text-base-subtle">
+      {data.description}
+    </p>
+
+    <!-- Meta: author + read time -->
+    <div class="mt-auto flex items-center gap-3 pt-2">
+      <div
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full p-[3px]"
+        style="background: linear-gradient(135deg, var(--color-teal), var(--color-blue))"
+        aria-hidden="true"
+      >
+        <span class="flex h-full w-full items-center justify-center rounded-full bg-base-surface font-code text-xs font-bold text-base-heading">
+          rp
         </span>
       </div>
+      <div class="min-w-0">
+        <p class="truncate text-sm font-medium text-base-heading">Rifki Andriyan Pratama</p>
+        <p class="flex items-center gap-1.5 text-xs text-base-muted">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"/></svg>
+          {formatDate(data.date)} · {readTime} min read
+        </p>
+      </div>
     </div>
+
   </a>
 </article>

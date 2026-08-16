@@ -10,31 +10,31 @@
   aria-modal="true"
   aria-label="Search posts"
 >
-  <div class="w-full max-w-lg rounded-xl border border-base-overlay bg-base-bg shadow-2xl">
+  <div class="w-full max-w-lg overflow-hidden rounded-2xl border border-base-overlay bg-base-bg shadow-2xl">
     <!-- Input bar -->
-    <div class="flex items-center gap-3 border-b border-base-overlay px-4 py-3">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-base-muted">
-        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    <div class="flex items-center gap-3 border-b border-base-overlay px-5 py-4">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="shrink-0 text-base-muted">
+        <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247Z"/>
       </svg>
       <input
         id="search-input"
         type="text"
         placeholder="search posts..."
-        class="flex-1 bg-transparent font-code text-sm text-base-text placeholder-base-muted outline-none"
+        class="flex-1 bg-transparent text-sm text-base-text placeholder-base-muted outline-none"
         autocomplete="off"
         spellcheck="false"
       />
-      <kbd class="hidden shrink-0 rounded border border-base-overlay px-1.5 py-0.5 font-code text-[11px] text-base-muted sm:inline-block">ESC</kbd>
+      <kbd class="hidden shrink-0 rounded border border-base-overlay px-1.5 py-0.5 text-[11px] text-base-muted sm:inline-block">ESC</kbd>
     </div>
 
     <!-- Results -->
     <div id="search-results" class="max-h-[50vh] overflow-y-auto p-2">
-      <p id="search-empty" class="hidden px-3 py-6 text-center font-code text-sm text-base-muted">no results found</p>
-      <p id="search-hint" class="px-3 py-6 text-center font-code text-sm text-base-muted">type to search posts...</p>
+      <p id="search-empty" class="hidden px-3 py-6 text-center text-sm text-base-muted">no results found</p>
+      <p id="search-hint" class="px-3 py-6 text-center text-sm text-base-muted">type to search posts...</p>
     </div>
 
     <!-- Footer hint -->
-    <div class="flex items-center gap-4 border-t border-base-overlay px-4 py-2 font-code text-[11px] text-base-muted">
+    <div class="flex items-center gap-4 border-t border-base-overlay px-5 py-2.5 text-[11px] text-base-muted">
       <span>↑↓ navigate</span>
       <span>↵ open</span>
       <span>esc close</span>

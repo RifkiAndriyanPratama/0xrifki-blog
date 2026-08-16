@@ -4,8 +4,8 @@
   "description": "cs student by day, terminal addict by night. notes on software, systems, and projects.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1e2326",
-  "theme_color": "#83c092",
+  "background_color": "#100f15",
+  "theme_color": "#5fedac",
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
   ]
