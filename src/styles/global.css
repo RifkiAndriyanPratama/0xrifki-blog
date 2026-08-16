@@ -686,6 +686,15 @@
     border-bottom-color: var(--color-overlay);
   }
 
+  /* ---------- Article reading typography ---------- */
+  .prose {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+  .prose p { margin-top: 1.15em; margin-bottom: 1.15em; }
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { line-height: 1.35; }
+  .prose ul, .prose ol { line-height: 1.8; }
+
   /* ---------- Code blocks ---------- */
   .code-header {
     display: flex;
