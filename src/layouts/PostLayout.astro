@@ -19,7 +19,7 @@ const readTime = post.data.readingTime ?? readingTime(post.body);
 
 const ogImage = cover
   ? new URL(cover.src, Astro.site).toString()
-  : undefined;
+  : new URL(`/og/${post.slug}.png`, Astro.site).toString();
 
 const allPosts = sortPosts(await getCollection("posts"));
 const currentIdx = allPosts.findIndex((p) => p.slug === post.slug);
@@ -40,7 +40,11 @@ const seriesPosts = series
 const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 ---
 
-<Layout title={title} description={description} ogImage={ogImage} lang={lang} immersive>
+<Layout title={title} description={description} ogImage={ogImage} lang={lang} immersive
+    ogType="article"
+    publishedTime={isoDate(date)}
+    modifiedTime={updated ? isoDate(updated) : undefined}
+    author="Rifki Andriyan Pratama">
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Article",
@@ -188,6 +192,23 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
             <span>copy link</span>
           </button>
+        </div>
+
+        <!-- Reactions -->
+        <div class="mb-8 flex flex-wrap items-center gap-2" id="reactions-bar">
+          <span class="font-code text-xs text-base-muted">react</span>
+          {["👍", "🚀", "💡", "🔥"].map((emoji) => (
+            <button
+              type="button"
+              class="reaction-btn"
+              data-reaction={emoji}
+              aria-pressed="false"
+              aria-label={`React with ${emoji}`}
+            >
+              <span aria-hidden="true">{emoji}</span>
+              <span class="reaction-count" data-count>0</span>
+            </button>
+          ))}
         </div>
 
         <!-- Prev / Next -->
@@ -469,6 +490,50 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         close.focus();
       });
     });
+  }
+
+  if (!window.__reactionsBound) {
+    window.__reactionsBound = true;
+    const bar = document.getElementById("reactions-bar");
+    if (bar) {
+      const KEY = "0xrifki:reactions";
+      const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute("href") || "";
+      const m = canonical.match(/\/blog\/([^/]+)\/?$/);
+      const slug = m ? m[1] : window.location.pathname.replace(/\/$/, "").split("/").pop() || "";
+
+      let data = {};
+      try { data = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch {}
+      const rec = data[slug] || { counts: {}, mine: null };
+
+      const render = () => {
+        bar.querySelectorAll(".reaction-btn").forEach((btn) => {
+          const e = btn.dataset.reaction;
+          const c = btn.querySelector("[data-count]");
+          if (c) c.textContent = String(rec.counts[e] || 0);
+          btn.setAttribute("aria-pressed", String(rec.mine === e));
+          btn.classList.toggle("active", rec.mine === e);
+        });
+      };
+
+      bar.querySelectorAll(".reaction-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const e = btn.dataset.reaction;
+          if (rec.mine === e) {
+            rec.counts[e] = (rec.counts[e] || 1) - 1;
+            if (rec.counts[e] <= 0) delete rec.counts[e];
+            rec.mine = null;
+          } else {
+            if (rec.mine && rec.counts[rec.mine]) rec.counts[rec.mine] = (rec.counts[rec.mine] || 1) - 1;
+            rec.counts[e] = (rec.counts[e] || 0) + 1;
+            rec.mine = e;
+          }
+          data[slug] = rec;
+          localStorage.setItem(KEY, JSON.stringify(data));
+          render();
+        });
+      });
+      render();
+    }
   }
 
   document.addEventListener("DOMContentLoaded", initPost);
