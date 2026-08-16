@@ -490,51 +490,57 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         close.focus();
       });
     });
+
+    initReactions();
   }
 
-  if (!window.__reactionsBound) {
-    window.__reactionsBound = true;
+  function initReactions() {
     const bar = document.getElementById("reactions-bar");
-    if (bar) {
-      const KEY = "0xrifki:reactions";
-      const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute("href") || "";
-      const m = canonical.match(/\/blog\/([^/]+)\/?$/);
-      const slug = m ? m[1] : window.location.pathname.replace(/\/$/, "").split("/").pop() || "";
+    if (!bar || bar.dataset.reactionsBound) return;
+    bar.dataset.reactionsBound = "1";
+    const KEY = "0xrifki:reactions";
+    const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute("href") || "";
+    const m = canonical.match(/\/blog\/([^/]+)\/?$/);
+    const slug = m ? m[1] : window.location.pathname.replace(/\/$/, "").split("/").pop() || "";
 
-      let data = {};
-      try { data = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch {}
-      const rec = data[slug] || { counts: {}, mine: null };
+    let data = {};
+    try { data = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch {}
+    const rec = data[slug] || { counts: {}, mine: null };
 
-      const render = () => {
-        bar.querySelectorAll(".reaction-btn").forEach((btn) => {
-          const e = btn.dataset.reaction;
-          const c = btn.querySelector("[data-count]");
-          if (c) c.textContent = String(rec.counts[e] || 0);
-          btn.setAttribute("aria-pressed", String(rec.mine === e));
-          btn.classList.toggle("active", rec.mine === e);
-        });
-      };
-
+    const render = () => {
       bar.querySelectorAll(".reaction-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const e = btn.dataset.reaction;
-          if (rec.mine === e) {
-            rec.counts[e] = (rec.counts[e] || 1) - 1;
-            if (rec.counts[e] <= 0) delete rec.counts[e];
-            rec.mine = null;
-          } else {
-            if (rec.mine && rec.counts[rec.mine]) rec.counts[rec.mine] = (rec.counts[rec.mine] || 1) - 1;
-            rec.counts[e] = (rec.counts[e] || 0) + 1;
-            rec.mine = e;
-          }
-          data[slug] = rec;
-          localStorage.setItem(KEY, JSON.stringify(data));
-          render();
-        });
+        const e = btn.dataset.reaction;
+        const c = btn.querySelector("[data-count]");
+        if (c) c.textContent = String(rec.counts[e] || 0);
+        btn.setAttribute("aria-pressed", String(rec.mine === e));
+        btn.classList.toggle("active", rec.mine === e);
       });
-      render();
-    }
+    };
+
+    bar.querySelectorAll(".reaction-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const e = btn.dataset.reaction;
+        if (rec.mine === e) {
+          rec.counts[e] = (rec.counts[e] || 1) - 1;
+          if (rec.counts[e] <= 0) delete rec.counts[e];
+          rec.mine = null;
+        } else {
+          if (rec.mine && rec.counts[rec.mine]) {
+            rec.counts[rec.mine] = (rec.counts[rec.mine] || 1) - 1;
+            if (rec.counts[rec.mine] <= 0) delete rec.counts[rec.mine];
+          }
+          rec.counts[e] = (rec.counts[e] || 0) + 1;
+          rec.mine = e;
+        }
+        data[slug] = rec;
+        localStorage.setItem(KEY, JSON.stringify(data));
+        render();
+      });
+    });
+    render();
   }
+
+  initReactions();
 
   document.addEventListener("DOMContentLoaded", initPost);
   document.addEventListener("astro:page-load", initPost);
