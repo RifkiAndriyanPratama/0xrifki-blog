@@ -13,18 +13,18 @@
   --color-bg:      #ffffff;
   --color-bg-alt:  #f7f8fa;
   --color-surface: #ffffff;
-  --color-overlay: #eeeeee;
+  --color-overlay: #e9eaf0;
   --color-muted:   #767c92;
   --color-subtle:  #4c526a;
   --color-text:    #2d3350;
   --color-heading: #090c1e;
-  --color-teal:    #5fedac;
-  --color-blue:    #49b3bc;
+  --color-teal:    #0ea567;
+  --color-blue:    #0e7f8d;
   --color-green:   #2e9e5b;
-  --color-yellow:  #d99a1e;
-  --color-orange:  #ef7a2b;
-  --color-red:     #e5484d;
-  --color-purple:  #8a6fd0;
+  --color-yellow:  #c98a12;
+  --color-orange:  #dd6a1c;
+  --color-red:     #d43c41;
+  --color-purple:  #7c62c0;
 }
 
 /* Dark theme */
@@ -309,6 +309,22 @@
     transition: opacity 0.2s ease;
   }
   .tag-chip:hover::before { opacity: 0.18; }
+
+  /* ---------- Language badge ---------- */
+  .lang-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 999px;
+    border: 1px solid var(--color-overlay);
+    background: var(--color-surface);
+    color: var(--color-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
 
   /* ---------- Post title gradient underline ---------- */
   .title-link {

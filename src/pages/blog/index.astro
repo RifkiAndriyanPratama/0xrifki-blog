@@ -13,6 +13,23 @@ for (const p of posts) {
   for (const t of p.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
 }
 const allTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+
+const CAT_COLORS: Record<string, string> = {
+  devops:      "#5fedac",
+  web:         "#49b3bc",
+  systems:     "#ef7a2b",
+  tooling:     "#d99a1e",
+  security:    "#f02e2e",
+  notes:       "#8a6fd0",
+  project:     "#2e9e5b",
+  programming: "#49b3bc",
+  math:        "#d99a1e",
+};
+const tagColor = new Map<string, string>();
+for (const p of posts) {
+  const c = CAT_COLORS[p.data.category] ?? "#5fedac";
+  for (const t of p.data.tags) if (!tagColor.has(t)) tagColor.set(t, c);
+}
 ---
 
 <Layout title="Blog" description={`All ${total} posts on the blog.`}>
@@ -27,7 +44,7 @@ const allTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
     <div class="mt-8 flex flex-wrap justify-center gap-3" data-animate style="animation-delay: 60ms">
       <a href="/blog" class="tag-chip" style="--tag-color: #5fedac">All</a>
       {allTags.map(([tag]) => (
-        <a href={`/blog/tag/${tag}`} class="tag-chip" style="--tag-color: #5fedac">#{tag}</a>
+        <a href={`/blog/tag/${tag}`} class="tag-chip" style={`--tag-color: ${tagColor.get(tag) ?? "#5fedac"}`}>#{tag}</a>
       ))}
     </div>
   )}

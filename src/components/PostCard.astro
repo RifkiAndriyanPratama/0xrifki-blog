@@ -57,10 +57,13 @@ const isoDate = data.date.toISOString().slice(0, 10);
       )}
     </div>
 
-    <!-- Tag chip -->
-    <div>
+    <!-- Tag chip + language -->
+    <div class="flex flex-wrap items-center gap-2">
       <span class="tag-chip" style={`--tag-color: ${tagColor}`}>
         {chip}
+      </span>
+      <span class="lang-badge" aria-label={`Language: ${data.lang === "id" ? "Indonesian" : "English"}`}>
+        {data.lang === "id" ? "ID" : "EN"}
       </span>
     </div>
 

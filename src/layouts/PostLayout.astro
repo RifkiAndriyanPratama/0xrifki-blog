@@ -30,6 +30,8 @@ const related = allPosts
   .filter((p) => p.slug !== post.slug && p.data.category === category)
   .slice(0, 3);
 
+const tocHeadings = post.body.match(/^#{2,4}\s.*$/gm)?.length ?? 0;
+
 const seriesPosts = series
   ? allPosts
       .filter((p) => p.data.series === series)
@@ -144,7 +146,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         </div>
       )}
 
-      <details class="mb-10 rounded-2xl border border-base-overlay" id="toc-component">
+      <details class="mb-10 rounded-2xl border border-base-overlay" id="toc-component" open={tocHeadings >= 3}>
         <summary class="cursor-pointer px-5 py-3 text-sm font-medium text-base-subtle transition-colors hover:text-base-heading">
           Table of Contents
         </summary>
