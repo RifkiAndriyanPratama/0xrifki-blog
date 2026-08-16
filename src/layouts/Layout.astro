@@ -616,6 +616,19 @@ const SOCIAL = [
     if (modal) modal.onclick = (e) => { if (e.target === e.currentTarget) closeShortcuts(); };
   }
 
+  let cardGlowBound = false;
+  function initCardGlow() {
+    if (cardGlowBound) return;
+    cardGlowBound = true;
+    document.addEventListener("mousemove", (e) => {
+      const card = e.target?.closest?.(".js-card");
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+      card.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+    }, { passive: true });
+  }
+
   function initAll() {
     initMenu();
     initAnimations();
@@ -624,6 +637,7 @@ const SOCIAL = [
     initBackToTop();
     initSearch();
     initShortcuts();
+    initCardGlow();
   }
 
   // Run on first load & every View Transition

@@ -223,24 +223,35 @@
   }
   .js-card > * { position: relative; z-index: 1; }
 
-  /* interactive gradient sheen */
+  /* interactive mouse-follow glow */
   .js-card::before {
     content: "";
     position: absolute;
     inset: 1px;
     border-radius: calc(var(--radius-16) - 1px);
-    background: linear-gradient(125deg, transparent 45%, color-mix(in srgb, var(--color-teal) 55%, transparent) 75%, color-mix(in srgb, var(--color-blue) 70%, transparent) 95%);
+    background: radial-gradient(
+      460px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--color-teal) 14%, transparent),
+      color-mix(in srgb, var(--color-blue) 10%, transparent) 45%,
+      transparent 70%
+    );
     opacity: 0;
     transition: opacity 0.35s ease;
     z-index: 1;
     pointer-events: none;
   }
-  .js-card:hover::before { opacity: 0.5; }
+  .js-card:hover::before { opacity: 1; }
 
   .card-hover {
-    transition: transform 0.2s ease;
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
   }
-  .card-hover:hover { transform: translateY(-3px); }
+  .card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.32);
+  }
 
   /* ---------- Section titles ---------- */
   .section-title {
