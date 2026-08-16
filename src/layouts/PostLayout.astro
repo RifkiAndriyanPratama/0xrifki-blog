@@ -40,7 +40,7 @@ const seriesPosts = series
 const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 ---
 
-<Layout title={title} description={description} ogImage={ogImage} lang={lang}>
+<Layout title={title} description={description} ogImage={ogImage} lang={lang} immersive>
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Article",
