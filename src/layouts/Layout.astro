@@ -212,6 +212,7 @@ const SOCIAL = [
             <li>
               <a
                 href={href}
+                aria-current={Astro.url.pathname === href ? "page" : undefined}
                 class="flex items-center gap-2 py-3.5 text-base-subtle transition-colors hover:text-base-heading"
               >
                 {label}
