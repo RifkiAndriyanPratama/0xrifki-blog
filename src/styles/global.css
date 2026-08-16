@@ -504,6 +504,8 @@
     line-height: 1.8;
     min-height: 12.5rem;
     color: #e6edf3;
+    overflow-x: auto;
+    scrollbar-width: thin;
   }
   .term-line { display: flex; gap: 0.5rem; white-space: nowrap; }
   .term-prompt { color: #5fedac; font-weight: 700; }
@@ -576,6 +578,8 @@
 
   @media (max-width: 640px) {
     .esub-section { padding: 2.5rem 1.25rem; }
+    .term-body { font-size: 0.74rem; padding: 0.8rem 0.9rem; }
+    .hero-glow-ring { opacity: 0.5; }
   }
 
   /* ---------- Social circles ---------- */
