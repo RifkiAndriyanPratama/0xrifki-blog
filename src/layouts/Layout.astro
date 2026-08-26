@@ -33,30 +33,6 @@ const {
 const siteTitle = "thestoriesrifki";
 const fullTitle = title === siteTitle ? siteTitle : `${title} — ${siteTitle}`;
 const canonical = canonicalUrl ?? Astro.url.href;
-
-const NAV = [
-  { href: "/",     label: "Beranda" },
-  { href: "/blog",       label: "Blog" },
-];
-
-const FOOTER_NAV = [
-  {
-    heading: "Jelajahi",
-    links: [
-      { href: "/blog",      label: "Blog"   },
-      { href: "/about",     label: "Tentang" },
-      { href: "/blog/tags", label: "Tag"     },
-      { href: "/rss.xml",   label: "RSS"     },
-    ],
-  },
-  {
-    heading: "Terhubung",
-    links: [
-      { href: "https://instagram.com/thestoriesrifkii", label: "Instagram" },
-      { href: "https://github.com/RifkiAndriyanPratama", label: "GitHub" },
-    ],
-  },
-];
 ---
 
 <!doctype html>
@@ -96,7 +72,6 @@ const FOOTER_NAV = [
       "description": description,
     })} />
 
-    <!-- View Transitions -->
     <ViewTransitions />
     <script is:inline>
     document.addEventListener('astro:page-load', () => {
@@ -107,137 +82,31 @@ const FOOTER_NAV = [
     </script>
   </head>
 
-  <body class={`flex min-h-screen flex-col bg-base-bg text-base-text${immersive ? " has-immersive-nav" : ""}`}>
+  <body class="flex min-h-screen flex-col bg-base-bg text-base-text">
 
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300] focus:rounded focus:bg-base-bg focus:px-4 focus:py-2 focus:text-base-text focus:outline-2 focus:outline-offset-2 focus:outline-base-teal">
       Loncat ke konten
     </a>
 
-    <header id="navbar" class="sticky top-0 z-50 w-full">
-      <div class="mx-auto flex max-w-[1392px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
-
-        <!-- Wordmark -->
-        <a href="/" class="flex items-center text-xl font-bold tracking-tight text-base-heading" aria-label="Beranda">
-          thestoriesrifki
-        </a>
-
-        <!-- Desktop nav -->
-        <nav class="hidden items-center gap-7 lg:flex" aria-label="Primary">
-          {NAV.map(({ href, label }) => (
-            <a
-              href={href}
-              class:list={["nav-link", Astro.url.pathname === href && "active"]}
-              aria-current={Astro.url.pathname === href ? "page" : undefined}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-
-        <div class="flex items-center gap-1">
-          <!-- Search -->
-          <button
-            id="search-btn"
-            class="nav-icon"
-            aria-label="Cari tulisan"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247Z"/></svg>
-          </button>
-
-          <!-- Hamburger (mobile) -->
-          <button
-            id="menu-btn"
-            class="nav-icon lg:hidden"
-            aria-label="Buka menu"
-            aria-expanded="false"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile menu overlay -->
-      <div id="mobile-overlay" class="fixed inset-0 z-[80] hidden bg-black/40 lg:hidden" aria-hidden="true"></div>
-
-      <!-- Mobile sidebar -->
-      <div
-        id="mobile-menu"
-        class="fixed right-0 top-0 z-[90] flex h-full w-72 flex-col border-l border-base-overlay bg-base-bg p-6 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] translate-x-full lg:hidden"
-      >
-        <div class="mb-8 flex items-center justify-between">
-          <a href="/" class="text-lg font-bold tracking-tight text-base-heading">
-            thestoriesrifki
-          </a>
-          <button id="menu-close-btn" class="nav-icon" aria-label="Tutup menu">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <nav class="flex flex-col gap-1" aria-label="Mobile">
-          {NAV.map(({ href, label }) => {
-            const isActive = Astro.url.pathname === href;
-            return (
-              <a
-                href={href}
-                aria-current={isActive ? "page" : undefined}
-                class:list={[
-                  "rounded-lg px-3 py-3 transition-colors",
-                  isActive
-                    ? "bg-base-bg-alt font-semibold text-base-heading"
-                    : "text-base-subtle hover:bg-base-bg-alt hover:text-base-heading",
-                ]}
-              >
-                {label}
-              </a>
-            );
-          })}
-        </nav>
-      </div>
-    </header>
-
-    <main id="main-content" class="mx-auto w-full max-w-[1392px] flex-1 px-4 sm:px-6">
+    <main id="main-content" class="mx-auto w-full max-w-[720px] flex-1 px-5 md:px-0">
       <slot />
     </main>
 
-    <footer class="mt-20 border-t border-base-overlay bg-base-bg">
-      <div class="mx-auto max-w-[1392px] px-4 py-16 sm:px-6">
-        <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
-          <!-- Brand -->
-          <div>
-            <a href="/" class="flex items-center text-2xl font-bold tracking-tight text-base-heading">
-              thestoriesrifki
-            </a>
-            <p class="mt-4 max-w-sm text-[15px] leading-relaxed text-base-subtle">
-              cerita seputar coding, teknologi, dan hidup. ditulis dengan bahasa yang gampang dipahami.
-            </p>
-          </div>
-
-          <!-- Nav columns -->
-          <div class="grid grid-cols-2 gap-8">
-            {FOOTER_NAV.map(({ heading, links }) => (
-              <div>
-                <p class="footer-nav-heading">{heading}</p>
-                <ul class="space-y-3">
-                  {links.map(({ href, label }) => (
-                    <li>
-                      <a href={href} class="footer-nav-link">{label}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+    <footer class="mt-20 border-t border-base-overlay">
+      <div class="mx-auto max-w-[720px] px-5 md:px-0 py-10">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <a href="/" class="text-lg font-bold tracking-tight text-base-heading">
+            thestoriesrifki
+          </a>
+          <div class="flex items-center gap-4 text-sm text-base-muted">
+            <a href="/rss.xml" class="transition-colors hover:text-base-heading">RSS</a>
+            <a href="https://instagram.com/thestoriesrifkii" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-base-heading">Instagram</a>
+            <a href="https://github.com/RifkiAndriyanPratama" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-base-heading">GitHub</a>
           </div>
         </div>
-      </div>
-
-      <div class="border-t border-base-overlay">
-        <div class="mx-auto flex max-w-[1392px] flex-wrap items-center justify-between gap-3 px-4 py-6 sm:px-6">
-          <span class="font-code text-xs text-base-muted">
-            &copy; thestoriesrifki {new Date().getFullYear()}
-          </span>
-          <span class="font-code text-xs text-base-muted">
-            dibuat dengan astro
-          </span>
-        </div>
+        <p class="mt-6 font-code text-xs text-base-muted">
+          &copy; thestoriesrifki {new Date().getFullYear()}
+        </p>
       </div>
     </footer>
 
@@ -247,38 +116,6 @@ const FOOTER_NAV = [
     </button>
 
     <SearchModal />
-
-    <div
-      id="shortcuts-modal"
-      class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/50 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Pintasan keyboard"
-    >
-      <div class="w-full max-w-sm rounded-2xl border border-base-overlay bg-base-bg p-6 shadow-2xl">
-        <h2 class="mb-4 text-sm font-semibold text-base-heading">pintasan keyboard</h2>
-        <div class="space-y-3 text-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-base-subtle">cari</span>
-            <div class="flex gap-1">
-              <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">⌘K</kbd>
-              <span class="text-base-muted">atau</span>
-              <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">/</kbd>
-            </div>
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="text-base-subtle">tutup</span>
-            <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">esc</kbd>
-          </div>
-        </div>
-        <button
-          id="shortcuts-close"
-          class="btn btn-block mt-6"
-        >
-          mengerti
-        </button>
-      </div>
-    </div>
 
   </body>
 </html>
@@ -307,50 +144,6 @@ const FOOTER_NAV = [
     return () => container.removeEventListener("keydown", onTab);
   }
 
-  function initMenu() {
-    const btn  = document.getElementById("menu-btn");
-    const menu = document.getElementById("mobile-menu");
-    const overlay = document.getElementById("mobile-overlay");
-    const closeBtn = document.getElementById("menu-close-btn");
-    if (!btn || !menu) return;
-
-    let scrollY = 0;
-
-    function openMenu() {
-      scrollY = window.scrollY;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-      document.body.style.overflow = "hidden";
-      menu.classList.remove("translate-x-full");
-      overlay?.classList.remove("hidden");
-      btn.setAttribute("aria-expanded", "true");
-    }
-
-    function closeMenu() {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
-      window.scrollTo(0, scrollY);
-      menu.classList.add("translate-x-full");
-      overlay?.classList.add("hidden");
-      btn.setAttribute("aria-expanded", "false");
-    }
-
-    btn.onclick = () => {
-      const isOpen = !menu.classList.contains("translate-x-full");
-      isOpen ? closeMenu() : openMenu();
-    };
-
-    if (closeBtn) closeBtn.onclick = closeMenu;
-    if (overlay) overlay.onclick = closeMenu;
-
-    menu.querySelectorAll("a").forEach((link) => {
-      link.onclick = closeMenu;
-    });
-  }
-
   function initAnimations() {
     const obs = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
@@ -367,30 +160,6 @@ const FOOTER_NAV = [
     });
   }
 
-  let navbarScrollHandler = null;
-
-  function initNavbar() {
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-
-    if (navbarScrollHandler) window.removeEventListener("scroll", navbarScrollHandler);
-
-    let lastY = window.scrollY;
-    navbarScrollHandler = () => {
-      const y = window.scrollY;
-      navbar.classList.toggle("scrolled", y > 8);
-
-      // immersive auto-hide — only on post pages (body.has-immersive-nav)
-      if (document.body.classList.contains("has-immersive-nav")) {
-        const hide = y > 160 && y > lastY;
-        navbar.classList.toggle("nav-hidden", hide);
-        lastY = y;
-      }
-    };
-    window.addEventListener("scroll", navbarScrollHandler, { passive: true });
-    navbarScrollHandler();
-  }
-
   let backTopScrollHandler = null;
 
   function initBackToTop() {
@@ -403,7 +172,7 @@ const FOOTER_NAV = [
     backTopScrollHandler = () => {
       backBtn.classList.toggle("visible", window.scrollY > 400);
     };
-    window.addEventListener("scroll", backTopScrollHandler, { passive: true });
+    window.addEventListener("backTopScrollHandler", backTopScrollHandler, { passive: true });
   }
 
   let fuse = null;
@@ -422,7 +191,6 @@ const FOOTER_NAV = [
 
     if (!overlay || !input || !results) return;
 
-    // Load Fuse once
     if (!fuse) {
       try {
         if (!searchIndex) {
@@ -511,13 +279,12 @@ const FOOTER_NAV = [
       prevActive?.focus();
     }
 
-    // Re-attach trigger listeners
     triggers.forEach((t) => {
       t.onclick = openSearch;
     });
 
     input.oninput = () => render(input.value);
-    input.onkeydown = null; // remove old before adding new
+    input.onkeydown = null;
 
     input.addEventListener("keydown", (e) => {
       const items = results.querySelectorAll(".search-result-item");
@@ -541,94 +308,25 @@ const FOOTER_NAV = [
     };
   }
 
-  let releaseShortcutsTrap = null;
-
-  function openShortcuts() {
-    const modal = document.getElementById("shortcuts-modal");
-    if (!modal) return;
-    prevActive = document.activeElement;
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    releaseShortcutsTrap = trapFocus(modal);
-  }
-
-  function closeShortcuts() {
-    const modal = document.getElementById("shortcuts-modal");
-    if (!modal) return;
-    if (releaseShortcutsTrap) releaseShortcutsTrap();
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    prevActive?.focus();
-  }
-
-  function initShortcuts() {
-    const closeBtn = document.getElementById("shortcuts-close");
-    const modal = document.getElementById("shortcuts-modal");
-    if (closeBtn) closeBtn.onclick = closeShortcuts;
-    if (modal) modal.onclick = (e) => { if (e.target === e.currentTarget) closeShortcuts(); };
-  }
-
-  let cardGlowBound = false;
-  function initCardGlow() {
-    if (cardGlowBound) return;
-    cardGlowBound = true;
-    document.addEventListener("mousemove", (e) => {
-      const card = e.target?.closest?.(".js-card");
-      if (!card) return;
-      const r = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
-      card.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
-    }, { passive: true });
-  }
-
   function initAll() {
-    initMenu();
     initAnimations();
-    initNavbar();
     initBackToTop();
     initSearch();
-    initShortcuts();
-    initCardGlow();
   }
 
-  // Run on first load & every View Transition
   document.addEventListener("DOMContentLoaded", initAll);
   document.addEventListener("astro:page-load", initAll);
 
   document.addEventListener("keydown", (e) => {
-    const shortcutsModal = document.getElementById("shortcuts-modal");
     const searchOverlay  = document.getElementById("search-overlay");
 
-    if (e.key === "?" && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      const active = document.activeElement?.tagName;
-      if (active === "INPUT" || active === "TEXTAREA") return;
-      e.preventDefault();
-      if (shortcutsModal?.classList.contains("hidden")) {
-        openShortcuts();
-      } else {
-        closeShortcuts();
-      }
-    }
-
     if (e.key === "Escape") {
-      if (shortcutsModal && !shortcutsModal.classList.contains("hidden")) {
-        closeShortcuts();
-      }
       if (searchOverlay && !searchOverlay.classList.contains("hidden")) {
         searchOverlay.classList.add("hidden");
         searchOverlay.classList.remove("flex");
         document.body.style.overflow = "";
         if (releaseSearchTrap) releaseSearchTrap();
         prevActive?.focus();
-      }
-      const mobileMenu = document.getElementById("mobile-menu");
-      if (mobileMenu && !mobileMenu.classList.contains("translate-x-full")) {
-        mobileMenu.classList.add("translate-x-full");
-        document.getElementById("mobile-overlay")?.classList.add("hidden");
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.width = "";
-        document.body.style.overflow = "";
       }
     }
 
