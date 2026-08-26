@@ -21,9 +21,7 @@ const ogImage = cover
   : new URL(`/og/${post.slug}.png`, Astro.site).toString();
 
 const allPosts = sortPosts(await getCollection("posts"));
-const currentIdx = allPosts.findIndex((p) => p.slug === post.slug);
-const prev = currentIdx > 0 ? allPosts[currentIdx - 1] : null;
-const next = currentIdx < allPosts.length - 1 ? allPosts[currentIdx + 1] : null;
+const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
 ---
 
 <Layout title={title} description={description} ogImage={ogImage} lang={lang} immersive
@@ -103,28 +101,6 @@ const next = currentIdx < allPosts.length - 1 ? allPosts[currentIdx + 1] : null;
       <!-- Divider -->
       <div class="my-12 border-t border-base-overlay"></div>
 
-      <!-- Prev / Next -->
-      {(prev || next) && (
-        <nav class="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-10">
-          {prev && (
-            <a href={`/blog/${prev.slug}`} class="group flex flex-col gap-1 rounded-2xl border border-base-overlay p-5 transition-colors hover:border-base-teal">
-              <span class="text-xs text-base-muted">← Sebelumnya</span>
-              <span class="font-semibold text-base-heading transition-colors group-hover:text-base-teal leading-snug">
-                {prev.data.title}
-              </span>
-            </a>
-          )}
-          {next && (
-            <a href={`/blog/${next.slug}`} class="group flex flex-col gap-1 rounded-2xl border border-base-overlay p-5 transition-colors hover:border-base-teal sm:text-right sm:justify-self-end sm:w-full">
-              <span class="text-xs text-base-muted">Berikutnya →</span>
-              <span class="font-semibold text-base-heading transition-colors group-hover:text-base-teal leading-snug">
-                {next.data.title}
-              </span>
-            </a>
-          )}
-        </nav>
-      )}
-
       <!-- Back -->
       <a href="/" class="inline-block text-sm text-base-muted underline underline-offset-4 transition-colors hover:text-base-heading mb-16">
         ← kembali ke semua tulisan
@@ -163,6 +139,23 @@ const next = currentIdx < allPosts.length - 1 ? allPosts[currentIdx + 1] : null;
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
           </button>
         </div>
+
+        <!-- Other posts -->
+        {otherPosts.length > 0 && (
+          <div class="w-full border-t border-base-overlay pt-6">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-muted">Tulisan lainnya</p>
+            <ul class="flex flex-col gap-3">
+              {otherPosts.map((p) => (
+                <li>
+                  <a href={`/blog/${p.slug}`} class="group block">
+                    <p class="text-sm font-medium text-base-heading leading-snug transition-colors group-hover:text-base-teal">{p.data.title}</p>
+                    <p class="mt-0.5 text-xs text-base-muted">{formatDate(p.data.date)}</p>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
       </div>
     </aside>
