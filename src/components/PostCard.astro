@@ -1,5 +1,6 @@
 ---
 // src/components/PostCard.astro
+import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { readingTime } from "@/lib/utils";
 
@@ -18,7 +19,7 @@ const displayDate = `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateOb
 ---
 
 <article class="group py-6">
-  <a href={`/blog/${slug}/`} class="no-underline! flex flex-col gap-2">
+  <a href={`/blog/${slug}/`} class="no-underline! flex flex-col gap-4">
 
     <!-- Meta: date + read time -->
     <div class="flex items-center gap-2 text-sm text-base-muted">
@@ -33,9 +34,23 @@ const displayDate = `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateOb
     </h3>
 
     <!-- Excerpt -->
-    <p class="line-clamp-3 text-[15px] leading-relaxed text-base-subtle">
+    <p class="line-clamp-2 text-[15px] leading-relaxed text-base-subtle">
       {data.description}
     </p>
+
+    <!-- Cover image -->
+    {data.cover && (
+      <div class="mt-1 overflow-hidden rounded-xl border border-base-overlay">
+        <Image
+          src={data.cover}
+          alt={data.coverAlt ?? data.title}
+          class="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          widths={[400, 800]}
+          sizes="(min-width: 768px) 720px, 100vw"
+          loading="lazy"
+        />
+      </div>
+    )}
 
   </a>
 </article>
