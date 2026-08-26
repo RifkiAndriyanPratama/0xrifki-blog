@@ -109,7 +109,7 @@ const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
     </article>
 
     <!-- Sidebar (desktop only, sticky) -->
-    <aside class="hidden lg:block lg:w-[280px] lg:sticky lg:top-24 lg:self-start">
+    <aside class="hidden lg:block lg:w-[300px] lg:sticky lg:top-24 lg:self-start">
       <div class="flex flex-col items-start gap-6">
 
         <!-- Author -->
@@ -143,31 +143,16 @@ const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
         <!-- Other posts -->
         {otherPosts.length > 0 && (
           <div class="w-full border-t border-base-overlay pt-6">
-            <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-base-muted">Tulisan lainnya</p>
-            <div class="flex flex-col gap-4">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-muted">Tulisan lainnya</p>
+            <ul class="flex flex-col gap-0.5">
               {otherPosts.map((p) => (
-                <a href={`/blog/${p.slug}`} class="group flex gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-base-bg-alt">
-                  {p.data.cover && (
-                    <Image
-                      src={p.data.cover}
-                      alt={p.data.coverAlt ?? p.data.title}
-                      class="h-14 w-14 shrink-0 rounded-lg object-cover"
-                      width={56}
-                      height={56}
-                      loading="lazy"
-                    />
-                  )}
-                  <div class="min-w-0 flex-1">
-                    <p class="text-sm font-semibold text-base-heading leading-snug transition-colors group-hover:text-base-teal line-clamp-2">{p.data.title}</p>
-                    <div class="mt-1 flex items-center gap-2 text-[11px] text-base-muted">
-                      <time datetime={isoDate(p.data.date)}>{formatDate(p.data.date)}</time>
-                      <span aria-hidden="true">·</span>
-                      <span>{p.data.readingTime ?? readingTime(p.body)} min</span>
-                    </div>
-                  </div>
-                </a>
+                <li>
+                  <a href={`/blog/${p.slug}`} class="block rounded-lg px-2 py-2 text-sm text-base-subtle transition-colors hover:bg-base-bg-alt hover:text-base-heading">
+                    {p.data.title}
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         )}
 
