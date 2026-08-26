@@ -149,33 +149,41 @@ const FOOTER_NAV = [
           <button
             id="menu-btn"
             class="nav-icon lg:hidden"
-            aria-label="Toggle menu"
+            aria-label="Buka menu"
             aria-expanded="false"
           >
-            <svg id="menu-burger" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            <svg id="menu-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
       </div>
 
-      <!-- Mobile menu -->
+      <!-- Mobile menu overlay -->
+      <div id="mobile-overlay" class="fixed inset-0 z-[80] hidden bg-black/40 lg:hidden" aria-hidden="true"></div>
+
+      <!-- Mobile sidebar -->
       <div
         id="mobile-menu"
-        class="hidden border-t border-base-overlay lg:hidden"
+        class="fixed right-0 top-0 z-[90] flex h-full w-72 flex-col border-l border-base-overlay bg-base-bg p-6 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] translate-x-full lg:hidden"
       >
-        <ul class="mx-auto flex max-w-[1392px] flex-col px-4 pb-4 sm:px-6">
+        <div class="mb-8 flex items-center justify-between">
+          <a href="/" class="text-lg font-bold tracking-tight text-base-heading">
+            thestoriesrifki
+          </a>
+          <button id="menu-close-btn" class="nav-icon" aria-label="Tutup menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <nav class="flex flex-col gap-1" aria-label="Mobile">
           {NAV.map(({ href, label }) => (
-            <li>
-              <a
-                href={href}
-                aria-current={Astro.url.pathname === href ? "page" : undefined}
-                class="flex items-center gap-2 py-3.5 text-base-subtle transition-colors hover:text-base-heading"
-              >
-                {label}
-              </a>
-            </li>
+            <a
+              href={href}
+              aria-current={Astro.url.pathname === href ? "page" : undefined}
+              class="rounded-lg px-3 py-3 text-base-subtle transition-colors hover:bg-base-bg-alt hover:text-base-heading"
+            >
+              {label}
+            </a>
           ))}
-        </ul>
+        </nav>
       </div>
     </header>
 
@@ -295,24 +303,34 @@ const FOOTER_NAV = [
   function initMenu() {
     const btn  = document.getElementById("menu-btn");
     const menu = document.getElementById("mobile-menu");
-    const burger = document.getElementById("menu-burger");
-    const close = document.getElementById("menu-close");
+    const overlay = document.getElementById("mobile-overlay");
+    const closeBtn = document.getElementById("menu-close-btn");
     if (!btn || !menu) return;
 
+    function openMenu() {
+      menu.classList.remove("translate-x-full");
+      overlay?.classList.remove("hidden");
+      btn.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeMenu() {
+      menu.classList.add("translate-x-full");
+      overlay?.classList.add("hidden");
+      btn.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    }
+
     btn.onclick = () => {
-      const isOpen = menu.classList.toggle("hidden") === false;
-      btn.setAttribute("aria-expanded", String(isOpen));
-      burger?.classList.toggle("hidden", isOpen);
-      close?.classList.toggle("hidden", !isOpen);
+      const isOpen = !menu.classList.contains("translate-x-full");
+      isOpen ? closeMenu() : openMenu();
     };
 
+    if (closeBtn) closeBtn.onclick = closeMenu;
+    if (overlay) overlay.onclick = closeMenu;
+
     menu.querySelectorAll("a").forEach((a) => {
-      a.onclick = () => {
-        menu.classList.add("hidden");
-        btn.setAttribute("aria-expanded", "false");
-        burger?.classList.remove("hidden");
-        close?.classList.add("hidden");
-      };
+      a.onclick = closeMenu;
     });
   }
 
@@ -585,6 +603,12 @@ const FOOTER_NAV = [
         document.body.style.overflow = "";
         if (releaseSearchTrap) releaseSearchTrap();
         prevActive?.focus();
+      }
+      const mobileMenu = document.getElementById("mobile-menu");
+      if (mobileMenu && !mobileMenu.classList.contains("translate-x-full")) {
+        mobileMenu.classList.add("translate-x-full");
+        document.getElementById("mobile-overlay")?.classList.add("hidden");
+        document.body.style.overflow = "";
       }
     }
 

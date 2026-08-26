@@ -189,8 +189,6 @@
   }
   .nav-icon:hover { background-color: var(--color-bg-alt); color: var(--color-heading); }
 
-  #mobile-menu:not(.hidden) { animation: slideDown 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
-  #mobile-menu a { min-height: 48px; }
   #mobile-menu a[aria-current="page"] { color: var(--color-heading); font-weight: 600; }
   #mobile-menu a[aria-current="page"]::before {
     content: "▸";
