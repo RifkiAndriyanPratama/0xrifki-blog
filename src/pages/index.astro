@@ -5,129 +5,35 @@ import Layout from "@/layouts/Layout.astro";
 import PostCard from "@/components/PostCard.astro";
 import { sortPosts } from "@/lib/utils";
 
-const posts     = sortPosts(await getCollection("posts"));
-const projects  = await getCollection("projects");
-const recent    = posts.slice(0, 6);
-
-const tagCounts = new Map<string, number>();
-for (const p of posts) {
-  for (const t of p.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
-}
-const popularTags = [...tagCounts.entries()]
-  .sort((a, b) => b[1] - a[1])
-  .slice(0, 6);
+const posts = sortPosts(await getCollection("posts"));
 ---
 
 <Layout title="thestoriesrifki">
 
-  <div class="relative">
-    <div class="page-animated-bg" aria-hidden="true">
-      <div class="hero-bg-dots"></div>
-      <div class="aurora aurora-1"></div>
-      <div class="aurora aurora-2"></div>
-      <div class="aurora aurora-3"></div>
-      <div class="aurora aurora-4"></div>
-      <div class="aurora aurora-5"></div>
-    </div>
-
-  <!-- ============ HERO ============ -->
-  <section class="relative flex min-h-[70vh] items-center py-12 sm:py-24">
-    <div class="w-full max-w-3xl" data-animate style="animation-delay: 90ms">
-      <h1 class="mt-6 text-3xl font-bold leading-[1.4] tracking-tight sm:text-4xl md:text-5xl text-base-heading">
-        cerita seputar coding, teknologi, dan hidup.
-      </h1>
-      <p class="mt-5 text-base leading-relaxed text-base-muted sm:text-lg max-w-2xl" data-animate style="animation-delay: 180ms">
-        belajar sambil nulis, biar gampang diingat dan gampang dipahami. sesekali curhat, sesekali tutorial.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3" data-animate style="animation-delay: 260ms">
-        <a href="/blog" class="btn btn-lg">Baca Blog</a>
-        <a href="/about" class="btn btn-lg btn-outline">Tentang Aku</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ POPULAR TAGS ============ -->
-  {popularTags.length > 0 && (
-    <section class="mt-24" data-animate style="animation-delay: 80ms">
-      <h2 class="section-title">
-        Tag <span class="accent">Populer</span>
-      </h2>
-      <div class="flex flex-wrap items-center justify-center gap-6">
-        {popularTags.map(([tag, count]) => (
-          <a href={`/blog/tag/${tag}`} class="tag-pill">
-            <span class="tag-name">{tag}</span>
-            <span class="post-count">{count} tulisan</span>
-          </a>
-        ))}
-        <a href="/blog/tags" class="tag-pill group">
-          <span class="tag-name flex items-center gap-2">
-            Lihat semua tag
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300 group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </span>
-          <span class="post-count">{tagCounts.size} total</span>
-        </a>
-      </div>
-    </section>
-  )}
-
-  <!-- ============ RECENT POSTS ============ -->
-  {recent.length > 0 && (
-    <section class="mt-24" data-animate style="animation-delay: 140ms">
-      <h2 class="section-title">
-        Tulisan <span class="accent">Terbaru</span>
-      </h2>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {recent.map((post) => (
-          <PostCard post={post} />
-        ))}
-      </div>
-      <div class="mt-12 text-center">
-        <a href="/blog" class="btn btn-lg">Lihat Semua Tulisan</a>
-      </div>
-    </section>
-  )}
-
-  <!-- ============ ABOUT CTA ============ -->
-  <section class="esub-section mt-24 mb-16" data-animate style="animation-delay: 200ms">
-    <h2 class="esub-title text-3xl font-bold sm:text-4xl">
-      Kenalan dong.
-    </h2>
-    <p class="esub-sub mx-auto mt-3 max-w-xl text-lg">
-      siapa di balik tulisan-tulisan ini? klik di bawah buat kenal lebih dekat.
+  <!-- Hero -->
+  <section class="pt-16 pb-8 sm:pt-24 sm:pb-12" data-animate>
+    <h1 class="text-4xl font-bold tracking-tight text-base-heading sm:text-5xl">
+      thestoriesrifki
+    </h1>
+    <p class="mt-4 max-w-xl text-lg leading-relaxed text-base-subtle">
+      cerita seputar coding, teknologi, dan hidup. ditulis dengan bahasa yang gampang dipahami.
     </p>
-    <div class="mt-8 text-center">
-      <a href="/about" class="btn btn-lg">Tentang Aku</a>
-    </div>
   </section>
 
-  </div>
+  <!-- Divider -->
+  <hr class="border-base-overlay" />
+
+  <!-- Posts feed -->
+  <section class="divide-y divide-base-overlay">
+    {posts.map((post) => (
+      <PostCard post={post} />
+    ))}
+  </section>
+
+  {posts.length === 0 && (
+    <div class="py-20 text-center">
+      <p class="text-base-muted">belum ada tulisan.</p>
+    </div>
+  )}
 
 </Layout>
-
-<script>
-// astro:page-load fires on first load AND on every view transition,
-// so guard every initializer per-element to avoid double timers/listeners.
-const boundInit = new WeakSet();
-
-function initTilt() {
-  const wrap = document.querySelector("[data-tilt]") as HTMLElement | null;
-  if (!wrap || boundInit.has(wrap)) return;
-  boundInit.add(wrap);
-  wrap.addEventListener("mousemove", (e) => {
-    const r = wrap.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    wrap.style.transform = `perspective(900px) rotateY(${(x * 10).toFixed(2)}deg) rotateX(${(-y * 10).toFixed(2)}deg)`;
-  });
-  wrap.addEventListener("mouseleave", () => {
-    wrap.style.transform = "";
-  });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  initTilt();
-});
-document.addEventListener("astro:page-load", () => {
-  initTilt();
-});
-</script>

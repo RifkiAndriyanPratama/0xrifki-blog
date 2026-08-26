@@ -1,9 +1,7 @@
 ---
 // src/components/PostCard.astro
-import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { readingTime } from "@/lib/utils";
-import CoverArt from "@/components/CoverArt.astro";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -13,88 +11,31 @@ const { post } = Astro.props;
 const { data, slug, body } = post;
 const readTime = data.readingTime ?? readingTime(body);
 
-const CATEGORY_COLORS: Record<string, string> = {
-  devops:      "#5fedac",
-  web:         "#49b3bc",
-  systems:     "#ef7a2b",
-  tooling:     "#d99a1e",
-  security:    "#f02e2e",
-  notes:       "#8a6fd0",
-  project:     "#2e9e5b",
-  programming: "#49b3bc",
-  math:        "#d99a1e",
-};
-
-const tagColor = CATEGORY_COLORS[data.category] ?? "#5fedac";
-const chip = data.tags?.[0] ?? data.category;
-
-const seed = `${slug}-${data.category}`;
-let hv = 2166136261;
-for (let i = 0; i < seed.length; i++) {
-  hv ^= seed.charCodeAt(i);
-  hv = Math.imul(hv, 16777619);
-}
-const shortHash = (hv >>> 0).toString(16).padStart(8, "0").slice(0, 4);
 const isoDate = data.date.toISOString().slice(0, 10);
+const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+const dateObj = new Date(data.date);
+const displayDate = `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
 ---
 
-<article class="js-card card-hover group flex flex-col p-6">
-  <a href={`/blog/${slug}/`} class="no-underline! flex flex-col gap-5">
+<article class="group py-6">
+  <a href={`/blog/${slug}/`} class="no-underline! flex flex-col gap-2">
 
-    <!-- Cover tile -->
-    <div class="relative aspect-[5/4] overflow-hidden rounded-lg" aria-hidden="true">
-      {data.cover ? (
-        <Image
-          src={data.cover}
-          alt={data.title}
-          class="h-full w-full object-cover"
-          widths={[400, 600]}
-          sizes="(min-width: 1200px) 400px, (min-width: 768px) 40vw, 100vw"
-          loading="lazy"
-        />
-      ) : (
-        <CoverArt seed={`${slug}-${data.category}`} label={data.category} />
-      )}
-    </div>
-
-    <!-- Tag chip + language -->
-    <div class="flex flex-wrap items-center gap-2">
-      <span class="tag-chip" style={`--tag-color: ${tagColor}`}>
-        {chip}
-      </span>
-      <span class="lang-badge" aria-label={`Language: ${data.lang === "id" ? "Indonesian" : "English"}`}>
-        {data.lang === "id" ? "ID" : "EN"}
-      </span>
+    <!-- Meta: date + read time -->
+    <div class="flex items-center gap-2 text-sm text-base-muted">
+      <time datetime={isoDate}>{displayDate}</time>
+      <span aria-hidden="true">·</span>
+      <span>{readTime} min baca</span>
     </div>
 
     <!-- Title -->
-    <h3 class="text-2xl font-bold leading-snug text-base-heading">
-      <span class="title-link">{data.title}</span>
+    <h3 class="text-2xl font-bold leading-snug tracking-tight text-base-heading md:text-[1.65rem]">
+      <span class="transition-colors group-hover:text-base-teal">{data.title}</span>
     </h3>
 
     <!-- Excerpt -->
-    <p class="line-clamp-4 text-[15px] leading-relaxed text-base-subtle">
+    <p class="line-clamp-3 text-[15px] leading-relaxed text-base-subtle">
       {data.description}
     </p>
-
-    <!-- Meta: author + read time -->
-    <div class="mt-auto flex items-center gap-3 pt-2">
-      <div
-        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full p-[3px]"
-        style="background: linear-gradient(135deg, var(--color-teal), var(--color-blue))"
-        aria-hidden="true"
-      >
-        <span class="flex h-full w-full items-center justify-center rounded-full bg-base-surface font-code text-[10px] font-bold text-teal">
-          {shortHash}
-        </span>
-      </div>
-      <div class="min-w-0">
-        <p class="truncate text-sm font-medium text-base-heading">Rifki Andriyan Pratama</p>
-        <p class="flex items-center gap-1.5 font-code text-xs text-base-muted">
-          <span class="text-teal">{shortHash}</span> · {isoDate} · ~{readTime}min
-        </p>
-      </div>
-    </div>
 
   </a>
 </article>

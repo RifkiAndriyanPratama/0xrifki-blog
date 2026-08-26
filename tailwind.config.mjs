@@ -29,6 +29,7 @@ export default {
       fontFamily: {
         mono: ["'JetBrains Mono'", "'Fira Code'", ...defaultTheme.fontFamily.mono],
         sans: ["'Inter'", ...defaultTheme.fontFamily.sans],
+        serif: ["'Source Serif 4'", "Georgia", "serif"],
       },
       typography: (theme) => ({
         devlog: {
@@ -110,16 +111,17 @@ export default {
               },
             },
             "blockquote": {
-              fontStyle: "normal",
-              fontFamily: theme("fontFamily.mono").join(", "),
-              fontSize: "0.9em",
+              fontStyle: "italic",
+              fontFamily: "'Source Serif 4', Georgia, serif",
+              fontSize: "1.05em",
+              lineHeight: "1.7",
               borderLeftWidth: "3px",
               borderLeftColor: theme("colors.base.teal"),
               backgroundColor: theme("colors.base.surface"),
-              padding: "1rem 1.25rem",
+              padding: "1.25rem 1.5rem",
               borderRadius: "0 0.5rem 0.5rem 0",
-              marginTop: "1.5em",
-              marginBottom: "1.5em",
+              marginTop: "2em",
+              marginBottom: "2em",
             },
             "table": {
               borderCollapse: "separate",

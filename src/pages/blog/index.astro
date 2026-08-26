@@ -5,60 +5,29 @@ import Layout from "@/layouts/Layout.astro";
 import PostCard from "@/components/PostCard.astro";
 import { sortPosts } from "@/lib/utils";
 
-const posts    = sortPosts(await getCollection("posts"));
-const total    = posts.length;
-
-const tagCounts = new Map<string, number>();
-for (const p of posts) {
-  for (const t of p.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
-}
-const allTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
-
-const CAT_COLORS: Record<string, string> = {
-  devops:      "#5fedac",
-  web:         "#49b3bc",
-  systems:     "#ef7a2b",
-  tooling:     "#d99a1e",
-  security:    "#f02e2e",
-  notes:       "#8a6fd0",
-  project:     "#2e9e5b",
-  programming: "#49b3bc",
-  math:        "#d99a1e",
-};
-const tagColor = new Map<string, string>();
-for (const p of posts) {
-  const c = CAT_COLORS[p.data.category] ?? "#5fedac";
-  for (const t of p.data.tags) if (!tagColor.has(t)) tagColor.set(t, c);
-}
+const posts = sortPosts(await getCollection("posts"));
+const total = posts.length;
 ---
 
-<Layout title="Blog" description={`All ${total} posts on the blog.`}>
-  <header class="py-10 text-center" data-animate>
+<Layout title="Blog" description={`Semua ${total} tulisan di blog.`}>
+  <header class="pt-10 pb-6 text-center" data-animate>
     <h1 class="text-4xl font-bold tracking-tight text-base-heading md:text-5xl">Blog</h1>
     <p class="mt-3 text-lg text-base-subtle">
-      {total} {total === 1 ? "post" : "posts"} across {tagCounts.size} {tagCounts.size === 1 ? "tag" : "tags"}
+      {total} tulisan
     </p>
   </header>
 
-  {allTags.length > 0 && (
-    <div class="mt-8 flex flex-wrap justify-center gap-3" data-animate style="animation-delay: 60ms">
-      <a href="/blog" class="tag-chip" style="--tag-color: #5fedac">All</a>
-      {allTags.map(([tag]) => (
-        <a href={`/blog/tag/${tag}`} class="tag-chip" style={`--tag-color: ${tagColor.get(tag) ?? "#5fedac"}`}>#{tag}</a>
-      ))}
-    </div>
-  )}
+  <hr class="border-base-overlay" />
 
-  <div class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" data-animate style="animation-delay: 120ms">
+  <section class="divide-y divide-base-overlay">
     {posts.map((post) => (
       <PostCard post={post} />
     ))}
-  </div>
+  </section>
 
   {posts.length === 0 && (
-    <div class="rounded-2xl border border-dashed border-base-overlay py-20 text-center">
-      <p class="text-base-muted font-code text-sm">no posts yet</p>
+    <div class="py-20 text-center">
+      <p class="text-base-muted">belum ada tulisan.</p>
     </div>
   )}
-
 </Layout>

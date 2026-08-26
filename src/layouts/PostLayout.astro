@@ -152,12 +152,12 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 
       <details class="mb-10 rounded-2xl border border-base-overlay" id="toc-component" open={tocHeadings >= 3}>
         <summary class="cursor-pointer px-5 py-3 text-sm font-medium text-base-subtle transition-colors hover:text-base-heading">
-          Table of Contents
+          Daftar Isi
         </summary>
         <nav class="border-t border-base-overlay px-5 py-3" id="toc-content"></nav>
       </details>
 
-      <div class="prose mx-auto max-w-[720px]">
+      <div class="prose mx-auto max-w-[680px]">
         <slot />
       </div>
 
@@ -179,7 +179,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 
         <!-- Share -->
         <div class="mb-8 flex flex-wrap items-center gap-3">
-          <span class="font-code text-xs text-base-muted">share</span>
+          <span class="font-code text-xs text-base-muted">bagikan</span>
           <a id="share-twitter" href="#" target="_blank" rel="noopener noreferrer" class="btn-ghost" aria-label="Share on Twitter/X">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             X
@@ -196,7 +196,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 
         <!-- Reactions -->
         <div class="mb-8 flex flex-wrap items-center gap-2" id="reactions-bar">
-          <span class="font-code text-xs text-base-muted">react</span>
+          <span class="font-code text-xs text-base-muted">reaksi</span>
           {["👍", "🚀", "💡", "🔥"].map((emoji) => (
             <button
               type="button"
@@ -216,7 +216,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
           <div>
             {prev && (
               <a href={`/blog/${prev.slug}`} class="group flex flex-col gap-1 rounded-xl border border-base-overlay p-4 transition-colors hover:border-base-teal">
-                <span class="font-code text-xs text-base-muted">← Previous</span>
+                <span class="font-code text-xs text-base-muted">← Sebelumnya</span>
                 <span class="font-semibold text-base-heading transition-colors group-hover:text-base-teal">
                   {prev.data.title}
                 </span>
@@ -226,7 +226,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
           <div class="sm:text-right">
             {next && (
               <a href={`/blog/${next.slug}`} class="group flex flex-col gap-1 rounded-xl border border-base-overlay p-4 transition-colors hover:border-base-teal">
-                <span class="font-code text-xs text-base-muted">Next →</span>
+                <span class="font-code text-xs text-base-muted">Berikutnya →</span>
                 <span class="font-semibold text-base-heading transition-colors group-hover:text-base-teal">
                   {next.data.title}
                 </span>
@@ -239,7 +239,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         {related.length > 0 && (
           <div class="mb-8">
             <h2 class="mb-5 text-sm font-bold uppercase tracking-wider text-base-muted">
-              Related Posts
+              Tulisan Terkait
             </h2>
             <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
               {related.map((p) => <PostCard post={p} />)}
@@ -249,7 +249,7 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 
         <!-- Back link -->
         <a href="/blog" class="font-code text-xs text-base-muted underline underline-offset-4 transition-colors hover:text-base-text">
-          ← back to posts
+          ← kembali ke tulisan
         </a>
       </footer>
 
