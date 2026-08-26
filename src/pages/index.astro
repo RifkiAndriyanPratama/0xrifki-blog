@@ -3,39 +3,79 @@
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import PostCard from "@/components/PostCard.astro";
-import { sortPosts } from "@/lib/utils";
+import { Image } from "astro:assets";
+import { sortPosts, readingTime, formatDate, isoDate } from "@/lib/utils";
 
 const posts = sortPosts(await getCollection("posts"));
+const [featured, ...rest] = posts;
 ---
 
 <Layout title="thestoriesrifki">
 
   <!-- Hero -->
-  <section class="pt-10 pb-6 sm:pt-16 sm:pb-8" data-animate>
-    <h1 class="font-serif text-4xl font-bold tracking-tight text-base-heading sm:text-5xl">
-      thestoriesrifki
-    </h1>
-    <p class="mt-4 max-w-xl text-lg leading-relaxed text-base-subtle">
-      cerita seputar coding, teknologi, dan hidup.
-    </p>
+  <section class="pt-10 pb-8 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12" data-animate>
+    <div class="lg:flex lg:items-end lg:justify-between lg:gap-8">
+      <div class="lg:flex-1">
+        <h1 class="font-serif text-4xl font-bold tracking-tight text-base-heading sm:text-5xl lg:text-[3.5rem] lg:leading-[1.1]">
+          thestoriesrifki
+        </h1>
+        <p class="mt-4 max-w-xl text-lg leading-relaxed text-base-subtle lg:text-xl">
+          cerita seputar coding, teknologi, dan hidup.
+        </p>
+      </div>
 
-    <!-- Search bar -->
-    <button
-      id="search-btn"
-      class="mt-6 flex w-full max-w-md items-center gap-3 rounded-xl border border-base-overlay bg-base-bg-alt px-4 py-3 text-left text-sm text-base-muted transition-colors hover:border-base-teal"
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="shrink-0"><path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247Z"/></svg>
-      <span>cari tulisan...</span>
-      <kbd class="ml-auto hidden rounded border border-base-overlay px-1.5 py-0.5 text-xs text-base-muted sm:inline">⌘K</kbd>
-    </button>
+      <!-- Search bar -->
+      <button
+        id="search-btn"
+        class="mt-6 flex w-full max-w-md items-center gap-3 rounded-xl border border-base-overlay bg-base-bg-alt px-4 py-3 text-left text-sm text-base-muted transition-colors hover:border-base-teal lg:mt-0 lg:max-w-[280px]"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="shrink-0"><path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247Z"/></svg>
+        <span>cari tulisan...</span>
+        <kbd class="ml-auto hidden rounded border border-base-overlay px-1.5 py-0.5 text-xs text-base-muted sm:inline">⌘K</kbd>
+      </button>
+    </div>
   </section>
 
-  <!-- Divider -->
+  <hr class="border-base-overlay" />
+
+  <!-- Featured post (desktop: large card with image) -->
+  {featured && (
+    <section class="hidden lg:block py-10" data-animate>
+      <a href={`/blog/${featured.slug}/`} class="group grid grid-cols-[1fr_340px] gap-8 items-center">
+        <div>
+          <div class="flex items-center gap-2 text-sm text-base-muted mb-3">
+            <time datetime={isoDate(featured.data.date)}>{formatDate(featured.data.date)}</time>
+            <span aria-hidden="true">·</span>
+            <span>{featured.data.readingTime ?? readingTime(featured.body)} min read</span>
+          </div>
+          <h2 class="font-serif text-3xl font-bold leading-snug tracking-tight text-base-heading transition-colors group-hover:text-base-teal">
+            {featured.data.title}
+          </h2>
+          <p class="mt-3 text-base text-base-subtle leading-relaxed line-clamp-3">
+            {featured.data.description}
+          </p>
+        </div>
+        {featured.data.cover && (
+          <div class="overflow-hidden rounded-2xl">
+            <Image
+              src={featured.data.cover}
+              alt={featured.data.coverAlt ?? featured.data.title}
+              class="h-[220px] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              widths={[400, 680]}
+              sizes="340px"
+              loading="lazy"
+            />
+          </div>
+        )}
+      </a>
+    </section>
+  )}
+
   <hr class="border-base-overlay" />
 
   <!-- Posts feed -->
   <section class="divide-y divide-base-overlay">
-    {posts.map((post) => (
+    {rest.map((post) => (
       <PostCard post={post} />
     ))}
   </section>
