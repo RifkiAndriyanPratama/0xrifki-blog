@@ -27,25 +27,6 @@
   --color-purple:  #7c62c0;
 }
 
-/* Dark theme */
-:root.dark {
-  --color-bg:      #1a1814;
-  --color-bg-alt:  #141210;
-  --color-surface: #1e1c18;
-  --color-overlay: #2c2a24;
-  --color-muted:   #7a7568;
-  --color-subtle:  #b0a998;
-  --color-text:    #ddd8ce;
-  --color-heading: #f0ebe0;
-  --color-teal:    #5fedac;
-  --color-blue:    #49b3bc;
-  --color-green:   #6ccb8c;
-  --color-yellow:  #e8c766;
-  --color-orange:  #ef9a5b;
-  --color-red:     #f06a6a;
-  --color-purple:  #b79df0;
-}
-
 /* Shared tokens */
 :root {
   --gradient-primary: linear-gradient(30deg, var(--color-teal), var(--color-blue));
@@ -505,11 +486,6 @@
     background-color: var(--shiki-light-bg);
   }
   .astro-code span { color: var(--shiki-light); }
-  :root.dark .astro-code {
-    color: var(--shiki-dark);
-    background-color: var(--shiki-dark-bg);
-  }
-  :root.dark .astro-code span { color: var(--shiki-dark); }
   .code-header + .astro-code {
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
