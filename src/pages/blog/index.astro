@@ -43,9 +43,9 @@ const categories = posts.reduce((acc, post) => {
   <hr class="border-base-overlay" />
 
   <!-- Posts list -->
-  <section class="flex flex-col divide-y divide-base-overlay">
+  <section class="flex flex-col gap-4 py-6">
     {posts.map((post) => (
-      <a href={`/blog/${post.slug}/`} class="group flex items-start gap-4 py-5">
+      <a href={`/blog/${post.slug}/`} class="group flex items-start gap-4 rounded-2xl border border-base-overlay p-5 transition-all hover:border-base-teal hover:shadow-sm">
         <div class="min-w-0 flex-1">
           <div class="mb-1.5 flex items-center gap-2 text-xs text-base-muted">
             <span class="rounded-full border border-base-overlay px-2 py-0.5 capitalize">{post.data.category}</span>
