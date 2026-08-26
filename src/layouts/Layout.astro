@@ -127,7 +127,7 @@ const FOOTER_NAV = [
           {NAV.map(({ href, label }) => (
             <a
               href={href}
-              class="nav-link"
+              class:list={["nav-link", Astro.url.pathname === href && "active"]}
               aria-current={Astro.url.pathname === href ? "page" : undefined}
             >
               {label}
@@ -174,20 +174,23 @@ const FOOTER_NAV = [
           </button>
         </div>
         <nav class="flex flex-col gap-1" aria-label="Mobile">
-          {NAV.map(({ href, label }) => (
-            <a
-              href={href}
-              aria-current={Astro.url.pathname === href ? "page" : undefined}
-              class:list={[
-                "rounded-lg px-3 py-3 transition-colors",
-                Astro.url.pathname === href
-                  ? "bg-base-bg-alt font-semibold text-base-heading"
-                  : "text-base-subtle hover:bg-base-bg-alt hover:text-base-heading",
-              ]}
-            >
-              {label}
-            </a>
-          ))}
+          {NAV.map(({ href, label }) => {
+            const isActive = Astro.url.pathname === href;
+            return (
+              <a
+                href={href}
+                aria-current={isActive ? "page" : undefined}
+                class:list={[
+                  "rounded-lg px-3 py-3 transition-colors",
+                  isActive
+                    ? "bg-base-bg-alt font-semibold text-base-heading"
+                    : "text-base-subtle hover:bg-base-bg-alt hover:text-base-heading",
+                ]}
+              >
+                {label}
+              </a>
+            );
+          })}
         </nav>
       </div>
     </header>
@@ -312,18 +315,28 @@ const FOOTER_NAV = [
     const closeBtn = document.getElementById("menu-close-btn");
     if (!btn || !menu) return;
 
+    let scrollY = 0;
+
     function openMenu() {
+      scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
       menu.classList.remove("translate-x-full");
       overlay?.classList.remove("hidden");
       btn.setAttribute("aria-expanded", "true");
-      document.body.style.overflow = "hidden";
     }
 
     function closeMenu() {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, scrollY);
       menu.classList.add("translate-x-full");
       overlay?.classList.add("hidden");
       btn.setAttribute("aria-expanded", "false");
-      document.body.style.overflow = "";
     }
 
     btn.onclick = () => {
@@ -334,8 +347,8 @@ const FOOTER_NAV = [
     if (closeBtn) closeBtn.onclick = closeMenu;
     if (overlay) overlay.onclick = closeMenu;
 
-    menu.querySelectorAll("a").forEach((a) => {
-      a.onclick = closeMenu;
+    menu.querySelectorAll("a").forEach((link) => {
+      link.onclick = closeMenu;
     });
   }
 
@@ -613,6 +626,9 @@ const FOOTER_NAV = [
       if (mobileMenu && !mobileMenu.classList.contains("translate-x-full")) {
         mobileMenu.classList.add("translate-x-full");
         document.getElementById("mobile-overlay")?.classList.add("hidden");
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
         document.body.style.overflow = "";
       }
     }
