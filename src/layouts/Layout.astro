@@ -178,7 +178,12 @@ const FOOTER_NAV = [
             <a
               href={href}
               aria-current={Astro.url.pathname === href ? "page" : undefined}
-              class="rounded-lg px-3 py-3 text-base-subtle transition-colors hover:bg-base-bg-alt hover:text-base-heading"
+              class:list={[
+                "rounded-lg px-3 py-3 transition-colors",
+                Astro.url.pathname === href
+                  ? "bg-base-bg-alt font-semibold text-base-heading"
+                  : "text-base-subtle hover:bg-base-bg-alt hover:text-base-heading",
+              ]}
             >
               {label}
             </a>
