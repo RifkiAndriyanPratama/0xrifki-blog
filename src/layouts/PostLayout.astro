@@ -30,8 +30,6 @@ const related = allPosts
   .filter((p) => p.slug !== post.slug && p.data.category === category)
   .slice(0, 3);
 
-const tocHeadings = post.body.match(/^#{2,4}\s.*$/gm)?.length ?? 0;
-
 const seriesPosts = series
   ? allPosts
       .filter((p) => p.data.series === series)
@@ -150,13 +148,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
         </div>
       )}
 
-      <details class="mb-10 rounded-2xl border border-base-overlay" id="toc-component" open={tocHeadings >= 3}>
-        <summary class="cursor-pointer px-5 py-3 text-sm font-medium text-base-subtle transition-colors hover:text-base-heading">
-          Daftar Isi
-        </summary>
-        <nav class="border-t border-base-overlay px-5 py-3" id="toc-content"></nav>
-      </details>
-
       <div class="prose mx-auto">
         <slot />
       </div>
@@ -258,16 +249,12 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
 </Layout>
 
 <script is:inline>
-  let activeTOCListener = null;
-
   function initPost() {
-    // Use the article inside the <main> to be sure we target the right page content
     const article = document.querySelector("main article");
     if (!article) return;
 
     const bar = document.getElementById("reading-bar");
     if (bar) {
-      // Remove duplicate listeners by storing a named function reference
       const onScroll = () => {
         const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -279,75 +266,6 @@ const seriesIdx = seriesPosts.findIndex((p) => p.slug === post.slug);
       window.addEventListener("scroll", onScroll, { passive: true });
       bar._onScroll = onScroll;
     }
-
-    const tocContainer = document.getElementById("toc-content");
-    const tocEl = document.getElementById("toc-component");
-    if (tocContainer) tocContainer.innerHTML = "";
-
-    const headings = article.querySelectorAll("h2, h3");
-    const hasTOC = headings.length >= 4;
-
-    if (!hasTOC) {
-      tocEl?.remove();
-      return;
-    }
-
-    const tocLinks = [];
-
-    if (tocContainer) {
-      const ul = document.createElement("ul");
-      ul.className = "space-y-1";
-
-      headings.forEach((h) => {
-        const id = h.id || h.textContent
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-|-$/g, "");
-
-        h.id = id;
-
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.href = `#${id}`;
-        a.textContent = h.textContent;
-        a.className =
-          "block truncate text-sm transition-colors hover:text-base-heading" +
-          (h.tagName === "H3" ? " pl-4 text-base-muted" : " text-base-subtle");
-        li.appendChild(a);
-        ul.appendChild(li);
-        tocLinks.push(a);
-      });
-
-      tocContainer.appendChild(ul);
-    }
-
-    // Remove previous scroll spy listener to avoid duplicates
-    if (activeTOCListener) {
-      window.removeEventListener("scroll", activeTOCListener);
-      activeTOCListener = null;
-    }
-
-    function updateActiveTOC() {
-      let currentIdx = -1;
-      const scrollY = window.scrollY + 120;
-
-      headings.forEach((h, i) => {
-        if (h.offsetTop <= scrollY) currentIdx = i;
-      });
-
-      tocLinks.forEach((a, i) => {
-        const isActive = i === currentIdx;
-        a.classList.toggle("text-base-heading", isActive);
-        a.classList.toggle("font-semibold", isActive);
-        if (!isActive) {
-          a.classList.remove("text-base-heading", "font-semibold");
-        }
-      });
-    }
-
-    activeTOCListener = updateActiveTOC;
-    window.addEventListener("scroll", updateActiveTOC, { passive: true });
-    updateActiveTOC();
 
     const shareBtn = document.getElementById("share-btn");
     if (shareBtn) {
