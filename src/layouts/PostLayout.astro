@@ -52,9 +52,9 @@ const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
 
       <!-- Back link -->
       <nav class="pt-10 pb-6" aria-label="Breadcrumb">
-        <a href="/" class="inline-flex items-center gap-1.5 text-sm text-base-muted transition-colors hover:text-base-heading">
+        <a href="/blog" class="inline-flex items-center gap-1.5 text-sm text-base-muted transition-colors hover:text-base-heading">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          thestoriesrifki
+          semua tulisan
         </a>
       </nav>
 
@@ -101,8 +101,17 @@ const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
       <!-- Divider -->
       <div class="my-12 border-t border-base-overlay"></div>
 
+      <!-- Tags -->
+      {tags.length > 0 && (
+        <div class="mb-8 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span class="tag-chip">{tag}</span>
+          ))}
+        </div>
+      )}
+
       <!-- Back -->
-      <a href="/" class="inline-block text-sm text-base-muted underline underline-offset-4 transition-colors hover:text-base-heading mb-16">
+      <a href="/blog" class="inline-block text-sm text-base-muted underline underline-offset-4 transition-colors hover:text-base-heading mb-16">
         ← kembali ke semua tulisan
       </a>
 
@@ -182,7 +191,7 @@ const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
     </div>
 
     <!-- Author card -->
-    <div class="mb-10 flex items-start gap-4 rounded-2xl bg-base-bg-alt p-5">
+    <div class="mb-8 flex items-start gap-4 rounded-2xl bg-base-bg-alt p-5">
       <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-300 to-blue-400 text-base-heading font-bold text-lg">
         R
       </div>
@@ -191,6 +200,23 @@ const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
         <p class="mt-1 text-sm text-base-subtle leading-relaxed">Menulis tentang teknologi, pemrograman, dan pemikiran sehari-hari.</p>
       </div>
     </div>
+
+    <!-- Tulisan lainnya (mobile) -->
+    {otherPosts.length > 0 && (
+      <div class="mb-10">
+        <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-muted">Tulisan lainnya</p>
+        <div class="flex flex-col divide-y divide-base-overlay">
+          {otherPosts.map((p) => (
+            <a href={`/blog/${p.slug}`} class="group flex items-start gap-4 py-3">
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium text-base-heading leading-snug transition-colors group-hover:text-base-teal">{p.data.title}</p>
+                <p class="mt-1 text-xs text-base-muted">{formatDate(p.data.date)}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
   </div>
 
 </Layout>

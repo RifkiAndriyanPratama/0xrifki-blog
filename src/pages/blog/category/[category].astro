@@ -18,6 +18,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const { category } = Astro.props;
 const allPosts = sortPosts(await getCollection("posts"));
 const posts = allPosts.filter((p) => p.data.category === category);
+
+const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
 ---
 
 <Layout title={`${category}`} description={`Tulisan tentang ${category}.`}>
@@ -29,6 +31,25 @@ const posts = allPosts.filter((p) => p.data.category === category);
     </h1>
     <p class="mt-2 text-base text-base-subtle">{posts.length} tulisan</p>
   </header>
+
+  <hr class="border-base-overlay" />
+
+  <!-- Category navigation -->
+  <section class="flex flex-wrap gap-2 py-6" data-animate>
+    {allCategories.map((cat) => (
+      <a
+        href={`/blog/category/${cat}`}
+        class:list={[
+          "rounded-full border px-4 py-1.5 text-sm transition-colors",
+          cat === category
+            ? "border-base-teal bg-base-teal/10 font-medium text-base-teal"
+            : "border-base-overlay text-base-subtle hover:border-base-teal hover:text-base-teal",
+        ]}
+      >
+        {cat}
+      </a>
+    ))}
+  </section>
 
   <hr class="border-base-overlay" />
 

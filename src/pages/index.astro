@@ -52,6 +52,7 @@ const categories = posts.reduce((acc, post) => {
       <a href={`/blog/${featured.slug}/`} class="group grid grid-cols-1 gap-6 sm:grid-cols-[1fr_280px] items-center rounded-2xl border border-base-overlay p-6 transition-all hover:border-base-teal hover:shadow-sm">
         <div>
           <div class="mb-3 flex items-center gap-2 text-sm text-base-muted">
+            <span class="rounded-full border border-base-overlay px-2.5 py-0.5 text-xs capitalize">{featured.data.category}</span>
             <time datetime={isoDate(featured.data.date)}>{formatDate(featured.data.date)}</time>
             <span aria-hidden="true">·</span>
             <span>{featured.data.readingTime ?? readingTime(featured.body)} min read</span>
@@ -96,6 +97,7 @@ const categories = posts.reduce((acc, post) => {
               </h3>
               <p class="mt-1 text-sm text-base-subtle line-clamp-1">{post.data.description}</p>
               <div class="mt-1.5 flex items-center gap-2 text-xs text-base-muted">
+                <span class="rounded-full border border-base-overlay px-2 py-0.5 capitalize">{post.data.category}</span>
                 <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
                 <span aria-hidden="true">·</span>
                 <span>{post.data.readingTime ?? readingTime(post.body)} min</span>
