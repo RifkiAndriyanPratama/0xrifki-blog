@@ -153,7 +153,7 @@ function buildOgSvg({ seed, title, category }) {
   <text x="470" y="170" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" fill="url(#${uid}-acc)" font-weight="600">${esc(category)}</text>
   ${titleSvg}
 
-  <text x="470" y="560" font-family="JetBrains Mono, ui-monospace, monospace" font-size="26" fill="#9aa0b0">$ whoami &gt; <tspan fill="url(#${uid}-acc)">0xrifki</tspan></text>
+  <text x="470" y="560" font-family="JetBrains Mono, ui-monospace, monospace" font-size="26" fill="#9aa0b0">thed<tspan fill="url(#${uid}-acc)">stories</tspan>rifki</text>
   <rect x="470" y="584" width="210" height="4" rx="2" fill="url(#${uid}-acc)"/>
 </svg>`;
 }

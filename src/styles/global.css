@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 /* ============================================================
-   sysxplore-style palette
+   Palette
    accent gradient: #5fedac (mint) → #49b3bc (teal), 30deg
    ============================================================ */
 
@@ -270,13 +270,6 @@
     margin-bottom: 2rem;
     color: var(--color-heading);
   }
-  .section-title::before {
-    content: "// ";
-    font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 0.65em;
-    font-weight: 500;
-    color: var(--color-muted);
-  }
   .section-title .accent {
     background-image: var(--gradient-primary);
     -webkit-background-clip: text;
@@ -402,36 +395,9 @@
     background: var(--color-teal);
     animation: pulseDot 2s ease-out infinite;
   }
-  .h-prompt  { color: var(--color-teal); font-weight: 700; }
-  .h-key     { color: var(--color-heading); font-weight: 700; }
-  .h-comment { color: var(--color-muted); }
   @keyframes pulseDot {
     0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-teal) 60%, transparent); }
     100% { box-shadow: 0 0 0 10px transparent; }
-  }
-
-  .gradient-animated {
-    background: linear-gradient(90deg, var(--color-teal), var(--color-blue), var(--color-purple), var(--color-teal));
-    background-size: 300% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    animation: gradientMove 6s linear infinite;
-  }
-  @keyframes gradientMove {
-    to { background-position: 300% 0; }
-  }
-
-  .typing-cursor {
-    display: inline-block;
-    width: 4px;
-    height: 0.9em;
-    margin-left: 3px;
-    border-radius: 2px;
-    background: var(--color-teal);
-    vertical-align: baseline;
-    animation: blink 1s steps(1) infinite;
   }
 
   .wave {
@@ -445,107 +411,6 @@
     30% { transform: rotate(-8deg); }
     45% { transform: rotate(14deg); }
     55% { transform: rotate(-4deg); }
-  }
-
-  .hero-float      { animation: floatY 6s ease-in-out infinite; }
-  .hero-float-slow { animation: floatY 8s ease-in-out infinite; }
-  @keyframes floatY {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-14px); }
-  }
-
-  .float-badge {
-    position: absolute;
-    z-index: 20;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.85rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-overlay);
-    background: color-mix(in srgb, var(--color-surface) 85%, transparent);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    box-shadow: var(--shadow-soft);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--color-heading);
-  }
-  .float-badge i { font-style: normal; color: var(--color-teal); }
-
-  .hero-glow-ring {
-    position: absolute;
-    inset: -6%;
-    border-radius: 50%;
-    background: conic-gradient(from 0deg, transparent 0deg, var(--color-teal) 90deg, transparent 180deg, var(--color-blue) 270deg, transparent 360deg);
-    filter: blur(45px);
-    opacity: 0.55;
-    animation: spinSlow 14s linear infinite;
-    pointer-events: none;
-  }
-  @keyframes spinSlow {
-    to { transform: rotate(360deg); }
-  }
-
-  .tilt-wrap {
-    transition: transform 0.25s ease-out;
-    will-change: transform;
-  }
-
-  /* ---------- Hero terminal ---------- */
-  .hero-term {
-    width: 100%;
-    max-width: 480px;
-    margin-top: 2rem;
-    border-radius: 1rem;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: #0b1016;
-    box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.5);
-  }
-  .term-head {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1rem;
-    background: #161c26;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  }
-  .term-head .dot { width: 11px; height: 11px; border-radius: 50%; }
-  .term-head .dot-r { background: #ff5f57; }
-  .term-head .dot-y { background: #febc2e; }
-  .term-head .dot-g { background: #28c840; }
-  .term-title {
-    margin-left: auto;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: #8aa0b8;
-  }
-  .term-body {
-    padding: 1rem 1.1rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    line-height: 1.8;
-    min-height: 12.5rem;
-    color: #e6edf3;
-    overflow-x: auto;
-    scrollbar-width: thin;
-  }
-  .term-line { display: flex; gap: 0.5rem; white-space: nowrap; }
-  .term-prompt { color: #5fedac; font-weight: 700; }
-  .term-input { color: #e6edf3; }
-  .term-out { color: #8aa0b8; white-space: nowrap; }
-  .term-out .hl  { color: #49b3bc; }
-  .term-out .hl2 { color: #5fedac; }
-  .term-caret {
-    display: inline-block;
-    width: 8px;
-    height: 1em;
-    margin-left: 2px;
-    vertical-align: text-bottom;
-    background: #5fedac;
-    animation: blink 1s steps(1) infinite;
   }
 
   /* ---------- Popular tag pills ---------- */
@@ -603,7 +468,6 @@
 
   @media (max-width: 640px) {
     .esub-section { padding: 2.5rem 1.25rem; }
-    .term-body { font-size: 0.74rem; padding: 0.8rem 0.9rem; }
     .hero-glow-ring { opacity: 0.5; }
   }
 

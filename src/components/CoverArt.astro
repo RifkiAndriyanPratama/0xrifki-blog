@@ -1,7 +1,7 @@
 ---
 // src/components/CoverArt.astro
 // Deterministic SVG illustration for posts/projects without a cover image.
-// Picks a "low-level" themed motif (chip / hexdump / code / stack) from the seed.
+// Picks a themed motif (chip / hexdump / code / stack) from the seed.
 import { hashSeed, mulberry32, COVER_PALETTE, COVER_DIM } from "@/lib/cover.mjs";
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   label?: string;
 }
 
-const { seed, label = "0x0" } = Astro.props;
+const { seed, label = "story" } = Astro.props;
 
 // FNV-1a hash -> seed number
 const hnum = hashSeed(seed);
@@ -36,7 +36,7 @@ const hexRows = [...Array(6)].map((_, r) => {
 });
 
 // Code content
-const codeWords = ["mov", "push", "call", "pop", "ret", "lea", "xor", "cmp", "jne", "add", "sub", "syscall", "rax", "rbx", "rcx", "rdx", "rsp", "rbp", "0x40", "0x7f", ";", "#", "(", ")"];
+const codeWords = ["fn", "let", "if", "for", "map", "filter", "return", "async", "await", "import", "export", "class", "const", "while", "try", "catch", "yield", "struct", "loop", "#", "(", ")", "{", "}"];
 const codeLines = [...Array(7)].map(() => {
   const n = 3 + Math.floor(rnd() * 5);
   return [...Array(n)].map(() => ({

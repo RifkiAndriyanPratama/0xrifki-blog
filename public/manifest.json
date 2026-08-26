@@ -1,7 +1,7 @@
 {
-  "name": "0xrifki — a developer's notebook",
-  "short_name": "0xrifki",
-  "description": "cs student by day, terminal addict by night. notes on software, systems, and projects.",
+  "name": "thestoriesrifki — cerita seputar coding, teknologi, dan hidup",
+  "short_name": "thestoriesrifki",
+  "description": "cerita seputar coding, teknologi, dan hidup. ditulis dengan bahasa yang gampang dipahami.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#100f15",

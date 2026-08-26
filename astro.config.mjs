@@ -7,7 +7,7 @@ import remarkAlerts from "./src/lib/remark-alerts.mjs";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://0xrifki-blog.vercel.app",
+  site: "https://thestoriesrifki.vercel.app",
   compressHTML: true,
   prefetch: true,
   integrations: [

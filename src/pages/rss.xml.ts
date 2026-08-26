@@ -8,8 +8,8 @@ export async function GET(context: APIContext) {
   const posts = sortPosts(await getCollection("posts"));
 
   return rss({
-    title:       "0xrifki",
-    description: "cs student by day, terminal addict by night. notes on software, systems & tooling.",
+    title:       "thestoriesrifki",
+    description: "cerita seputar coding, teknologi, dan hidup.",
     site:        context.site!,
     xmlns:       { dc: "http://purl.org/dc/elements/1.1/" },
     items: posts.map((post) => ({
@@ -20,6 +20,6 @@ export async function GET(context: APIContext) {
       categories:  [post.data.category, ...post.data.tags],
       customData:  `<dc:language>${post.data.lang}</dc:language>`,
     })),
-    customData: `<language>en</language>`,
+    customData: `<language>id</language>`,
   });
 }

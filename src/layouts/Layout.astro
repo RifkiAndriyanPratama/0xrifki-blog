@@ -19,10 +19,10 @@ interface Props {
 
 const {
   title,
-  description = "notes on software, systems, and whatever ends up in the terminal at 2am.",
+  description = "cerita seputar coding, teknologi, dan hidup. ditulis dengan bahasa yang gampang dipahami.",
   ogImage = "/og-default.png",
   canonicalUrl,
-  lang = "en",
+  lang = "id",
   immersive = false,
   ogType = "website",
   publishedTime,
@@ -30,29 +30,29 @@ const {
   author,
 } = Astro.props;
 
-const siteTitle = "0xrifki";
+const siteTitle = "thestoriesrifki";
 const fullTitle = title === siteTitle ? siteTitle : `${title} — ${siteTitle}`;
 const canonical = canonicalUrl ?? Astro.url.href;
 
 const NAV = [
-  { href: "/",         label: "Home"    },
+  { href: "/",         label: "Beranda"    },
   { href: "/blog",     label: "Blog"    },
-  { href: "/projects", label: "Projects" },
-  { href: "/about",    label: "About"   },
+  { href: "/projects", label: "Proyek" },
+  { href: "/about",    label: "Tentang"   },
 ];
 
 const FOOTER_NAV = [
   {
-    heading: "Explore",
+    heading: "Jelajahi",
     links: [
       { href: "/blog",     label: "Blog"     },
-      { href: "/projects", label: "Projects" },
-      { href: "/about",    label: "About"    },
-      { href: "/blog/tags", label: "Tags"    },
+      { href: "/projects", label: "Proyek" },
+      { href: "/about",    label: "Tentang"    },
+      { href: "/blog/tags", label: "Tag"    },
     ],
   },
   {
-    heading: "Connect",
+    heading: "Terhubung",
     links: [
       { href: "https://github.com/RifkiAndriyanPratama", label: "GitHub" },
       { href: "https://linkedin.com/in/RifkiAndriyanPratama", label: "LinkedIn" },
@@ -61,12 +61,12 @@ const FOOTER_NAV = [
     ],
   },
   {
-    heading: "More",
+    heading: "Kategori",
     links: [
       { href: "/blog/category/devops", label: "DevOps" },
       { href: "/blog/category/systems", label: "Systems" },
       { href: "/blog/category/programming", label: "Programming" },
-      { href: "/blog/tags", label: "All Tags" },
+      { href: "/blog/tags", label: "Semua Tag" },
     ],
   },
 ];
@@ -114,7 +114,7 @@ const SOCIAL = [
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#5fedac" />
-    <link rel="alternate" type="application/rss+xml" title="0xrifki RSS" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="thestoriesrifki RSS" href="/rss.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" />
@@ -122,7 +122,7 @@ const SOCIAL = [
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "0xrifki",
+      "name": "thestoriesrifki",
       "url": Astro.site?.href ?? canonical,
       "description": description,
     })} />
@@ -151,15 +151,15 @@ const SOCIAL = [
   <body class={`flex min-h-screen flex-col bg-base-bg text-base-text${immersive ? " has-immersive-nav" : ""}`}>
 
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300] focus:rounded focus:bg-base-bg focus:px-4 focus:py-2 focus:text-base-text focus:outline-2 focus:outline-offset-2 focus:outline-base-teal">
-      Skip to content
+      Loncat ke konten
     </a>
 
     <header id="navbar" class="sticky top-0 z-50 w-full">
       <div class="mx-auto flex max-w-[1392px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
 
         <!-- Wordmark -->
-        <a href="/" class="flex items-center text-xl font-bold tracking-tight text-base-heading" aria-label="Home">
-          <span class="text-gradient">0x</span>rifki
+        <a href="/" class="flex items-center text-xl font-bold tracking-tight text-base-heading" aria-label="Beranda">
+          <span class="text-gradient">the</span>stories<span class="text-gradient">rifki</span>
         </a>
 
         <!-- Desktop nav -->
@@ -180,7 +180,7 @@ const SOCIAL = [
           <button
             id="search-btn"
             class="nav-icon"
-            aria-label="Search posts"
+            aria-label="Cari tulisan"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247Z"/></svg>
           </button>
@@ -188,7 +188,7 @@ const SOCIAL = [
           <button
             id="theme-toggle"
             class="nav-icon"
-            aria-label="Toggle theme"
+            aria-label="Ganti tema"
           >
             <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z"/></svg>
             <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z"/></svg>
@@ -258,11 +258,10 @@ const SOCIAL = [
           <!-- Brand -->
           <div>
             <a href="/" class="flex items-center text-2xl font-bold tracking-tight text-base-heading">
-              <span class="text-gradient">0x</span>rifki
+              <span class="text-gradient">the</span>stories<span class="text-gradient">rifki</span>
             </a>
             <p class="mt-4 max-w-sm text-[15px] leading-relaxed text-base-subtle">
-              cs student by day, terminal addict by night. notes on software, systems,
-              and whatever ends up in the terminal at 2am.
+              cerita seputar coding, teknologi, dan hidup. ditulis dengan bahasa yang gampang dipahami.
             </p>
             <div class="mt-6 flex items-center gap-3">
               {SOCIAL.map(({ href, label, icon }) => (
@@ -300,17 +299,17 @@ const SOCIAL = [
       <div class="border-t border-base-overlay">
         <div class="mx-auto flex max-w-[1392px] flex-wrap items-center justify-between gap-3 px-4 py-6 sm:px-6">
           <span class="font-code text-xs text-base-muted">
-            &copy; 0xrifki {new Date().getFullYear()} · v0x0.1.0-0x0001
+            &copy; thestoriesrifki {new Date().getFullYear()}
           </span>
           <span class="font-code text-xs text-base-muted">
-            compiled with astro · exit 0
+            dibuat dengan astro
           </span>
         </div>
       </div>
     </footer>
 
-    <button id="back-to-top" class="font-code" aria-label="Back to top">
-      Back to top
+    <button id="back-to-top" aria-label="Kembali ke atas">
+      Kembali ke atas
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
     </button>
 
@@ -321,25 +320,25 @@ const SOCIAL = [
       class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/50 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
-      aria-label="Keyboard shortcuts"
+      aria-label="Pintasan keyboard"
     >
       <div class="w-full max-w-sm rounded-2xl border border-base-overlay bg-base-bg p-6 shadow-2xl">
-        <h2 class="mb-4 text-sm font-semibold text-base-heading">keyboard shortcuts</h2>
+        <h2 class="mb-4 text-sm font-semibold text-base-heading">pintasan keyboard</h2>
         <div class="space-y-3 text-sm">
           <div class="flex items-center justify-between">
-            <span class="text-base-subtle">search</span>
+            <span class="text-base-subtle">cari</span>
             <div class="flex gap-1">
               <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">⌘K</kbd>
-              <span class="text-base-muted">or</span>
+              <span class="text-base-muted">atau</span>
               <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">/</kbd>
             </div>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-base-subtle">toggle theme</span>
+            <span class="text-base-subtle">ganti tema</span>
             <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">t</kbd>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-base-subtle">close dialog</span>
+            <span class="text-base-subtle">tutup</span>
             <kbd class="rounded border border-base-overlay px-2 py-0.5 text-xs text-base-muted">esc</kbd>
           </div>
         </div>
@@ -347,7 +346,7 @@ const SOCIAL = [
           id="shortcuts-close"
           class="btn btn-block mt-6"
         >
-          got it
+          mengerti
         </button>
       </div>
     </div>

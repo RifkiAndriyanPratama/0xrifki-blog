@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://0xrifki-blog.vercel.app/sitemap-index.xml
+Sitemap: https://thestoriesrifki.vercel.app/sitemap-index.xml
