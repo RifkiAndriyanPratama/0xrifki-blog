@@ -144,11 +144,12 @@ const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
         {otherPosts.length > 0 && (
           <div class="w-full border-t border-base-overlay pt-6">
             <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-muted">Tulisan lainnya</p>
-            <ul class="flex flex-col gap-0.5">
+            <ul class="flex flex-col gap-1">
               {otherPosts.map((p) => (
                 <li>
-                  <a href={`/blog/${p.slug}`} class="block rounded-lg px-2 py-2 text-sm text-base-subtle transition-colors hover:bg-base-bg-alt hover:text-base-heading">
-                    {p.data.title}
+                  <a href={`/blog/${p.slug}`} class="group block rounded-lg px-3 py-2.5 transition-colors hover:bg-base-bg-alt">
+                    <p class="text-sm font-medium text-base-subtle leading-snug transition-colors group-hover:text-base-heading">{p.data.title}</p>
+                    <p class="mt-1 text-[11px] text-base-muted">{formatDate(p.data.date)}</p>
                   </a>
                 </li>
               ))}
