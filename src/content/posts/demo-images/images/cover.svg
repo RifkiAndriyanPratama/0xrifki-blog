@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#faf9f6"/>
+      <stop offset="100%" stop-color="#e2dfd6"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0ea567"/>
+      <stop offset="100%" stop-color="#0e7f8d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Decorative circles -->
+  <circle cx="950" cy="150" r="180" fill="#0ea567" opacity="0.08"/>
+  <circle cx="1050" cy="350" r="120" fill="#0e7f8d" opacity="0.06"/>
+  <circle cx="200" cy="500" r="200" fill="#0ea567" opacity="0.05"/>
+  <!-- Grid dots -->
+  <pattern id="dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+    <circle cx="15" cy="15" r="1.5" fill="#c4c0b6" opacity="0.5"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <!-- Accent bar -->
+  <rect x="80" y="280" width="6" height="80" rx="3" fill="url(#accent)"/>
+  <!-- Title text -->
+  <text x="110" y="300" font-family="Inter, system-ui, sans-serif" font-size="42" font-weight="700" fill="#1a1814" letter-spacing="-1">Cara Kerja Internet</text>
+  <text x="110" y="345" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#5c574d" letter-spacing="-0.3">dari klik tombol sampai data sampai di layar kamu</text>
+  <!-- Bottom line -->
+  <rect x="80" y="580" width="1040" height="1" fill="#e2dfd6"/>
+  <text x="80" y="610" font-family="JetBrains Mono, monospace" font-size="13" fill="#8a8578">thestoriesrifki</text>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0eee8"/>
+      <stop offset="100%" stop-color="#faf9f6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg2)" rx="8"/>
+  <!-- Network diagram -->
+  <!-- Client -->
+  <rect x="60" y="180" width="120" height="80" rx="12" fill="#fff" stroke="#e2dfd6" stroke-width="2"/>
+  <text x="120" y="215" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#1a1814" text-anchor="middle">Kamu</text>
+  <text x="120" y="238" font-family="Inter, sans-serif" font-size="11" fill="#8a8578" text-anchor="middle">Browser</text>
+  <!-- Arrow 1 -->
+  <line x1="180" y1="220" x2="260" y2="220" stroke="#0ea567" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="258,215 268,220 258,225" fill="#0ea567"/>
+  <text x="220" y="208" font-family="JetBrains Mono, monospace" font-size="10" fill="#0ea567" text-anchor="middle">HTTP</text>
+  <!-- DNS -->
+  <rect x="270" y="100" width="120" height="70" rx="12" fill="#fff" stroke="#e2dfd6" stroke-width="2"/>
+  <text x="330" y="132" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#1a1814" text-anchor="middle">DNS</text>
+  <text x="330" y="152" font-family="Inter, sans-serif" font-size="11" fill="#8a8578" text-anchor="middle">Lookup</text>
+  <!-- Server -->
+  <rect x="440" y="155" width="140" height="130" rx="12" fill="#fff" stroke="#e2dfd6" stroke-width="2"/>
+  <text x="510" y="200" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#1a1814" text-anchor="middle">Web Server</text>
+  <text x="510" y="222" font-family="Inter, sans-serif" font-size="11" fill="#8a8578" text-anchor="middle">Nginx / Apache</text>
+  <rect x="460" y="238" width="100" height="30" rx="6" fill="#f0eee8"/>
+  <text x="510" y="258" font-family="JetBrains Mono, monospace" font-size="10" fill="#5c574d" text-anchor="middle">:443 (TLS)</text>
+  <!-- Arrow 2 -->
+  <line x1="390" y1="135" x2="440" y2="185" stroke="#0e7f8d" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="437,178 447,188 434,190" fill="#0e7f8d"/>
+  <!-- Arrow 3 -->
+  <line x1="260" y1="230" x2="440" y2="215" stroke="#0ea567" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="438,210 448,215 438,220" fill="#0ea567"/>
+  <!-- Database -->
+  <rect x="640" y="180" width="110" height="80" rx="12" fill="#fff" stroke="#e2dfd6" stroke-width="2"/>
+  <text x="695" y="215" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#1a1814" text-anchor="middle">Database</text>
+  <text x="695" y="238" font-family="Inter, sans-serif" font-size="11" fill="#8a8578" text-anchor="middle">PostgreSQL</text>
+  <!-- Arrow 4 -->
+  <line x1="580" y1="220" x2="640" y2="220" stroke="#0e7f8d" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="638,215 648,220 638,225" fill="#0e7f8d"/>
+  <!-- Caption -->
+  <text x="400" y="410" font-family="Inter, sans-serif" font-size="13" fill="#8a8578" text-anchor="middle">Simplified: perjalanan satu request HTTP dari browser ke server</text>
+</svg>
