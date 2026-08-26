@@ -3,15 +3,9 @@
 import { z, defineCollection } from "astro:content";
 
 const CATEGORIES = [
-  "devops",
-  "web",
-  "systems",
-  "tooling",
-  "security",
-  "notes",
-  "project",
-  "programming",
-  "math",
+  "coding",
+  "teknologi",
+  "hidup",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
