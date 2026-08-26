@@ -50,7 +50,7 @@ const related = allPosts
 
   <div id="reading-bar" class="fixed left-0 top-0 z-[60] h-1 bg-base-teal transition-[width] duration-75"></div>
 
-  <article class="max-w-[680px] mx-auto px-5 md:px-0">
+  <article class="max-w-[680px] mx-auto px-4 md:px-0">
 
     <!-- Back link -->
     <nav class="pt-10 pb-6" aria-label="Breadcrumb">
@@ -62,30 +62,23 @@ const related = allPosts
 
     <!-- Header -->
     <header class="mb-8">
-      <!-- Author -->
-      <div class="flex items-center gap-3 mb-5">
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-300 to-blue-400 text-base-heading font-bold text-sm">
-          R
-        </div>
-        <div>
-          <p class="text-sm font-semibold text-base-heading">Rifki Andriyan Pratama</p>
-          <div class="flex items-center gap-2 text-xs text-base-muted">
-            <time datetime={isoDate(date)}>{formatDate(date)}</time>
-            {updated && isoDate(updated) !== isoDate(date) && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span>updated {formatDate(updated)}</span>
-              </>
-            )}
-            <span aria-hidden="true">·</span>
-            <span>{readTime} min read</span>
-          </div>
-        </div>
-      </div>
-
-      <h1 class="font-serif text-[2rem] font-bold leading-tight tracking-tight text-base-heading md:text-[2.5rem] md:leading-[1.15]">
+      <h1 class="font-serif text-[1.75rem] font-bold leading-tight tracking-tight text-base-heading md:text-[2.5rem] md:leading-[1.15]">
         {title}
       </h1>
+
+      <div class="mt-3 flex items-center gap-2 text-[13px] text-base-muted">
+        <span class="font-medium text-base-subtle">Rifki Andriyan Pratama</span>
+        <span aria-hidden="true">·</span>
+        <time datetime={isoDate(date)}>{formatDate(date)}</time>
+        {updated && isoDate(updated) !== isoDate(date) && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>updated {formatDate(updated)}</span>
+          </>
+        )}
+        <span aria-hidden="true">·</span>
+        <span>{readTime} min read</span>
+      </div>
     </header>
 
     <!-- Cover image -->
