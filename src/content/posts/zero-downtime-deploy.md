@@ -2,7 +2,7 @@
 title: "Building a Zero-Downtime Deploy Pipeline with GitHub Actions"
 date: 2024-07-20
 description: "How I wired up a blue-green deployment pipeline using GitHub Actions, Docker, and a $6/mo VPS — no Kubernetes required."
-category: devops
+category: teknologi
 tags: [github-actions, docker, nginx, ci-cd, vps]
 draft: false
 ---

@@ -2,7 +2,7 @@
 title: "NAND Doang, Semua Jadi Ada: Catatan Night 1 Belajar Nand2Tetris"
 date: 2026-08-15
 description: "Kenapa satu gerbang logika paling sederhana bisa jadi fondasi seluruh sistem komputer, dan kenapa HDL bikin otakku harus di-reset dulu."
-category: notes
+category: coding
 lang: "id"
 tags: [nand2tetris, boolean-logic, digital-logic, hdl, low-level]
 draft: false

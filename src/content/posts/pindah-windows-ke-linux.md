@@ -2,7 +2,7 @@
 title: "Rasanya Pindah dari Windows ke Linux"
 date: 2024-07-13
 description: "Cerita pertama kali pindah dari Windows ke Linux, kaget, bingung, tapi ternyata seru banget."
-category: systems
+category: teknologi
 lang: "id"
 tags: [linux, windows, beginners, pengalaman]
 draft: false

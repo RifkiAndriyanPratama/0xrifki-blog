@@ -2,7 +2,7 @@
 title: "Cara Kerja Internet: Dari Klik Sampai Tampil"
 date: 2026-08-26
 description: "Pernah penasaran apa yang terjadi setelah kamu klik link? Ini penjelasan sederhananya — dari DNS, TCP, TLS, sampai data sampai di layar kamu."
-category: notes
+category: coding
 lang: "id"
 tags: [networking, internet, dns, how-it-works]
 cover: ./images/cover.svg
