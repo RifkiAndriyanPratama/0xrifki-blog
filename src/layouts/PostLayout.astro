@@ -13,7 +13,7 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, date, category, tags, cover, coverAlt, updated, series, seriesOrder, lang } = post.data;
+const { title, description, date, category, tags, cover, coverAlt, updated, lang } = post.data;
 const readTime = post.data.readingTime ?? readingTime(post.body);
 
 const ogImage = cover

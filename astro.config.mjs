@@ -18,12 +18,7 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkAlerts],
     shikiConfig: {
-      // dual themes — readable in light & dark mode
-      themes: {
-        light: "vitesse-light",
-        dark:  "vitesse-dark",
-      },
-      defaultColor: false,
+      theme: "vitesse-light",
       wrap: true,
     },
   },
