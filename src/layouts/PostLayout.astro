@@ -21,7 +21,10 @@ const ogImage = cover
   : new URL(`/og/${post.slug}.png`, Astro.site).toString();
 
 const allPosts = sortPosts(await getCollection("posts"));
-const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
+const sameCategory = allPosts.filter((p) => p.slug !== post.slug && p.data.category === category);
+const otherPosts = sameCategory.length >= 3
+  ? sameCategory.slice(0, 5)
+  : [...sameCategory, ...allPosts.filter((p) => p.slug !== post.slug && p.data.category !== category)].slice(0, 5);
 ---
 
 <Layout title={title} description={description} ogImage={ogImage} lang={lang} immersive
@@ -112,7 +115,7 @@ const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 5);
 
       <!-- Back -->
       <a href="/blog" class="inline-block text-sm text-base-muted underline underline-offset-4 transition-colors hover:text-base-heading mb-16">
-        ← kembali ke semua tulisan
+        ← semua tulisan
       </a>
 
     </article>

@@ -22,7 +22,7 @@ const posts = allPosts.filter((p) => p.data.category === category);
 const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
 ---
 
-<Layout title={`${category}`} description={`Tulisan tentang ${category}.`}>
+<Layout title={`Tulisan tentang ${category}`} description={`Kumpulan tulisan tentang ${category}.`}>
 
   <header class="pt-10 pb-6" data-animate>
     <a href="/blog" class="mb-4 inline-block text-sm text-base-muted transition-colors hover:text-base-teal">← semua tulisan</a>
