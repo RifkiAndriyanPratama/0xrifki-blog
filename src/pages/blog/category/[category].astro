@@ -24,7 +24,7 @@ const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
 
 <Layout title={`Tulisan tentang ${category}`} description={`Kumpulan tulisan tentang ${category}.`}>
 
-  <header class="pt-10 pb-6" data-animate>
+  <header class="pt-8 pb-4 sm:pt-10 sm:pb-6" data-animate>
     <a href="/blog" class="mb-4 inline-block text-sm text-base-muted transition-colors hover:text-base-teal">← semua tulisan</a>
     <h1 class="font-serif text-3xl font-bold tracking-tight text-base-heading sm:text-4xl capitalize">
       {category}
@@ -35,7 +35,7 @@ const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
   <hr class="border-base-overlay" />
 
   <!-- Category navigation -->
-  <section class="flex flex-wrap gap-2 py-6" data-animate>
+  <section class="flex flex-wrap gap-2 py-4 sm:py-6" data-animate>
     {allCategories.map((cat) => (
       <a
         href={`/blog/category/${cat}`}
@@ -54,25 +54,25 @@ const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
   <hr class="border-base-overlay" />
 
   <!-- Posts list -->
-  <section class="flex flex-col gap-4 py-6">
+  <section class="flex flex-col gap-3 py-5 sm:gap-4 sm:py-6">
     {posts.map((post) => (
-      <a href={`/blog/${post.slug}/`} class="group flex items-start gap-4 rounded-2xl border border-base-overlay p-5 transition-all hover:border-base-teal hover:shadow-sm">
+      <a href={`/blog/${post.slug}/`} class="group flex items-start gap-3 rounded-2xl border border-base-overlay p-3.5 sm:gap-4 sm:p-5 transition-all hover:border-base-teal hover:shadow-sm">
         <div class="min-w-0 flex-1">
-          <div class="mb-1.5 flex items-center gap-2 text-xs text-base-muted">
+          <div class="mb-1 flex flex-wrap items-center gap-1.5 text-[11px] text-base-muted sm:mb-1.5 sm:gap-2 sm:text-xs">
             <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
             <span aria-hidden="true">·</span>
             <span>{post.data.readingTime ?? readingTime(post.body)} min</span>
           </div>
-          <h2 class="text-lg font-semibold text-base-heading leading-snug transition-colors group-hover:text-base-teal">
+          <h2 class="text-base font-semibold text-base-heading leading-snug transition-colors group-hover:text-base-teal sm:text-lg">
             {post.data.title}
           </h2>
-          <p class="mt-1 text-sm text-base-subtle line-clamp-2 leading-relaxed">{post.data.description}</p>
+          <p class="mt-0.5 text-xs text-base-subtle line-clamp-2 leading-relaxed sm:mt-1 sm:text-sm">{post.data.description}</p>
         </div>
         {post.data.cover && (
           <Image
             src={post.data.cover}
             alt={post.data.coverAlt ?? post.data.title}
-            class="h-20 w-20 shrink-0 rounded-xl object-cover"
+            class="h-16 w-16 shrink-0 rounded-lg object-cover sm:h-20 sm:w-20 sm:rounded-xl"
             width={80}
             height={80}
             loading="lazy"
