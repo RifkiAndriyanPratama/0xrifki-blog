@@ -8,7 +8,6 @@ tags: [networking, internet, dns, how-it-works]
 cover: ./images/cover.svg
 coverAlt: "Ilustrasi judul: Cara Kerja Internet"
 draft: false
-featured: true
 ---
 
 Halo! Kali ini kita bahas sesuatu yang kita pakai setiap hari tapi jarang dipikirin: **internet**.

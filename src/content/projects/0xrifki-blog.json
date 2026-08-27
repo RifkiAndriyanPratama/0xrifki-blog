@@ -1,9 +1,0 @@
-{
-  "name": "0xrifki-blog",
-  "description": "Blog personal ini — dibangun dengan Astro, Tailwind CSS, dan Everblush theme. Fast, static, zero bloat.",
-  "stack": ["Astro", "TypeScript", "Tailwind CSS"],
-  "github": "https://github.com/RifkiAndriyanPratama/0xrifki-blog",
-  "status": "wip",
-  "order": 5,
-  "featured": true
-}

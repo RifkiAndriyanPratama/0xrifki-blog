@@ -9,7 +9,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title:       "thestoriesrifki",
-    description: "cerita seputar coding, teknologi, dan hidup.",
+    description: "cerita seputar coding, teknologi, dan kehidupan.",
     site:        context.site!,
     xmlns:       { dc: "http://purl.org/dc/elements/1.1/" },
     items: posts.map((post) => ({

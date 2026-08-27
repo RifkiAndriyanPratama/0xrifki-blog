@@ -1,9 +1,0 @@
-{
-  "name": "sysops-toolkit",
-  "description": "Kumpulan tools dan script untuk sysops — automate the boring stuff, focus on what matters.",
-  "stack": ["Shell"],
-  "github": "https://github.com/RifkiAndriyanPratama/sysops-toolkit",
-  "status": "done",
-  "order": 3,
-  "featured": true
-}

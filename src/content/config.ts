@@ -5,7 +5,7 @@ import { z, defineCollection } from "astro:content";
 const CATEGORIES = [
   "coding",
   "teknologi",
-  "hidup",
+  "kehidupan",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
@@ -25,7 +25,6 @@ const postsCollection = defineCollection({
       draft:       z.boolean().default(false),
       readingTime: z.number().optional(),
       updated:     z.coerce.date().optional(),
-      featured:    z.boolean().default(false),
     }),
 });
 

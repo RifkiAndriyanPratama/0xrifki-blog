@@ -1,9 +1,0 @@
-{
-  "name": "servix",
-  "description": "Sistem pemantauan dan pelaporan kesehatan server berbasis Python. Monitor infrastructure tanpa bloat.",
-  "stack": ["Python"],
-  "github": "https://github.com/RifkiAndriyanPratama/servix",
-  "status": "done",
-  "order": 1,
-  "featured": true
-}

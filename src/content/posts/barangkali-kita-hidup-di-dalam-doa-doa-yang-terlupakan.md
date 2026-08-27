@@ -2,7 +2,7 @@
 title: "Barangkali Kita Hidup di Dalam Doa-Doa yang Terlupakan"
 date: 2026-08-27
 description: "Renungan singkat tentang doa-doa yang pernah kita ucapkan lalu kita lupakan, tapi mungkin masih hidup dan berjalan sampai sekarang."
-category: hidup
+category: kehidupan
 lang: "id"
 tags: [doa, refleksi, kehidupan, spiritualitas]
 draft: false
