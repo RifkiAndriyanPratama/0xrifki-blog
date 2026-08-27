@@ -31,24 +31,6 @@ const postsCollection = defineCollection({
     }),
 });
 
-const projectsCollection = defineCollection({
-  type: "data",
-  schema: ({ image }) =>
-    z.object({
-      name:        z.string().min(1).max(80),
-      description: z.string().max(160),
-      stack:       z.array(z.string()).default([]),
-      github:      z.string().url().optional(),
-      url:         z.string().url().optional(),
-      cover:       image().optional(),
-      coverAlt:    z.string().optional(),
-      status:      z.enum(["wip", "done", "archived"]).default("done"),
-      order:       z.number().default(99),
-      featured:    z.boolean().default(false),
-    }),
-});
-
 export const collections = {
   posts:    postsCollection,
-  projects: projectsCollection,
 };

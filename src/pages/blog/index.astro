@@ -26,10 +26,8 @@ const categories = posts.reduce((acc, post) => {
     <p class="mt-2 text-base text-base-subtle">{total} tulisan</p>
   </header>
 
-  <hr class="border-base-overlay" />
-
   <!-- Category filter -->
-  <section class="flex flex-wrap gap-2 py-6" data-animate>
+  <section class="flex flex-wrap gap-2 py-4 sm:py-6" data-animate>
     {Object.keys(categories).map((cat) => (
       <a
         href={`/blog/category/${cat}`}
@@ -39,8 +37,6 @@ const categories = posts.reduce((acc, post) => {
       </a>
     ))}
   </section>
-
-  <hr class="border-base-overlay" />
 
   <!-- Posts list -->
   <section class="flex flex-col divide-y divide-base-overlay py-4 sm:py-6">

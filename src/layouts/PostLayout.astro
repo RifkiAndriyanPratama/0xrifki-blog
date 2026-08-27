@@ -51,7 +51,7 @@ const otherPosts = sameCategory.length >= 3
   <div class="lg:flex lg:justify-center lg:gap-16">
 
     <!-- Main content column -->
-    <article class="max-w-[680px] px-3 sm:px-4 lg:px-0">
+    <article class="max-w-[680px] lg:px-0">
 
       <!-- Back link -->
       <nav class="pt-8 pb-4 sm:pt-10 sm:pb-6" aria-label="Breadcrumb">
@@ -102,7 +102,7 @@ const otherPosts = sameCategory.length >= 3
       </div>
 
       <!-- Divider -->
-      <div class="my-12 border-t border-base-overlay"></div>
+      <div class="my-8 border-t border-base-overlay sm:my-12"></div>
 
       <!-- Tags -->
       {tags.length > 0 && (
@@ -175,7 +175,7 @@ const otherPosts = sameCategory.length >= 3
   </div>
 
   <!-- Mobile share + author (below content) -->
-  <div class="lg:hidden px-3 sm:px-4">
+  <div class="lg:hidden">
     <!-- Share -->
     <div class="mb-6 flex items-center gap-2 sm:mb-8">
       <a id="share-twitter-mobile" href="#" target="_blank" rel="noopener noreferrer"

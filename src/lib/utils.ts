@@ -31,26 +31,6 @@ export function sortPosts(
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
-/** Get all unique categories from posts */
-export function getCategories(
-  posts: CollectionEntry<"posts">[]
-): string[] {
-  const cats = posts
-    .filter((p) => !p.data.draft)
-    .map((p) => p.data.category);
-  return [...new Set(cats)].sort();
-}
-
-/** Get all unique tags from posts */
-export function getTags(
-  posts: CollectionEntry<"posts">[]
-): string[] {
-  const tags = posts
-    .filter((p) => !p.data.draft)
-    .flatMap((p) => p.data.tags);
-  return [...new Set(tags)].sort();
-}
-
 /** Build a serialisable post object for client-side Fuse.js search */
 export function toSearchIndex(posts: CollectionEntry<"posts">[]) {
   return posts.filter((p) => !p.data.draft).map((p) => ({

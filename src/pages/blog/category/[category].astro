@@ -32,10 +32,8 @@ const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
     <p class="mt-2 text-base text-base-subtle">{posts.length} tulisan</p>
   </header>
 
-  <hr class="border-base-overlay" />
-
   <!-- Category navigation -->
-  <section class="flex flex-wrap gap-2 py-4 sm:py-6" data-animate>
+  <section class="flex flex-wrap gap-2 py-3 sm:py-5" data-animate>
     {allCategories.map((cat) => (
       <a
         href={`/blog/category/${cat}`}
@@ -50,8 +48,6 @@ const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
       </a>
     ))}
   </section>
-
-  <hr class="border-base-overlay" />
 
   <!-- Posts list -->
   <section class="flex flex-col divide-y divide-base-overlay py-4 sm:py-6">
