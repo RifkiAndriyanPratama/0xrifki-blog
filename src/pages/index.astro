@@ -89,9 +89,9 @@ const categories = posts.reduce((acc, post) => {
     <!-- Left: latest posts -->
     <div>
       <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-base-muted sm:mb-5">Semua tulisan</h2>
-      <div class="flex flex-col gap-2.5 sm:gap-3">
+      <div class="flex flex-col divide-y divide-base-overlay">
         {latestPosts.map((post) => (
-          <a href={`/blog/${post.slug}/`} class="group flex items-start gap-3 rounded-2xl border border-base-overlay p-3.5 sm:gap-4 sm:p-4 transition-all hover:border-base-teal hover:shadow-sm">
+          <a href={`/blog/${post.slug}/`} class="group flex items-start gap-3 py-3 sm:gap-4 sm:py-3.5">
             <div class="min-w-0 flex-1">
               <h3 class="text-sm font-semibold text-base-heading leading-snug transition-colors group-hover:text-base-teal sm:text-base">
                 {post.data.title}
