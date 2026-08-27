@@ -93,11 +93,11 @@ const categories = posts.reduce((acc, post) => {
         {latestPosts.map((post) => (
           <a href={`/blog/${post.slug}/`} class="group flex items-start gap-3 py-3 sm:gap-4 sm:py-3.5">
             <div class="min-w-0 flex-1">
-              <h3 class="text-sm font-semibold text-base-heading leading-snug transition-colors group-hover:text-base-teal sm:text-base">
+              <h3 class="text-base font-semibold text-base-heading leading-snug transition-colors group-hover:text-base-teal sm:text-lg">
                 {post.data.title}
               </h3>
-              <p class="mt-0.5 text-xs text-base-subtle line-clamp-1 sm:mt-1 sm:text-sm">{post.data.description}</p>
-              <div class="mt-1 flex items-center gap-1.5 text-[11px] text-base-muted sm:mt-1.5 sm:gap-2 sm:text-xs">
+              <p class="mt-0.5 text-sm text-base-subtle line-clamp-1 sm:mt-1 sm:text-sm">{post.data.description}</p>
+              <div class="mt-1.5 flex items-center gap-1.5 text-xs text-base-muted sm:mt-1.5 sm:gap-2 sm:text-xs">
                 <span class="rounded-full border border-base-overlay px-1.5 py-0.5 capitalize sm:px-2">{post.data.category}</span>
                 <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
                 <span aria-hidden="true">·</span>
