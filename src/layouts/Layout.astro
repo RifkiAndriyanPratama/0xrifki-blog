@@ -172,7 +172,7 @@ const canonical = canonicalUrl ?? Astro.url.href;
     backTopScrollHandler = () => {
       backBtn.classList.toggle("visible", window.scrollY > 400);
     };
-    window.addEventListener("backTopScrollHandler", backTopScrollHandler, { passive: true });
+    window.addEventListener("scroll", backTopScrollHandler, { passive: true });
   }
 
   let fuse = null;
