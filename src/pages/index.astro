@@ -123,16 +123,16 @@ const categories = posts.reduce((acc, post) => {
     </div>
 
     <!-- Right: categories -->
-    <div class="mt-8 border-t border-base-overlay pt-8 sm:mt-10 sm:border-0 sm:pt-0 lg:mt-0">
-      <h2 class="mb-5 text-sm font-semibold uppercase tracking-wider text-base-muted">Kategori</h2>
-      <div class="flex flex-col gap-2">
+    <div class="mt-8 sm:mt-10 lg:mt-0">
+      <h2 class="mb-3 text-sm font-semibold uppercase tracking-wider text-base-muted sm:mb-5">Kategori</h2>
+      <div class="-mx-3 flex gap-2 overflow-x-auto px-3 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
         {Object.entries(categories).map(([cat, catPosts]) => (
           <a
             href={`/blog/category/${cat}`}
-            class="group flex items-center justify-between rounded-xl px-4 py-3 transition-colors hover:bg-base-bg-alt"
+            class="group flex shrink-0 items-center gap-2 rounded-full border border-base-overlay px-4 py-2 transition-colors hover:border-base-teal sm:rounded-xl sm:px-4 sm:py-3 sm:border sm:hover:bg-base-bg-alt"
           >
             <span class="text-sm font-medium text-base-heading capitalize transition-colors group-hover:text-base-teal">{cat}</span>
-            <span class="text-xs text-base-muted">{catPosts.length} tulisan</span>
+            <span class="text-xs text-base-muted">{catPosts.length}</span>
           </a>
         ))}
       </div>
