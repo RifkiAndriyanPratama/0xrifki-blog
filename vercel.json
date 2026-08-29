@@ -3,6 +3,9 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": null,
+  "redirects": [
+    { "source": "/admin", "destination": "/admin/", "statusCode": 308 }
+  ],
   "headers": [
     {
       "source": "/(.*)",
