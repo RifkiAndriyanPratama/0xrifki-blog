@@ -5,7 +5,7 @@ import { sortPosts } from "@/lib/utils";
 import type { APIContext } from "astro";
 
 export async function GET(context: APIContext) {
-  const posts = sortPosts(await getCollection("posts"));
+  const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 
   return rss({
     title:       "thestoriesrifki",

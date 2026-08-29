@@ -1,0 +1,39 @@
+backend:
+  name: github
+  repo: RifkiAndriyanPratama/0xrifki-blog
+  branch: main
+  auth_scope: repo
+  base_url: https://thestoriesrifki.vercel.app
+  auth_endpoint: login.html
+
+local_backend: false
+
+locale: id
+
+media_folder: public/uploads
+public_folder: /uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  - name: posts
+    label: "Tulisan"
+    label_singular: "Tulisan"
+    folder: "src/content/posts"
+    create: true
+    slug: "{{slug}}"
+    description: "Nama file = slug URL (huruf kecil, dipisah tanda hubung), contoh: belajar-git-dari-nol."
+    format: frontmatter
+    fields:
+      - { label: "Judul", name: "title", widget: "string", hint: "Maksimal 120 karakter." }
+      - { label: "Deskripsi singkat", name: "description", widget: "text", hint: "Maksimal 160 karakter, dipakai untuk pencarian & social media." }
+      - { label: "Tanggal", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Kategori", name: "category", widget: "select", options: ["coding", "teknologi", "kehidupan"] }
+      - { label: "Bahasa", name: "lang", widget: "select", default: "id", options: ["id", "en"] }
+      - { label: "Tags", name: "tags", widget: "list", default: [] }
+      - { label: "Gambar cover", name: "cover", widget: "image", required: false, hint: "Opsional. Ukuran bebas, tampil di kartu & header tulisan." }
+      - { label: "Teks alt cover", name: "coverAlt", widget: "string", required: false, hint: "Deskripsi gambar untuk aksesibilitas." }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false, hint: "Centang kalau belum mau tampil." }
+      - { label: "Isi tulisan", name: "body", widget: "markdown" }

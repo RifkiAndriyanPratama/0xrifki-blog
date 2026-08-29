@@ -2,7 +2,7 @@
 // src/pages/blog/category/[category].astro
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { Image } from "astro:assets";
+import PostCover from "@/components/PostCover.astro";
 import { sortPosts, readingTime, formatDate, isoDate } from "@/lib/utils";
 import type { GetStaticPaths } from "astro";
 
@@ -16,7 +16,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const { category } = Astro.props;
-const allPosts = sortPosts(await getCollection("posts"));
+const allPosts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 const posts = allPosts.filter((p) => p.data.category === category);
 
 const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
@@ -65,13 +65,11 @@ const allCategories = [...new Set(allPosts.map((p) => p.data.category))].sort();
           <p class="mt-0.5 text-sm text-base-subtle line-clamp-2 leading-relaxed sm:mt-1 sm:text-sm">{post.data.description}</p>
         </div>
         {post.data.cover && (
-          <Image
+          <PostCover
             src={post.data.cover}
             alt={post.data.coverAlt ?? post.data.title}
+            mode="thumb"
             class="h-16 w-16 shrink-0 rounded-lg object-cover sm:h-20 sm:w-20 sm:rounded-xl"
-            width={80}
-            height={80}
-            loading="lazy"
           />
         )}
       </a>

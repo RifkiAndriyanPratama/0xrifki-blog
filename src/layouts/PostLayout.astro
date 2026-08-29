@@ -4,7 +4,7 @@
 // Mobile: single column
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { Image } from "astro:assets";
+import PostCover from "@/components/PostCover.astro";
 import { formatDate, isoDate, readingTime, sortPosts } from "@/lib/utils";
 import type { CollectionEntry } from "astro:content";
 
@@ -17,10 +17,12 @@ const { title, description, date, category, tags, cover, coverAlt, updated, lang
 const readTime = post.data.readingTime ?? readingTime(post.body);
 
 const ogImage = cover
-  ? new URL(cover.src, Astro.site).toString()
+  ? typeof cover === "string"
+    ? new URL(cover, Astro.site).toString()
+    : new URL(cover.src, Astro.site).toString()
   : new URL(`/og/${post.slug}.png`, Astro.site).toString();
 
-const allPosts = sortPosts(await getCollection("posts"));
+const allPosts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 const sameCategory = allPosts.filter((p) => p.slug !== post.slug && p.data.category === category);
 const otherPosts = sameCategory.length >= 3
   ? sameCategory.slice(0, 5)
@@ -85,13 +87,11 @@ const otherPosts = sameCategory.length >= 3
       <!-- Cover image -->
       {cover && (
         <div class="mb-6 sm:mb-8">
-          <Image
+          <PostCover
             src={cover}
             alt={coverAlt ?? title}
+            mode="hero"
             class="w-full rounded object-cover"
-            widths={[400, 800, 1200]}
-            sizes="(min-width: 1024px) 680px, 100vw"
-            loading="eager"
           />
         </div>
       )}

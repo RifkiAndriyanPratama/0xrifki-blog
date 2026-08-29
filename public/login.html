@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Masuk — thestoriesrifki</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #faf9f6;
+        color: #222;
+      }
+      .card {
+        text-align: center;
+        padding: 24px 28px;
+        border: 1px solid #e5e1d8;
+        border-radius: 14px;
+        background: #fff;
+        max-width: 320px;
+      }
+      .card p { margin: 8px 0 0; font-size: 14px; color: #666; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <strong>Menghubungkan ke GitHub…</strong>
+      <p id="msg">jendela ini akan menutup otomatis.</p>
+    </div>
+
+    <script>
+      (function () {
+        var BASE = window.location.origin;
+        var CLIENT_ID = "Iv23litapCwsxjMAtYPh";
+        var redirectUri = BASE + "/login.html";
+        var isStandalone = !window.opener;
+
+        var hashParams = new URLSearchParams(window.location.hash.replace(/^#\/?/, ""));
+        var queryParams = new URLSearchParams(window.location.search);
+        var scope = queryParams.get("scope") || "repo";
+        var accessToken = hashParams.get("access_token");
+        var error = hashParams.get("error");
+
+        function notify(data) {
+          var payload = JSON.stringify(
+            data.provider ? { token: data.token, provider: data.provider } : data
+          );
+          window.opener.postMessage(
+            "authorization:github:" + data.status + ":" + payload,
+            BASE
+          );
+        }
+
+        function finishAndClose(message, body) {
+          document.getElementById("msg").textContent = message;
+        }
+
+        if (isStandalone) {
+          var target = "/admin/";
+          try {
+            // only reachable via popup; anything else -> admin
+            window.location.replace(target);
+          } catch (e) {
+            window.location.href = target;
+          }
+          return;
+        }
+
+        if (error) {
+          var errDesc = hashParams.get("error_description") || error;
+          notify({ status: "error", provider: "github", message: errDesc });
+          finishAndClose("autentikasi gagal.");
+          window.close();
+          return;
+        }
+
+        if (accessToken) {
+          // coming back from GitHub with the token
+          notify({ status: "success", token: accessToken, provider: "github" });
+          finishAndClose("berhasil, lanjut di tab admin.");
+          window.close();
+          return;
+        }
+
+        // First load as popup: handshake with the admin page before redirecting.
+        window.opener.postMessage("authorizing:github", BASE);
+
+        window.addEventListener("message", function (e) {
+          if (e.data !== "authorizing:github") return;
+          var qs = [
+            "client_id=" + encodeURIComponent(CLIENT_ID),
+            "redirect_uri=" + encodeURIComponent(redirectUri),
+            "response_type=token",
+            "scope=" + encodeURIComponent(scope),
+            "state=" + encodeURIComponent(Math.random().toString(36).slice(2)),
+          ].join("&");
+          window.location.replace("https://github.com/login/oauth/authorize?" + qs);
+        });
+      })();
+    </script>
+  </body>
+</html>

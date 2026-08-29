@@ -5,6 +5,7 @@ import { readdirSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
+import { load as yamlLoad } from "js-yaml";
 import { hashSeed, mulberry32, COVER_PALETTE, COVER_DIM } from "../src/lib/cover.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url)) + "/..";
@@ -13,14 +14,12 @@ const outDir = join(root, "public/og");
 
 function parseFrontmatter(src) {
   const m = src.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  const fm = {};
-  if (m) {
-    for (const line of m[1].split("\n")) {
-      const kv = line.match(/^([a-zA-Z]+):\s*(.*)$/);
-      if (kv) fm[kv[1]] = kv[2].replace(/^["']|["']$/g, "").trim();
-    }
+  if (!m) return {};
+  try {
+    return yamlLoad(m[1]) || {};
+  } catch {
+    return {};
   }
-  return fm;
 }
 
 function esc(s) {
@@ -164,6 +163,7 @@ for (const file of readdirSync(postsDir).filter((f) => f.endsWith(".md"))) {
   const slug = file.replace(/\.md$/, "");
   const src = readFileSync(join(postsDir, file), "utf8");
   const fm = parseFrontmatter(src);
+  if (fm.draft) continue;
   const title = fm.title || slug;
   const category = fm.category || "notes";
 

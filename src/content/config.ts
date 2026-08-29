@@ -20,7 +20,7 @@ const postsCollection = defineCollection({
       category:    z.enum(CATEGORIES),
       lang:        z.enum(["id", "en"]).default("id"),
       tags:        z.array(z.string()).default([]),
-      cover:       image().optional(),
+      cover:       z.union([image(), z.string()]).optional(),
       coverAlt:    z.string().optional(),
       draft:       z.boolean().default(false),
       readingTime: z.number().optional(),

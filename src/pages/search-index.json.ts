@@ -5,7 +5,7 @@ import type { APIRoute } from "astro";
 import { sortPosts, formatDate } from "@/lib/utils";
 
 export const GET: APIRoute = async () => {
-  const posts = sortPosts(await getCollection("posts"));
+  const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 
   const index = posts.map((p) => ({
     slug:        p.slug,

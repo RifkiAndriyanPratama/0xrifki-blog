@@ -2,10 +2,10 @@
 // src/pages/index.astro
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { Image } from "astro:assets";
 import { sortPosts, readingTime, formatDate, isoDate } from "@/lib/utils";
+import PostCover from "@/components/PostCover.astro";
 
-const posts = sortPosts(await getCollection("posts"));
+const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 const featuredPost = posts[0];
 const latestPosts = posts.slice(1, 6);
 
@@ -66,13 +66,11 @@ const categories = posts.reduce((acc, post) => {
         </div>
         {featuredPost.data.cover && (
           <div class="overflow-hidden rounded-xl">
-            <Image
+            <PostCover
               src={featuredPost.data.cover}
               alt={featuredPost.data.coverAlt ?? featuredPost.data.title}
+              mode="featured"
               class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] sm:h-[200px]"
-              widths={[400, 600]}
-              sizes="(min-width: 640px) 280px, 100vw"
-              loading="lazy"
             />
           </div>
         )}
@@ -104,13 +102,11 @@ const categories = posts.reduce((acc, post) => {
               </div>
             </div>
             {post.data.cover && (
-              <Image
+              <PostCover
                 src={post.data.cover}
                 alt={post.data.coverAlt ?? post.data.title}
+                mode="thumb"
                 class="h-16 w-16 shrink-0 rounded-lg object-cover sm:h-20 sm:w-20 sm:rounded-xl"
-                width={80}
-                height={80}
-                loading="lazy"
               />
             )}
           </a>
