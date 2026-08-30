@@ -63,8 +63,8 @@ function vivify(rgb) {
     else h = (r - g) / d + 4;
     h /= 6;
   }
-  s = Math.min(1, s * 1.55 + 0.06);
-  l = Math.min(0.62, l);
+  s = Math.min(1, Math.max(0.35, s * 1.5 + 0.1));
+  l = Math.min(0.62, Math.max(0.38, l));
   return hslToRgb(h, s, l);
 }
 
@@ -93,7 +93,7 @@ async function dominantColors(filePath) {
     };
     return {
       from: vivify(avg((x, y) => x <= width / 2 && y <= height / 2)),
-      to:   vivify(avg((x, y) => x >= width / 2 && y >= height / 2)),
+      to:   vivify(avg((x, y) => x >= width / 2 && y >= height / 2)).map((v) => Math.round(v * 0.85)),
     };
   } catch {
     return null;
