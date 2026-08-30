@@ -36,6 +36,28 @@
   --shadow-soft: 0px 4px 10px rgba(0, 0, 0, 0.08);
 }
 
+/* Dark theme */
+:root[data-theme="dark"] {
+  --color-bg:      #131318;
+  --color-bg-alt:  #1d1d24;
+  --color-surface: #17171d;
+  --color-overlay: #2d2d37;
+  --color-muted:   #7e7a8a;
+  --color-subtle:  #b3afbd;
+  --color-text:    #d8d5df;
+  --color-heading: #f3f1f6;
+  --color-teal:    #3ddc97;
+  --color-blue:    #4cc8d8;
+  --color-green:    #57c57f;
+  --color-yellow:   #e0a53c;
+  --color-orange:  #ef8a4a;
+  --color-red:     #f25d63;
+  --color-purple:  #a78bfa;
+  --shadow-soft: 0px 4px 10px rgba(0, 0, 0, 0.35);
+  --shiki-light:   #dcd8e6;
+  --shiki-light-bg: #1c1c23;
+}
+
 /* Base resets */
 @layer base {
   *, *::before, *::after { @apply box-border; }
@@ -342,6 +364,9 @@
 
 /* Utilities */
 @layer utilities {
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
   .font-code { font-family: 'JetBrains Mono', monospace; }
   .font-serif { font-family: 'Source Serif 4', Georgia, serif; }
 

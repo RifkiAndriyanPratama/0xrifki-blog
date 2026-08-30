@@ -1,0 +1,60 @@
+---
+// src/pages/categories.astro
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import { sortPosts, formatDate, isoDate, isFoto } from "@/lib/utils";
+
+const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
+
+const buckets = posts.reduce((acc, post) => {
+  const cat = post.data.category;
+  if (!acc[cat]) acc[cat] = [];
+  acc[cat].push(post);
+  return acc;
+}, {} as Record<string, typeof posts>);
+
+const categories = Object.entries(buckets)
+  .map(([name, items]) => ({ name, items }))
+  .sort((a, b) => b.items.length - a.items.length || a.name.localeCompare(b.name));
+---
+
+<Layout title="Kategori" description="Semua kategori tulisan di thestoriesrifki.">
+
+  <div class="mx-auto max-w-3xl py-8 sm:py-12">
+    <header class="mb-8" data-animate>
+      <h1 class="font-serif text-3xl font-bold tracking-tight text-base-heading sm:text-4xl">Kategori</h1>
+      <p class="mt-2 text-sm leading-relaxed text-base-subtle sm:text-base">
+        {categories.length} kategori, {posts.length} tulisan total.
+      </p>
+    </header>
+
+    <div class="flex flex-col gap-5">
+      {categories.map(({ name, items }) => (
+        <section key={name} class="rounded-2xl border border-base-overlay p-5" data-animate>
+          <div class="mb-3 flex items-baseline justify-between gap-3">
+            <a href={`/blog/category/${name}`} class="capitalize font-serif text-xl font-bold text-base-heading transition-colors hover:text-base-teal">
+              {name}
+            </a>
+            <span class="rounded-full border border-base-overlay px-2.5 py-0.5 font-code text-xs text-base-muted">{items.length}</span>
+          </div>
+          <ul class="flex flex-col">
+            {items.map((post) => (
+              <li key={post.slug}>
+                <a href={`/blog/${post.slug}/`} class="group flex items-baseline justify-between gap-3 border-t border-base-overlay py-2.5 first:border-t-0">
+                  <span class="text-sm font-medium text-base-text line-clamp-1 transition-colors group-hover:text-base-teal sm:text-base">
+                    {isFoto(post) ? <span aria-hidden="true">📷 </span> : null}
+                    {post.data.title}
+                  </span>
+                  <time datetime={isoDate(post.data.date)} class="shrink-0 font-code text-xs text-base-muted">
+                    {formatDate(post.data.date)}
+                  </time>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </div>
+
+</Layout>

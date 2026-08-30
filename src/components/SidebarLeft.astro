@@ -1,0 +1,109 @@
+---
+// src/components/SidebarLeft.astro
+// Kolom kiri: profil singkat, menu navigasi, kategori, newsletter, currently reading.
+import Avatar from "./Avatar.astro";
+import { siteConfig } from "@/config/site";
+
+interface Props {
+  categories: { name: string; count: number }[];
+  postCount: number;
+  threadCount: number;
+}
+
+const { categories, postCount, threadCount } = Astro.props;
+const path = Astro.url.pathname;
+const menu = [
+  { label: "Semua tulisan", desc: `Artikel & thread (${postCount + threadCount})`, href: "/blog" },
+  { label: "Threads", desc: "Hanya foto posts", href: "/threads" },
+  { label: "Kategori", desc: `${categories.length} kategori`, href: "/categories" },
+  { label: "Tentang", desc: "Profil & short bio", href: "/about" },
+];
+
+const socialIcons: Record<string, string> = {
+  GitHub:
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.35.96.11-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.24 2.76.12 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>',
+  Instagram:
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>',
+  RSS: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>',
+};
+---
+
+<aside class="flex flex-col gap-8" aria-label="Profil dan navigasi">
+  <!-- Profil -->
+  <section class="flex items-start gap-4">
+    <Avatar size="lg" letter={siteConfig.avatarLetter} ring={true} />
+    <div class="min-w-0">
+      <h1 class="text-lg font-bold leading-tight text-base-heading">{siteConfig.name}</h1>
+      <p class="text-sm text-base-muted">{siteConfig.username}</p>
+      <p class="mt-0.5 font-code text-[11px] uppercase tracking-wide text-base-teal">{siteConfig.role}</p>
+    </div>
+  </section>
+
+  <p class="-mt-4 text-sm leading-relaxed text-base-subtle">{siteConfig.bio}</p>
+
+  <div class="flex items-center gap-1">
+    {siteConfig.socials.map((s) => s.label === "RSS" ? (
+      <a href={s.href} aria-label={s.label} class="flex h-9 w-9 items-center justify-center rounded-full text-base-muted transition-colors hover:bg-base-bg-alt hover:text-base-heading" set:html={socialIcons[s.label]} />
+    ) : (
+      <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label} class="flex h-9 w-9 items-center justify-center rounded-full text-base-muted transition-colors hover:bg-base-bg-alt hover:text-base-heading" set:html={socialIcons[s.label]} />
+    ))}
+  </div>
+
+  <!-- Navigation -->
+  <nav aria-label="Menu" class="flex flex-col border-t border-base-overlay pt-6">
+    {menu.map((m) => (
+      <a
+        href={m.href}
+        aria-current={path.startsWith(m.href) ? "page" : undefined}
+        class:list={[
+          "group flex items-baseline justify-between gap-2 border-b border-base-overlay py-3 transition-colors",
+          path.startsWith(m.href) ? "text-base-teal" : "text-base-heading hover:text-base-teal",
+        ]}
+      >
+        <span class="text-sm font-semibold">{m.label}</span>
+        <span class="font-code text-[11px] text-base-muted">{m.desc}</span>
+      </a>
+    ))}
+  </nav>
+
+  <!-- Kategori -->
+  <section>
+    <h2 class="mb-3 text-xs font-semibold uppercase tracking-widest text-base-muted">Kategori</h2>
+    <ul class="flex flex-col">
+      {categories.map((cat) => (
+        <li key={cat.name}>
+          <a
+            href={`/blog/category/${cat.name}`}
+            class="group flex items-center justify-between border-b border-base-overlay py-2 text-sm text-base-subtle transition-colors hover:text-base-teal"
+          >
+            <span class="capitalize">{cat.name}</span>
+            <span class="rounded-full border border-base-overlay px-2 py-0.5 font-code text-[11px] text-base-muted group-hover:border-base-teal group-hover:text-base-teal">
+              {cat.count}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- Currently reading -->
+  <section class="rounded-2xl border border-base-overlay p-4">
+    <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">{siteConfig.currentlyReading.title}</h2>
+    <p class="mt-2 text-sm font-semibold text-base-heading">{siteConfig.currentlyReading.book}</p>
+    <p class="text-xs text-base-muted">oleh {siteConfig.currentlyReading.author}</p>
+    <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-base-bg-alt">
+      <div class="h-full rounded-full bg-gradient-to-r from-teal-300 to-blue-400" style={`width:${siteConfig.currentlyReading.progress}%`}></div>
+    </div>
+    <p class="mt-1.5 font-code text-[11px] text-base-muted">{siteConfig.currentlyReading.progress}% selesai</p>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="rounded-2xl border border-base-overlay bg-base-bg-alt p-4">
+    <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">{siteConfig.newsletter.title}</h2>
+    <p class="mt-2 text-sm leading-relaxed text-base-subtle">{siteConfig.newsletter.desc}</p>
+    <a href={siteConfig.newsletter.rssHref} class="mt-3 inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-teal-300 to-blue-400 text-sm font-bold text-base-heading">
+      Langganan via RSS
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </a>
+  </section>
+</aside>

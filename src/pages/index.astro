@@ -5,13 +5,22 @@ import Layout from "@/layouts/Layout.astro";
 import { sortPosts, readingTime, formatDate, isoDate, isFoto } from "@/lib/utils";
 import PostCover from "@/components/PostCover.astro";
 import PhotoCard from "@/components/PhotoCard.astro";
+import ThreadCard from "@/components/ThreadCard.astro";
+import PostRow from "@/components/PostRow.astro";
+import SidebarLeft from "@/components/SidebarLeft.astro";
+import SidebarRight from "@/components/SidebarRight.astro";
 import { tintBg, isLightTint } from "@/lib/tint";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 const featuredPost = posts[0];
-const latestPosts = posts.slice(1, 6);
+const latestPosts = posts.filter((p) => p !== featuredPost).slice(0, 6);
+const threads = posts.filter((p) => isFoto(p));
+const popularPosts = [...posts]
+  .sort((a, b) => b.data.readingTime - a.data.readingTime)
+  .slice(0, 5);
+const popularThreads = [...threads].slice(0, 3);
 
 // Dominant colours per post, generated at build time (scripts/generate-og.mjs)
 function loadPostColors(): Record<string, { from: number[]; to: number[] }> {
@@ -30,145 +39,124 @@ const fTitle = featuredTint ? (featuredLight ? "text-black" : "text-white") : "t
 const fDesc = featuredTint ? (featuredLight ? "text-black/80" : "text-white/85") : "text-base-subtle";
 
 // Group by category
-const categories = posts.reduce((acc, post) => {
+const categoryCounts = posts.reduce((acc, post) => {
   const cat = post.data.category;
-  if (!acc[cat]) acc[cat] = [];
-  acc[cat].push(post);
+  acc[cat] = (acc[cat] ?? 0) + 1;
   return acc;
-}, {} as Record<string, typeof posts>);
+}, {} as Record<string, number>);
+const categories = Object.entries(categoryCounts)
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+// tags
+const tagCounts = posts.reduce((acc, post) => {
+  (post.data.tags ?? []).forEach((tag) => { acc[tag] = (acc[tag] ?? 0) + 1; });
+  return acc;
+}, {} as Record<string, number>);
+const tags = Object.entries(tagCounts)
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+  .slice(0, 14);
 ---
 
 <Layout title="thestoriesrifki">
 
-  <!-- 1. Hero -->
-  <section class="pt-8 pb-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12" data-animate>
-    <div class="lg:flex lg:items-end lg:justify-between lg:gap-8">
-      <div class="lg:flex-1">
-        <h1 class="font-serif text-3xl font-bold tracking-tight text-base-heading sm:text-5xl lg:text-[3.5rem] lg:leading-[1.1]">
-          thestoriesrifki
-        </h1>
-        <p class="mt-3 max-w-xl text-base leading-relaxed text-base-subtle sm:text-lg lg:text-xl">
-          cerita seputar coding, teknologi, dan kehidupan.
-        </p>
+  <div class="grid grid-cols-1 gap-10 py-8 sm:py-10 lg:grid-cols-[240px_minmax(0,1fr)_300px] lg:gap-12 lg:py-12">
+
+    <!-- Kolom kiri -->
+    <div class="hidden lg:block">
+      <div class="lg:sticky lg:top-20">
+        <SidebarLeft categories={categories} postCount={posts.filter((p) => !isFoto(p)).length} threadCount={threads.length} />
       </div>
-
-      <button
-        id="search-btn"
-        class="mt-5 flex w-full items-center gap-3 rounded-xl border border-base-overlay bg-base-bg-alt px-4 py-3 text-left text-sm text-base-muted transition-colors hover:border-base-teal sm:max-w-md lg:mt-0 lg:max-w-[280px]"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="shrink-0"><path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247Z"/></svg>
-        <span>cari tulisan...</span>
-        <kbd class="ml-auto hidden rounded border border-base-overlay px-1.5 py-0.5 text-xs text-base-muted sm:inline">⌘K</kbd>
-      </button>
     </div>
-  </section>
 
-  <hr class="border-base-overlay" />
+    <!-- Kolom tengah -->
+    <div class="flex min-w-0 flex-col gap-12">
 
-  <!-- 2. Postingan terbaru — photo post = image card, article = 1 large card -->
-  {featuredPost && (
-    <section class="py-8 sm:py-10" data-animate>
-      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-base-muted sm:mb-6">Postingan terbaru</h2>
-      {isFoto(featuredPost) ? (
-        <PhotoCard post={featuredPost} tint={featuredTint} />
-      ) : (
-      <a href={`/blog/${featuredPost.slug}/`} class:list={[
-          "group grid grid-cols-1 gap-5 rounded-2xl border p-4 sm:items-center sm:grid-cols-[1fr_280px] sm:gap-6 sm:p-6 transition-all",
-          featuredTint
-            ? (featuredLight ? "border-transparent" : "border-white/15")
-            : "border-base-overlay hover:border-base-teal hover:shadow-sm",
-        ]}
-         style={featuredTint ? { background: tintBg(featuredTint) } : undefined}>
-        <div>
-          <div class:list={["mb-2 flex flex-wrap items-center gap-1.5 text-xs sm:mb-3 sm:gap-2 sm:text-sm", fMeta]}>
-            <span class:list={["rounded-full border px-2 py-0.5 capitalize sm:px-2.5", fChip]}>{featuredPost.data.category}</span>
-            <time datetime={isoDate(featuredPost.data.date)}>{formatDate(featuredPost.data.date)}</time>
-            <span aria-hidden="true">·</span>
-            <span>{featuredPost.data.readingTime ?? readingTime(featuredPost.body)} min read</span>
-          </div>
-          <h3 class:list={["font-serif text-xl font-bold leading-snug tracking-tight transition-colors sm:text-2xl lg:text-3xl", fTitle]}>
-            {featuredPost.data.title}
-          </h3>
-          <p class:list={["mt-2 text-sm leading-relaxed line-clamp-3 sm:mt-3 sm:text-base", fDesc]}>
-            {featuredPost.data.description}
-          </p>
-        </div>
-        {featuredPost.data.cover && (
-          <div class="overflow-hidden rounded-xl">
-            <PostCover
-              src={featuredPost.data.cover}
-              alt={featuredPost.data.coverAlt ?? featuredPost.data.title}
-              mode="featured"
-              class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] sm:h-[200px]"
-            />
-          </div>
-        )}
-      </a>
-      )}
-    </section>
-  )}
-
-  <hr class="border-base-overlay" />
-
-  <!-- 3 & 4. Latest posts list + Categories -->
-  <section class="py-8 sm:py-10 lg:grid lg:grid-cols-[1fr_280px] lg:gap-12" data-animate>
-
-    <!-- Left: latest posts -->
-    <div>
-      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-base-muted sm:mb-5">Semua tulisan</h2>
-      <div class="flex flex-col">
-        {latestPosts.map((post) =>
-          isFoto(post) ? (
-            <div class="py-3 sm:py-3.5">
-              <PhotoCard post={post} />
-            </div>
+      <!-- Featured -->
+      {featuredPost && (
+        <section data-animate>
+          <h2 class="mb-4 text-sm font-semibold uppercase tracking-widest text-base-muted">Postingan terbaik</h2>
+          {isFoto(featuredPost) ? (
+            <PhotoCard post={featuredPost} tint={featuredTint} />
           ) : (
-          <a href={`/blog/${post.slug}/`} class="group flex items-start gap-3 border-t border-base-overlay py-3 first:border-t-0 sm:gap-4 sm:py-3.5">
-            <div class="min-w-0 flex-1">
-              <h3 class="text-base font-semibold text-base-heading leading-snug transition-colors group-hover:text-base-teal sm:text-lg">
-                {post.data.title}
-              </h3>
-              <p class="mt-0.5 text-sm text-base-subtle line-clamp-1 sm:mt-1 sm:text-sm">{post.data.description}</p>
-              <div class="mt-1.5 flex items-center gap-1.5 text-xs text-base-muted sm:mt-1.5 sm:gap-2 sm:text-xs">
-                <span class="rounded-full border border-base-overlay px-1.5 py-0.5 capitalize sm:px-2">{post.data.category}</span>
-                <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
+          <a href={`/blog/${featuredPost.slug}/`} class:list={[
+              "group grid grid-cols-1 gap-5 rounded-2xl border p-4 transition-all sm:items-center sm:grid-cols-[1fr_280px] sm:gap-6 sm:p-6",
+              featuredTint
+                ? (featuredLight ? "border-transparent" : "border-white/15")
+                : "border-base-overlay hover:border-base-teal hover:shadow-sm",
+            ]}
+             style={featuredTint ? { background: tintBg(featuredTint) } : undefined}>
+            <div>
+              <div class:list={["mb-2 flex flex-wrap items-center gap-1.5 text-xs sm:mb-3 sm:gap-2 sm:text-sm", fMeta]}>
+                <span class:list={["rounded-full border px-2 py-0.5 capitalize sm:px-2.5", fChip]}>{featuredPost.data.category}</span>
+                <time datetime={isoDate(featuredPost.data.date)}>{formatDate(featuredPost.data.date)}</time>
                 <span aria-hidden="true">·</span>
-                <span>{post.data.readingTime ?? readingTime(post.body)} min</span>
+                <span>{featuredPost.data.readingTime ?? readingTime(featuredPost.body)} min read</span>
               </div>
+              <h3 class:list={["font-serif text-xl font-bold leading-snug tracking-tight transition-colors sm:text-2xl lg:text-3xl", fTitle]}>
+                {featuredPost.data.title}
+              </h3>
+              <p class:list={["mt-2 text-sm leading-relaxed line-clamp-3 sm:mt-3 sm:text-base", fDesc]}>
+                {featuredPost.data.description}
+              </p>
             </div>
-            {post.data.cover && (
-              <PostCover
-                src={post.data.cover}
-                alt={post.data.coverAlt ?? post.data.title}
-                mode="thumb"
-                class="h-16 w-16 shrink-0 rounded-lg object-cover sm:h-20 sm:w-20 sm:rounded-xl"
-              />
+            {featuredPost.data.cover && (
+              <div class="overflow-hidden rounded-xl">
+                <PostCover
+                  src={featuredPost.data.cover}
+                  alt={featuredPost.data.coverAlt ?? featuredPost.data.title}
+                  mode="featured"
+                  class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] sm:h-[200px]"
+                />
+              </div>
             )}
           </a>
-          )
-        )}
-      </div>
-      <a href="/blog" class="mt-5 inline-block text-sm font-medium text-base-teal transition-colors hover:underline sm:mt-6">
-        Lihat semua tulisan →
-      </a>
+          )}
+        </section>
+      )}
+
+      <!-- Latest blog posts -->
+      <section data-animate>
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-sm font-semibold uppercase tracking-widest text-base-muted">Latest Blog Posts</h2>
+          <a href="/blog" class="text-sm font-medium text-base-teal transition-colors hover:underline">Lihat semua →</a>
+        </div>
+        <div class="flex flex-col">
+          {latestPosts.map((post) =>
+            isFoto(post) ? (
+              <div class="py-3 sm:py-3.5">
+                <PhotoCard post={post} />
+              </div>
+            ) : (
+              <PostRow post={post} />
+            )
+          )}
+        </div>
+      </section>
+
+      <!-- Threads -->
+      {threads.length > 0 && (
+        <section data-animate>
+          <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-sm font-semibold uppercase tracking-widest text-base-muted">Threads</h2>
+            <a href="/threads" class="text-sm font-medium text-base-teal transition-colors hover:underline">Lihat semua →</a>
+          </div>
+          <div class="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+            {threads.map((thread) => <ThreadCard thread={thread} />)}
+          </div>
+        </section>
+      )}
+
     </div>
 
-    <!-- Right: categories -->
-    <div class="mt-8 sm:mt-10 lg:mt-0">
-      <h2 class="mb-3 text-sm font-semibold uppercase tracking-wider text-base-muted sm:mb-5">Kategori</h2>
-      <div class="-mx-3 flex gap-2 overflow-x-auto px-3 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
-        {Object.entries(categories).map(([cat, catPosts]) => (
-          <a
-            href={`/blog/category/${cat}`}
-            class="group flex shrink-0 items-center gap-2 rounded-full border border-base-overlay px-4 py-2 transition-colors hover:border-base-teal sm:rounded-xl sm:px-4 sm:py-3 sm:border sm:hover:bg-base-bg-alt"
-          >
-            <span class="text-sm font-medium text-base-heading capitalize transition-colors group-hover:text-base-teal">{cat}</span>
-            <span class="text-xs text-base-muted">{catPosts.length}</span>
-          </a>
-        ))}
+    <!-- Kolom kanan -->
+    <div class="hidden lg:block">
+      <div class="lg:sticky lg:top-20">
+        <SidebarRight popularPosts={popularPosts} popularThreads={popularThreads} tags={tags} />
       </div>
     </div>
 
-  </section>
+  </div>
 
 </Layout>

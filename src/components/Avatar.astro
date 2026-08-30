@@ -1,0 +1,21 @@
+---
+// src/components/Avatar.astro
+interface Props {
+  size?: "xs" | "sm" | "md" | "lg";
+  letter?: string;
+  ring?: boolean;
+}
+const { size = "md", letter = "R", ring = false } = Astro.props;
+const dims = { xs: "h-8 w-8 text-xs", sm: "h-10 w-10 text-sm", md: "h-12 w-12 text-base", lg: "h-14 w-14 text-lg" };
+---
+
+<div
+  class:list={[
+    "flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-300 to-blue-400 font-bold text-base-heading",
+    dims[size],
+    ring && "ring-2 ring-base-overlay ring-offset-2 ring-offset-base-bg",
+  ]}
+  aria-hidden="true"
+>
+  {letter}
+</div>
