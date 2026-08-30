@@ -14,12 +14,15 @@ interface Props {
 
 const { post } = Astro.props;
 const { title, description, date, category, tags, cover, coverAlt, updated, lang } = post.data;
+const isFoto = post.data.type === "foto";
+const gallery = post.data.photos ?? [];
+const lead = isFoto ? gallery[0] : cover;
 const readTime = post.data.readingTime ?? readingTime(post.body);
 
-const ogImage = cover
-  ? typeof cover === "string"
-    ? new URL(cover, Astro.site).toString()
-    : new URL(cover.src, Astro.site).toString()
+const ogImage = lead
+  ? typeof lead === "string"
+    ? new URL(lead, Astro.site).toString()
+    : new URL(lead.src, Astro.site).toString()
   : new URL(`/og/${post.slug}.png`, Astro.site).toString();
 
 const allPosts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
@@ -36,9 +39,10 @@ const otherPosts = sameCategory.length >= 3
     author="Rifki Andriyan Pratama">
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": isFoto ? "Photograph" : "Article",
     "headline": title,
     "description": description,
+    ...(lead ? (typeof lead === "string" ? { "image": new URL(lead, Astro.site).toString() } : { "image": new URL(lead.src, Astro.site).toString() }) : {}),
     "datePublished": isoDate(date),
     ...(updated && { "dateModified": isoDate(updated) }),
     "author": {
@@ -79,16 +83,26 @@ const otherPosts = sameCategory.length >= 3
               <span>updated {formatDate(updated)}</span>
             </>
           )}
-          <span aria-hidden="true">·</span>
-          <span>{readTime} min read</span>
+          {isFoto && gallery.length > 0 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{gallery.length} foto</span>
+            </>
+          )}
+          {!isFoto && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{readTime} min read</span>
+            </>
+          )}
         </div>
       </header>
 
-      <!-- Cover image -->
-      {cover && (
+      <!-- Lead image -->
+      {lead && (
         <div class="mb-6 sm:mb-8">
           <PostCover
-            src={cover}
+            src={lead}
             alt={coverAlt ?? title}
             mode="hero"
             class="w-full rounded object-cover"
@@ -100,6 +114,20 @@ const otherPosts = sameCategory.length >= 3
       <div class="prose">
         <slot />
       </div>
+
+      <!-- Gallery: remaining photos for photo posts -->
+      {isFoto && gallery.length > 1 && (
+        <div class="mt-8 space-y-4">
+          {gallery.slice(1).map((p) => (
+            <PostCover
+              src={p}
+              alt={coverAlt ?? title}
+              mode="hero"
+              class="w-full rounded object-cover"
+            />
+          ))}
+        </div>
+      )}
 
       <!-- Divider -->
       <div class="my-8 border-t border-base-overlay sm:my-12"></div>

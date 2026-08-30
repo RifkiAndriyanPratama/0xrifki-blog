@@ -2,8 +2,9 @@
 // src/pages/index.astro
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { sortPosts, readingTime, formatDate, isoDate } from "@/lib/utils";
+import { sortPosts, readingTime, formatDate, isoDate, isFoto } from "@/lib/utils";
 import PostCover from "@/components/PostCover.astro";
+import PhotoCard from "@/components/PhotoCard.astro";
 
 const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 const featuredPost = posts[0];
@@ -45,10 +46,13 @@ const categories = posts.reduce((acc, post) => {
 
   <hr class="border-base-overlay" />
 
-  <!-- 2. Postingan terbaru — 1 large card -->
+  <!-- 2. Postingan terbaru — photo post = image card, article = 1 large card -->
   {featuredPost && (
     <section class="py-8 sm:py-10" data-animate>
       <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-base-muted sm:mb-6">Postingan terbaru</h2>
+      {isFoto(featuredPost) ? (
+        <PhotoCard post={featuredPost} />
+      ) : (
       <a href={`/blog/${featuredPost.slug}/`} class="group grid grid-cols-1 gap-5 rounded-2xl border border-base-overlay p-4 sm:items-center sm:grid-cols-[1fr_280px] sm:gap-6 sm:p-6 transition-all hover:border-base-teal hover:shadow-sm">
         <div>
           <div class="mb-2 flex flex-wrap items-center gap-1.5 text-xs text-base-muted sm:mb-3 sm:gap-2 sm:text-sm">
@@ -75,6 +79,7 @@ const categories = posts.reduce((acc, post) => {
           </div>
         )}
       </a>
+      )}
     </section>
   )}
 
@@ -86,9 +91,14 @@ const categories = posts.reduce((acc, post) => {
     <!-- Left: latest posts -->
     <div>
       <h2 class="mb-4 text-sm font-semibold uppercase tracking-wider text-base-muted sm:mb-5">Semua tulisan</h2>
-      <div class="flex flex-col divide-y divide-base-overlay">
-        {latestPosts.map((post) => (
-          <a href={`/blog/${post.slug}/`} class="group flex items-start gap-3 py-3 sm:gap-4 sm:py-3.5">
+      <div class="flex flex-col">
+        {latestPosts.map((post) =>
+          isFoto(post) ? (
+            <div class="py-3 sm:py-3.5">
+              <PhotoCard post={post} />
+            </div>
+          ) : (
+          <a href={`/blog/${post.slug}/`} class="group flex items-start gap-3 border-t border-base-overlay py-3 first:border-t-0 sm:gap-4 sm:py-3.5">
             <div class="min-w-0 flex-1">
               <h3 class="text-base font-semibold text-base-heading leading-snug transition-colors group-hover:text-base-teal sm:text-lg">
                 {post.data.title}
@@ -110,7 +120,8 @@ const categories = posts.reduce((acc, post) => {
               />
             )}
           </a>
-        ))}
+          )
+        )}
       </div>
       <a href="/blog" class="mt-5 inline-block text-sm font-medium text-base-teal transition-colors hover:underline sm:mt-6">
         Lihat semua tulisan →

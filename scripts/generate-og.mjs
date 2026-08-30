@@ -164,6 +164,7 @@ for (const file of readdirSync(postsDir).filter((f) => f.endsWith(".md"))) {
   const src = readFileSync(join(postsDir, file), "utf8");
   const fm = parseFrontmatter(src);
   if (fm.draft) continue;
+  if (fm.type === "foto") continue; // photo posts use the actual photo as OG image
   const title = fm.title || slug;
   const category = fm.category || "notes";
 

@@ -2,6 +2,7 @@
 # Copy isi file ini ke src/content/posts/<slug>.md lalu isi kolomnya.
 # Nama file = slug URL (huruf kecil, dipisah tanda hubung), contoh: belajar-git-dari-nol.md
 # Generator gambar OG otomatis jalan saat build.
+# Post hanya-berisi foto? Pakai templates/post-foto.md (type: "foto").
 
 ---
 title: "Judul Tulisan"
@@ -11,6 +12,7 @@ category: "coding"
 lang: "id"
 tags: []
 draft: true
+# type: "artikel"   # opsional (default) — gunakan "foto" untuk post foto
 # cover: /uploads/nama-gambar.png
 # coverAlt: "Deskripsi singkat gambar"
 ---

@@ -1,0 +1,42 @@
+---
+// src/components/PhotoCard.astro
+// Substack-style card for photo-only posts: image-dominant, minimal text.
+import PostCover from "./PostCover.astro";
+import { formatDate, isoDate, leadPhoto } from "@/lib/utils";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const photo = leadPhoto(post);
+---
+
+<a
+  href={`/blog/${post.slug}/`}
+  class="group flex flex-col gap-3 rounded-2xl border border-base-overlay p-4 transition-all hover:border-base-teal hover:shadow-sm sm:p-5"
+>
+  {photo && (
+    <div class="overflow-hidden rounded-xl">
+      <PostCover
+        src={photo}
+        alt={post.data.coverAlt ?? post.data.title}
+        mode="wide"
+        class="max-h-[480px] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+      />
+    </div>
+  )}
+  <div class="px-1 sm:px-1.5">
+    <div class="flex flex-wrap items-center gap-1.5 text-xs text-base-muted sm:gap-2 sm:text-sm">
+      <span class="rounded-full border border-base-overlay px-2 py-0.5 capitalize sm:px-2.5">{post.data.category}</span>
+      <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
+    </div>
+    <h3 class="mt-1.5 font-serif text-lg font-bold leading-snug tracking-tight text-base-heading transition-colors group-hover:text-base-teal sm:text-xl">
+      {post.data.title}
+    </h3>
+    {post.data.description && (
+      <p class="mt-1 text-sm text-base-subtle line-clamp-2 leading-relaxed">{post.data.description}</p>
+    )}
+  </div>
+</a>

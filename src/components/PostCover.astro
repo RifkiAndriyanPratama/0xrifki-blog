@@ -8,7 +8,7 @@ import type { ImageMetadata } from "astro";
 interface Props {
   src: ImageMetadata | string;
   alt: string;
-  mode?: "featured" | "thumb" | "hero";
+  mode?: "featured" | "thumb" | "hero" | "wide";
   class?: string;
 }
 
@@ -18,14 +18,14 @@ const isAsset = typeof src !== "string";
 ---
 
 {isAsset ? (
-  mode === "hero" ? (
+  mode === "hero" || mode === "wide" ? (
     <Image
       src={src}
       alt={alt}
       class={cls}
       widths={[400, 800, 1200]}
       sizes="(min-width: 1024px) 680px, 100vw"
-      loading="eager"
+      loading={mode === "hero" ? "eager" : "lazy"}
     />
   ) : mode === "featured" ? (
     <Image

@@ -31,6 +31,23 @@ export function sortPosts(
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
+/** True for photo-only posts (Substack-style) */
+export function isFoto(post: CollectionEntry<"posts">): boolean {
+  return post.data.type === "foto";
+}
+
+/** Leading image of a post: first gallery photo for foto posts, else the cover */
+export function leadPhoto(post: CollectionEntry<"posts">):
+  | import("astro").ImageMetadata
+  | string
+  | undefined {
+  if (isFoto(post)) {
+    const photos = post.data.photos;
+    if (photos && photos.length > 0) return photos[0];
+  }
+  return post.data.cover;
+}
+
 /** Build a serialisable post object for client-side Fuse.js search */
 export function toSearchIndex(posts: CollectionEntry<"posts">[]) {
   return posts.filter((p) => !p.data.draft).map((p) => ({
