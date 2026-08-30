@@ -77,7 +77,7 @@ const { popularPosts, popularThreads, tags } = Astro.props;
   <!-- Popular threads -->
   {popularThreads.length > 0 && (
     <section>
-      <h2 class="mb-3 text-xs font-semibold uppercase tracking-widest text-base-muted">Popular Threads</h2>
+      <h2 class="mb-3 text-xs font-semibold uppercase tracking-widest text-base-muted">Popular Frames</h2>
       <div class="flex flex-col gap-3">
         {popularThreads.map((t) => {
           const photos = t.data.photos ?? [];
@@ -105,9 +105,49 @@ const { popularPosts, popularThreads, tags } = Astro.props;
   <!-- Moodboard -->
   <section class="rounded-2xl border border-base-overlay border-l-2 border-l-base-teal p-4">
     <h2 class="mb-2 text-xs font-semibold uppercase tracking-widest text-base-muted">Moodboard</h2>
-    <blockquote class="font-serif text-sm italic leading-relaxed text-base-subtle">
-      “{siteConfig.moodboard.quote}”
-    </blockquote>
-    <cite class="mt-2 block font-code text-[11px] not-italic text-base-muted">— {siteConfig.moodboard.source}</cite>
+    {siteConfig.moodboard.quotes.map((q, idx) => (
+      <div class:list={["mood-quote", idx !== 0 && "hidden"]}>
+        <blockquote class="font-serif text-sm italic leading-relaxed text-base-subtle">
+          “{q.quote}”
+        </blockquote>
+        <cite class="mt-2 block font-code text-[11px] not-italic text-base-muted">— {q.source}</cite>
+      </div>
+    ))}
+  </section>
+
+  <!-- Random post -->
+  <section>
+    <button
+      id="random-post-btn"
+      class="flex w-full items-center justify-center gap-2 rounded-full border border-base-overlay bg-base-surface px-4 py-2.5 text-sm font-semibold text-base-subtle transition-colors hover:border-base-teal hover:text-base-heading"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
+      Acak Tulisan
+    </button>
   </section>
 </aside>
+
+<script is:inline>
+  // Rotate satu kutipan moodboard secara acak per muat halaman.
+  (() => {
+    const quotes = document.querySelectorAll(".mood-quote");
+    if (quotes.length > 1) {
+      quotes.forEach((q, i) => q.classList.toggle("hidden", i !== Math.floor(Math.random() * quotes.length)));
+    }
+  })();
+
+  // Acak tulisan: ambil dari index pencarian (ringan, sudah ada).
+  (() => {
+    const btn = document.getElementById("random-post-btn");
+    if (!btn) return;
+    btn.addEventListener("click", async () => {
+      try {
+        const res = await fetch("/search-index.json");
+        const list = await res.json();
+        if (!list.length) return;
+        const pick = list[Math.floor(Math.random() * list.length)];
+        window.location.href = `/blog/${encodeURIComponent(pick.slug)}/`;
+      } catch {}
+    });
+  })();
+</script>

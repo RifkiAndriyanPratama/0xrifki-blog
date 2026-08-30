@@ -6,16 +6,16 @@ const path = Astro.url.pathname;
 const nav = [
   { label: "Home",       href: "/",          active: path === "/" },
   { label: "Blog",       href: "/blog",      active: path.startsWith("/blog") },
-  { label: "Threads",    href: "/threads",   active: path.startsWith("/threads") },
+  { label: "Frames",     href: "/threads",   active: path.startsWith("/threads") },
   { label: "Categories", href: "/categories", active: path.startsWith("/categories") },
   { label: "About",      href: "/about",     active: path.startsWith("/about") },
 ];
 ---
 
-<header class="sticky top-0 z-40 border-b border-base-overlay bg-base-surface/90 backdrop-blur">
+<header id="site-header" class="sticky top-0 z-40 border-b border-base-overlay bg-base-surface/90 backdrop-blur">
   <div class="mx-auto flex h-14 w-full max-w-[1240px] items-center justify-between gap-3 px-4 sm:px-6 md:px-8">
     <a href="/" class="flex shrink-0 items-center gap-2" aria-label={siteConfig.name}>
-      <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-teal-300 to-blue-400 text-sm font-extrabold text-base-heading">
+      <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 text-sm font-extrabold text-base-heading">
         {siteConfig.avatarLetter}
       </span>
       <span class="hidden font-code text-sm font-bold tracking-tight text-base-heading sm:inline">
@@ -63,7 +63,7 @@ const nav = [
 
       <a
         href="/rss.xml"
-        class="hidden rounded-full bg-gradient-to-r from-teal-300 to-blue-400 px-4 py-1.5 text-sm font-bold text-base-heading transition-opacity hover:opacity-85 lg:inline-flex"
+        class="hidden rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-1.5 text-sm font-bold text-base-heading transition-opacity hover:opacity-85 lg:inline-flex"
       >
         Subscribe
       </a>
@@ -111,5 +111,29 @@ const nav = [
       apply(next);
     });
     document.addEventListener("astro:page-load", () => apply(root.dataset.theme || "light"));
+  })();
+</script>
+
+<script is:inline>
+  // Progressive header: menghilang saat scroll ke bawah, muncul lagi saat scroll ke atas.
+  (() => {
+    const header = document.getElementById("site-header");
+    if (!header) return;
+    let lastY = window.scrollY;
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      const delta = y - lastY;
+      lastY = y;
+      if (y < 64) { header.classList.remove("header-hide"); return; }
+      if (delta > 8 && !header.classList.contains("header-hide")) {
+        header.classList.add("header-hide");
+      } else if (delta < -8 && header.classList.contains("header-hide")) {
+        header.classList.remove("header-hide");
+      }
+    };
+
+    window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
   })();
 </script>

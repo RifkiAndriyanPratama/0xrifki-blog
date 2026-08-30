@@ -3,9 +3,17 @@
 export const siteConfig = {
   name:       "Rifki Andriyan",
   username:   "@thestoriesrifki",
-  role:       "Software Developer & Lifelong Learner",
+  role:       "Writing code, capturing sunsets, and the quiet in between.",
   bio:        "Menulis tentang programming, produktivitas, dan kehidupan. Tempat menulis dalam dan berbagi bebas.",
   avatarLetter: "R",
+
+  // Kalimat berputar di bawah profil (typing effect). Kalimat pertama jadi statis kalau user menonaktifkan animasi.
+  typewriter: [
+    "Writing code, capturing sunsets, and the quiet in between.",
+    "Menulis kode, menangkap senja, dan hening di antaranya.",
+    "Membangun, merenung, lalu berbagi.",
+  ],
+
   socials: [
     { label: "GitHub",     href: "https://github.com/RifkiAndriyanPratama" },
     { label: "Instagram",  href: "https://instagram.com/thestoriesrifkii" },
@@ -14,7 +22,7 @@ export const siteConfig = {
 
   newsletter: {
     title: "Newsletter",
-    desc:  "Belum ada backend — untuk sekarang pakai RSS, hapus kolom ini kalau mau diganti form nyata.",
+    desc:  "Belum ada backend — untuk sekarang pakai RSS tertulis cantik di bawah kalau ini. Kolom ini placeholder.",
     rssHref: "/rss.xml",
   },
 
@@ -25,12 +33,47 @@ export const siteConfig = {
     progress: 42,
   },
 
+  // Manual. Kalau mau real-time, ganti enabled=false dan pasang Spotify API nanti.
+  nowPlaying: {
+    enabled: true,
+    title:   "Ngelock",
+    artist:  "Jinnybug · Ena / \u201cJangan Lupa\u201d Session",
+    album:   "lock outside",
+    note:    "penyegar menulis",
+  },
+
   moodboard: {
-    quote:  "Focus on becoming the best version of yourself, not on proving anything to anyone.",
-    source: "anon",
+    title: "Moodboard",
+    quotes: [
+      { quote: "Focus on becoming the best version of yourself, not on proving anything to anyone.", source: "anon" },
+      { quote: "Setiap senja adalah pengingat bahwa hari bisa diakhiri dengan tenang.", source: "catatan sendiri" },
+      { quote: "Menulis itu cara berjalan pelan sambil melihat ke belakang dengan jujur.", source: "catatan sendiri" },
+    ],
+  },
+
+  dailyFrame: {
+    title: "Frame Hari Ini",
+    quote: "Dua frame malam ini: satu untuk dinginnya malam, satu untuk hangatnya cerita.",
+    source: "arked bawah",
+  },
+
+  githubStats: {
+    enabled: true,
+    username: "RifkiAndriyanPratama",
+  },
+
+  rootNote: {
+    label: "notes",
+    href:  "/search?q=",
   },
 
   about: {
     text: "Personal website — tempat menulis panjang dan berbagi bebas. Artikel untuk pemikiran yang butuh ruang, Threads untuk hal-hal kecil yang tetap layak dikenang.",
+  },
+
+  colophon: {
+    label: "Colophon",
+    href:  "/colophon",
+    text:  "Astro · Tailwind · Vercel — kenapa dibangun begini, font & warna apa, semuanya ada di halaman ini.",
   },
 };

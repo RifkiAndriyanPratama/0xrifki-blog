@@ -54,6 +54,16 @@ const otherPosts = sameCategory.length >= 3
 
   <div id="reading-bar" class="fixed left-0 top-0 z-[60] h-1 bg-base-teal transition-[width] duration-75"></div>
 
+  <!-- Mode baca fokus (sepia) -->
+  <button
+    id="sepia-toggle"
+    class="fixed bottom-[8.5rem] right-1 z-[55] flex h-10 w-10 items-center justify-center rounded-full border border-base-overlay bg-base-surface text-base-subtle transition-colors hover:border-base-teal hover:text-base-heading sm:bottom-[10.5rem] sm:right-2"
+    aria-label="Mode baca fokus (sepia)"
+    title="Mode baca fokus"
+  >
+    <span class="font-serif text-sm font-bold">Aa</span>
+  </button>
+
   <!-- Desktop: two-column layout -->
   <div class="lg:flex lg:justify-center lg:gap-16">
 
@@ -156,7 +166,7 @@ const otherPosts = sameCategory.length >= 3
 
         <!-- Author -->
         <div class="flex items-center gap-3">
-          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-300 to-blue-400 text-base-heading font-bold text-sm">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-base-heading font-bold text-sm">
             R
           </div>
           <div>
@@ -180,6 +190,12 @@ const otherPosts = sameCategory.length >= 3
           <button id="share-btn-footer" class="share-circle" aria-label="Copy link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
           </button>
+        </div>
+
+        <!-- ToC -->
+        <div id="toc" class="hidden w-full border-t border-base-overlay pt-6">
+          <p class="mb-1 text-xs font-semibold uppercase tracking-wider text-base-muted">Di halaman ini</p>
+          <ol id="toc-list" class="flex flex-col gap-1"></ol>
         </div>
 
         <!-- Other posts -->
@@ -225,7 +241,7 @@ const otherPosts = sameCategory.length >= 3
 
     <!-- Author card -->
     <div class="mb-6 flex items-start gap-3 rounded-2xl bg-base-bg-alt p-4 sm:mb-8 sm:gap-4 sm:p-5">
-      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-300 to-blue-400 text-base-heading font-bold text-lg">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-base-heading font-bold text-lg">
         R
       </div>
       <div>
@@ -276,6 +292,45 @@ const otherPosts = sameCategory.length >= 3
     const pageUrl = encodeURIComponent(window.location.href);
     const pageTitle = encodeURIComponent(document.title.replace(/ — .*$/, ""));
 
+    // Table of contents (h2/h3 dari artikel, dibangun di sisi klien)
+    const toc = document.getElementById("toc");
+    const tocList = document.getElementById("toc-list");
+    const prose = article.querySelector(".prose");
+    if (toc && tocList && prose) {
+      tocList.innerHTML = "";
+      const headings = [...prose.querySelectorAll("h2, h3")];
+      if (headings.length >= 2) {
+        const seen = {};
+        headings.forEach((h) => {
+          const text = h.textContent.trim();
+          let id = text.normalize("NFKD").toLowerCase().trim()
+            .replace(/[^\w\s-]/g, " ").replace(/\s+/g, "-").replace(/-+/g, "-") || "bagian";
+          const c = seen[id] ?? 0;
+          seen[id] = c + 1;
+          if (c > 0) id = `${id}-${c}`;
+          h.id = id;
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = `#${id}`;
+          a.textContent = text;
+          a.className = h.tagName === "H3"
+            ? "block py-1 pl-3 text-xs leading-snug text-base-muted transition-colors hover:text-base-teal"
+            : "block py-1 text-xs font-semibold leading-snug text-base-subtle transition-colors hover:text-base-teal";
+          li.appendChild(a);
+          tocList.appendChild(li);
+        });
+        toc.classList.remove("hidden");
+      }
+    }
+
+    // Mode baca fokus (sepia)
+    const sepia = document.getElementById("sepia-toggle");
+    if (sepia) {
+      sepia.onclick = () => {
+        sepia.classList.toggle("bg-base-bg-alt", document.body.classList.toggle("sepia-mode"));
+      };
+    }
+
     // Desktop share buttons
     const twitter = document.getElementById("share-twitter");
     const linkedin = document.getElementById("share-linkedin");
@@ -292,18 +347,18 @@ const otherPosts = sameCategory.length >= 3
     ["share-btn-footer", "share-btn-footer-mobile"].forEach((id) => {
       const btn = document.getElementById(id);
       if (btn) {
-        btn.addEventListener("click", async () => {
+        btn.onclick = async () => {
           try {
             await navigator.clipboard.writeText(decodeURIComponent(pageUrl));
             btn.style.borderColor = "var(--color-teal)";
             setTimeout(() => { btn.style.borderColor = ""; }, 2000);
           } catch {}
-        });
+        };
       }
     });
 
     document.querySelectorAll("a[href^='#']").forEach((anchor) => {
-      anchor.addEventListener("click", (e) => {
+      anchor.onclick = (e) => {
         const id = anchor.getAttribute("href")?.slice(1);
         if (!id) return;
         const target = document.getElementById(id);
@@ -314,13 +369,13 @@ const otherPosts = sameCategory.length >= 3
           window.scrollTo({ top, behavior: "smooth" });
           history.pushState(null, "", `#${id}`);
         }
-      });
+      };
     });
 
     document.querySelectorAll(".prose img").forEach((img) => {
       if (img.closest("a")) return;
       img.style.cursor = "zoom-in";
-      img.addEventListener("click", () => {
+      img.onclick = () => {
         const prevActive = document.activeElement;
 
         const overlay = document.createElement("div");
@@ -373,10 +428,9 @@ const otherPosts = sameCategory.length >= 3
         document.body.appendChild(overlay);
         document.body.style.overflow = "hidden";
         close.focus();
-      });
+      };
     });
   }
 
-  document.addEventListener("DOMContentLoaded", initPost);
   document.addEventListener("astro:page-load", initPost);
 </script>

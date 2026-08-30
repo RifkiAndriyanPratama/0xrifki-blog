@@ -1,0 +1,87 @@
+---
+// src/pages/colophon.astro
+import Layout from "@/layouts/Layout.astro";
+import { siteConfig } from "@/config/site";
+
+const swatches = [
+  { name: "bg",        hex: "#faf9f6" },
+  { name: "surface",   hex: "#faf9f6" },
+  { name: "overlay",   hex: "#e2dfd6" },
+  { name: "text",      hex: "#3d3a33" },
+  { name: "heading",   hex: "#1a1814" },
+  { name: "accent",    hex: "#ca7420" },
+  { name: "accent-2",  hex: "#e0572f" },
+];
+---
+
+<Layout title="Colophon" description="Bagaimana & mengapa website ini dibangun — stack, font, warna, dan inspirasinya.">
+
+  <div class="mx-auto max-w-2xl py-8 sm:py-12">
+    <header data-animate>
+      <h1 class="font-serif text-3xl font-bold tracking-tight text-base-heading sm:text-4xl">Colophon</h1>
+      <p class="mt-2 text-sm leading-relaxed text-base-subtle sm:text-base">
+        Catatan teknis & desain — seperti keterangan penutup di buku.
+      </p>
+    </header>
+
+    <section class="mt-8 space-y-6">
+      <div data-animate>
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Teknologi</h2>
+        <ul class="mt-3 flex flex-col gap-1.5 text-sm text-base-text">
+          <li>• <strong>Astro</strong> — static site, semua halaman dibuat saat build. Tanpa server, cepat, aman.</li>
+          <li>• <strong>Tailwind CSS</strong> — styling utility dengan token CSS variable.</li>
+          <li>• <strong>Vercel</strong> — hosting; tiap push ke git lang&shy;sung auto-deploy.</li>
+          <li>• <strong>Content Collections</strong> — artikel sebagai file Markdown, tanpa CMS.</li>
+          <li>• <strong>Fuse.js</strong> — pencarian fuzzy di sisi klien.</li>
+        </ul>
+        <p class="mt-3 border-l-2 border-l-base-teal pl-4 font-code text-xs leading-relaxed text-base-subtle">
+          npm run build → generate-og (warna dominan + OG) → astro build
+        </p>
+      </div>
+
+      <div data-animate>
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Tipografi</h2>
+        <ul class="mt-3 flex flex-col gap-1.5 text-sm text-base-text">
+          <li><span class="font-serif"><strong>Source Serif 4</strong></span> — body artikel. Bacaan panjang terasa editorial.</li>
+          <li><span class="font-sans"><strong>Inter</strong></span> — judul & elemen UI. Bersih dan modern.</li>
+          <li><span class="font-mono"><strong>JetBrains Mono</strong></span> — label teknis & detail.</li>
+          <li><span class="font-signature"><strong>Dancing Script</strong></span> — tanda tangan & sentuhan personal.</li>
+        </ul>
+      </div>
+
+      <div data-animate>
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Warna</h2>
+        <p class="mt-2 text-sm text-base-subtle">
+          Latar krem (bukan putih murni), teks hangat gelap, aksen senja (amber → oranye) menggantikan hijau agar lebih personal dan sesuai tema "senja & doa".
+        </p>
+        <div class="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-7">
+          {swatches.map((s) => (
+            <div key={s.name} class="overflow-hidden rounded-xl border border-base-overlay">
+              <div class="h-10 w-full" style={`background-color:${s.hex}`}></div>
+              <div class="px-1.5 py-1.5">
+                <p class="font-code text-[10px] leading-tight text-base-heading">{s.name}</p>
+                <p class="font-code text-[9px] leading-tight text-base-muted">{s.hex}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div data-animate>
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Inspirasi</h2>
+        <p class="mt-2 text-sm leading-relaxed text-base-text">
+          Layout 3 kolom mengingatkan pada UUsubstack & personal sites developer ("thestoriesrifki" dipinjam dari handle IG). Seksi "Frames" terinspirasi digital journal — ringan, cepat dikonsumsi. Moodboard & now-playing dibuat untuk rasa "hidup" nan personal.
+        </p>
+      </div>
+
+      <div data-animate>
+        <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Kenapa?</h2>
+        <p class="mt-2 text-sm leading-relaxed text-base-subtle">
+          {siteConfig.bio} Semua dibuat dari nol untuk belajar sambil menulis — persis filosofi blog ini.
+        </p>
+        <p class="mt-4 font-signature text-2xl text-base-heading">— {siteConfig.name}</p>
+      </div>
+    </section>
+  </div>
+
+</Layout>
