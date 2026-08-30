@@ -31,7 +31,7 @@ const descCls = tinted ? (light ? "text-black/80" : "text-white/85") : "text-bas
       ? (light ? "border-transparent" : "border-white/15")
       : "border-base-overlay hover:border-base-teal",
   ]}
-  style={tint ? tintBg(tint) : undefined}
+  style={tint ? { background: tintBg(tint) } : undefined}
 >
   <div class:list={["flex flex-wrap items-center gap-1.5 text-xs sm:gap-2 sm:text-sm", metaText]}>
     <span class:list={["rounded-full border px-2 py-0.5 capitalize sm:px-2.5", chipCls]}>
