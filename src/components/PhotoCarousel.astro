@@ -26,11 +26,6 @@ const { photos, alt } = Astro.props;
             mode={i === 0 ? "hero" : "wide"}
             class="block max-h-[60vh] w-[min(80vw,520px)] object-contain"
           />
-          {photos.length > 1 && (
-            <figcaption class="px-3 py-1.5 text-right text-xs tabular-nums text-base-muted">
-              {i + 1} / {photos.length}
-            </figcaption>
-          )}
         </figure>
       ))}
     </div>
