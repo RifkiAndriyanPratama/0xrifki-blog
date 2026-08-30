@@ -1,0 +1,88 @@
+---
+// src/components/PhotoCarousel.astro
+// Threads-style horizontal swipeable photo strip.
+import PostCover from "./PostCover.astro";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  photos: (ImageMetadata | string)[];
+  alt: string;
+}
+
+const { photos, alt } = Astro.props;
+---
+
+{photos.length > 0 && (
+  <div class="relative" data-photo-carousel>
+    <div
+      data-photo-scroller
+      class="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-1"
+    >
+      {photos.map((p, i) => (
+        <figure class="shrink-0 snap-center overflow-hidden rounded-xl border border-base-overlay bg-base-bg-alt">
+          <PostCover
+            src={p}
+            alt={`${alt} — ${i + 1}/${photos.length}`}
+            mode={i === 0 ? "hero" : "wide"}
+            class="block max-h-[60vh] w-[min(80vw,520px)] object-contain"
+          />
+          {photos.length > 1 && (
+            <figcaption class="px-3 py-1.5 text-right text-xs tabular-nums text-base-muted">
+              {i + 1} / {photos.length}
+            </figcaption>
+          )}
+        </figure>
+      ))}
+    </div>
+    {photos.length > 1 && (
+      <>
+        <button
+          data-foto-prev
+          aria-label="Foto sebelumnya"
+          class="absolute left-[-14px] top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-base-overlay bg-base-bg-alt text-xl text-base-heading shadow-sm transition hover:border-base-teal hover:text-base-teal disabled:cursor-default disabled:opacity-35 sm:flex"
+        >
+          ‹
+        </button>
+        <button
+          data-foto-next
+          aria-label="Foto berikutnya"
+          class="absolute right-[-14px] top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-base-overlay bg-base-bg-alt text-xl text-base-heading shadow-sm transition hover:border-base-teal hover:text-base-teal disabled:cursor-default disabled:opacity-35 sm:flex"
+        >
+          ›
+        </button>
+      </>
+    )}
+  </div>
+)}
+
+<style>
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script>
+  function initCarousels() {
+    document.querySelectorAll("[data-photo-carousel]").forEach((wrap) => {
+      const scroller = wrap.querySelector("[data-photo-scroller]");
+      if (!scroller) return;
+      const prevBtn = wrap.querySelector("[data-foto-prev]");
+      const nextBtn = wrap.querySelector("[data-foto-next]");
+      const step = () => {
+        const first = scroller.querySelector("figure");
+        return (first ? first.offsetWidth : 320) + 12;
+      };
+      const sync = () => {
+        if (prevBtn) prevBtn.disabled = scroller.scrollLeft <= 2;
+        if (nextBtn) nextBtn.disabled = scroller.scrollLeft + scroller.clientWidth + 2 >= scroller.scrollWidth;
+      };
+      prevBtn.onclick = () => scroller.scrollBy({ left: -step(), behavior: "smooth" });
+      nextBtn.onclick = () => scroller.scrollBy({ left: step(), behavior: "smooth" });
+      scroller.removeEventListener("scroll", scroller._sync);
+      scroller.addEventListener("scroll", sync, { passive: true });
+      scroller._sync = sync;
+      sync();
+    });
+  }
+  document.addEventListener("DOMContentLoaded", initCarousels);
+  document.addEventListener("astro:page-load", initCarousels);
+</script>

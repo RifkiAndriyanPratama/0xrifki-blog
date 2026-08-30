@@ -5,6 +5,7 @@
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import PostCover from "@/components/PostCover.astro";
+import PhotoCarousel from "@/components/PhotoCarousel.astro";
 import { formatDate, isoDate, readingTime, sortPosts } from "@/lib/utils";
 import type { CollectionEntry } from "astro:content";
 
@@ -107,39 +108,8 @@ const otherPosts = sameCategory.length >= 3
             <slot />
           </div>
           {gallery.length > 0 && (
-            <div class="foto-carousel relative mt-8" data-foto-carousel>
-              <div
-                data-foto-scroller
-                class="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-1"
-              >
-                {gallery.map((p, i) => (
-                  <figure class="shrink-0 snap-center overflow-hidden rounded-xl border border-base-overlay bg-base-bg-alt">
-                    <PostCover
-                      src={p}
-                      alt={coverAlt ?? `${title} — foto ${i + 1}`}
-                      mode={i === 0 ? "hero" : "wide"}
-                      class="block max-h-[70vh] w-[min(82vw,600px)] object-contain"
-                    />
-                    <figcaption class="px-3 py-1.5 text-right text-xs tabular-nums text-base-muted">
-                      {i + 1} / {gallery.length}
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-              <button
-                data-foto-prev
-                aria-label="Foto sebelumnya"
-                class="foto-arrow absolute left-[-14px] top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-base-overlay bg-base-bg-alt text-xl text-base-heading shadow-sm transition hover:border-base-teal hover:text-base-teal disabled:cursor-default disabled:opacity-35 sm:flex"
-              >
-                ‹
-              </button>
-              <button
-                data-foto-next
-                aria-label="Foto berikutnya"
-                class="foto-arrow absolute right-[-14px] top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-base-overlay bg-base-bg-alt text-xl text-base-heading shadow-sm transition hover:border-base-teal hover:text-base-teal disabled:cursor-default disabled:opacity-35 sm:flex"
-              >
-                ›
-              </button>
+            <div class="mt-8">
+              <PhotoCarousel photos={gallery} alt={coverAlt ?? title} />
             </div>
           )}
         </>
@@ -347,27 +317,6 @@ const otherPosts = sameCategory.length >= 3
       });
     });
 
-    document.querySelectorAll("[data-foto-carousel]").forEach((wrap) => {
-      const scroller = wrap.querySelector("[data-foto-scroller]");
-      if (!scroller) return;
-      const prevBtn = wrap.querySelector("[data-foto-prev]");
-      const nextBtn = wrap.querySelector("[data-foto-next]");
-      const step = () => {
-        const first = scroller.querySelector("figure");
-        return (first ? first.offsetWidth : 320) + 12;
-      };
-      const sync = () => {
-        if (prevBtn) prevBtn.disabled = scroller.scrollLeft <= 2;
-        if (nextBtn) nextBtn.disabled = scroller.scrollLeft + scroller.clientWidth + 2 >= scroller.scrollWidth;
-      };
-      prevBtn.onclick = () => scroller.scrollBy({ left: -step(), behavior: "smooth" });
-      nextBtn.onclick = () => scroller.scrollBy({ left: step(), behavior: "smooth" });
-      scroller.removeEventListener("scroll", scroller._sync);
-      scroller.addEventListener("scroll", sync, { passive: true });
-      scroller._sync = sync;
-      sync();
-    });
-
     document.querySelectorAll(".prose img").forEach((img) => {
       if (img.closest("a")) return;
       img.style.cursor = "zoom-in";
@@ -431,8 +380,3 @@ const otherPosts = sameCategory.length >= 3
   document.addEventListener("DOMContentLoaded", initPost);
   document.addEventListener("astro:page-load", initPost);
 </script>
-
-<style>
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-</style>
