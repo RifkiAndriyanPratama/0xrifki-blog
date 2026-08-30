@@ -14,6 +14,17 @@
           "https://thestoriesrifki.vercel.app" + location.pathname + location.search + location.hash
         );
       }
+      window.addEventListener("message", function (e) {
+        var s = e.data && e.data.toString ? String(e.data) : JSON.stringify(e.data);
+        console.log("[diag] msg dari", e.origin, "->", s.slice(0, 120));
+        if (s === "authorizing:github" && e.source && e.source.postMessage) {
+          try {
+            e.source.postMessage("authorizing:github", e.origin);
+          } catch (err) {
+            console.log("[diag] echo gagal:", err.message);
+          }
+        }
+      });
     </script>
     <script src="https://unpkg.com/decap-cms@3/dist/decap-cms.js"></script>
   </body>

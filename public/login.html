@@ -90,22 +90,32 @@
         // First load as popup: handshake with the admin page before redirecting.
         // Keep re-announcing until the admin page echoes, then go to GitHub.
         var announced = false;
+        var attempts = 0;
+        console.log("[login] popup mulai, opener?", !!window.opener);
         var announceTimer = window.setInterval(function () {
           if (announced) return;
-          if (window.opener) window.opener.postMessage("authorizing:github", BASE);
+          attempts += 1;
+          if (window.opener) {
+            console.log("[login] announce #" + attempts, "ke", window.location.origin);
+            window.opener.postMessage("authorizing:github", BASE);
+          }
         }, 250);
 
         window.setTimeout(function () {
           if (!announced) {
+            console.log("[login] TIMEOUT: tak ada echo dari admin");
             document.getElementById("msg").textContent =
               "tidak ada respons dari jendela admin. tutup jendela ini lalu coba lagi.";
           }
         }, 20000);
 
         window.addEventListener("message", function (e) {
-          if (e.data !== "authorizing:github" || announced) return;
+          if (announced) return;
+          console.log("[login] ada pesan:", String(e.data || "").slice(0, 60), "dari", e.origin);
+          if (e.data !== "authorizing:github") return;
           announced = true;
           window.clearInterval(announceTimer);
+          console.log("[login] echo diterima, buka GitHub…");
           var qs = [
             "client_id=" + encodeURIComponent(CLIENT_ID),
             "redirect_uri=" + encodeURIComponent(redirectUri),
