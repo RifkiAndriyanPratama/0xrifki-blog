@@ -88,10 +88,24 @@
         }
 
         // First load as popup: handshake with the admin page before redirecting.
-        window.opener.postMessage("authorizing:github", BASE);
+        // Keep re-announcing until the admin page echoes, then go to GitHub.
+        var announced = false;
+        var announceTimer = window.setInterval(function () {
+          if (announced) return;
+          if (window.opener) window.opener.postMessage("authorizing:github", BASE);
+        }, 250);
+
+        window.setTimeout(function () {
+          if (!announced) {
+            document.getElementById("msg").textContent =
+              "tidak ada respons dari jendela admin. tutup jendela ini lalu coba lagi.";
+          }
+        }, 20000);
 
         window.addEventListener("message", function (e) {
-          if (e.data !== "authorizing:github") return;
+          if (e.data !== "authorizing:github" || announced) return;
+          announced = true;
+          window.clearInterval(announceTimer);
           var qs = [
             "client_id=" + encodeURIComponent(CLIENT_ID),
             "redirect_uri=" + encodeURIComponent(redirectUri),

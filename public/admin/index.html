@@ -7,6 +7,14 @@
     <title>admin — thestoriesrifki</title>
   </head>
   <body>
+    <script>
+      var h = location.hostname;
+      if (h !== "thestoriesrifki.vercel.app" && h !== "localhost" && h !== "127.0.0.1") {
+        location.replace(
+          "https://thestoriesrifki.vercel.app" + location.pathname + location.search + location.hash
+        );
+      }
+    </script>
     <script src="https://unpkg.com/decap-cms@3/dist/decap-cms.js"></script>
   </body>
 </html>
