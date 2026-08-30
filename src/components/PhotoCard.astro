@@ -3,37 +3,56 @@
 // Threads-style feed card: caption on top, swipeable photo strip inline.
 import PhotoCarousel from "./PhotoCarousel.astro";
 import { formatDate, isoDate } from "@/lib/utils";
+import { tintBg, isLightTint, type Tint } from "@/lib/tint";
 import type { CollectionEntry } from "astro:content";
 
 interface Props {
   post: CollectionEntry<"posts">;
-  tint?: { from: number[]; to: number[] };
+  tint?: Tint;
 }
 
 const { post } = Astro.props;
 const photos = post.data.photos ?? [];
-const tintStyle = Astro.props.tint
-  ? `linear-gradient(135deg, rgba(${Astro.props.tint.from.join(",")},0.30), rgba(${Astro.props.tint.to.join(",")},0.16))`
-  : undefined;
+const tint = Astro.props.tint;
+const tinted = tint !== undefined;
+const light = tinted && isLightTint(tint!);
+const metaText = tinted ? (light ? "text-black/70" : "text-white/75") : "text-base-muted";
+const chipCls = tinted ? (light ? "border-black/25 text-black/80" : "border-white/40 text-white/90") : "border-base-overlay";
+const titleCls = tinted
+  ? (light ? "text-black group-hover:opacity-75" : "text-white group-hover:opacity-85")
+  : "text-base-heading group-hover:text-base-teal";
+const descCls = tinted ? (light ? "text-black/80" : "text-white/85") : "text-base-subtle";
 ---
 
 <div
-  class="rounded-2xl border border-base-overlay p-4 transition-colors hover:border-base-teal sm:p-5"
-  style={tintStyle}
+  class:list={[
+    "rounded-2xl border p-4 transition-colors sm:p-5",
+    tinted
+      ? (light ? "border-transparent" : "border-white/15")
+      : "border-base-overlay hover:border-base-teal",
+  ]}
+  style={tint ? tintBg(tint) : undefined}
 >
-  <div class="flex flex-wrap items-center gap-1.5 text-xs text-base-muted sm:gap-2 sm:text-sm">
-    <span class="rounded-full border border-base-overlay px-2 py-0.5 capitalize sm:px-2.5">{post.data.category}</span>
+  <div class:list={["flex flex-wrap items-center gap-1.5 text-xs sm:gap-2 sm:text-sm", metaText]}>
+    <span class:list={["rounded-full border px-2 py-0.5 capitalize sm:px-2.5", chipCls]}>
+      {post.data.category}
+    </span>
     <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
   </div>
 
   <a href={`/blog/${post.slug}/`} class="group mt-2 block">
-    <h3 class="font-serif text-lg font-bold leading-snug tracking-tight text-base-heading transition-colors group-hover:text-base-teal sm:text-xl">
+    <h3
+      class:list={[
+        "font-serif text-lg font-bold leading-snug tracking-tight transition-colors sm:text-xl",
+        titleCls,
+      ]}
+    >
       {post.data.title}
     </h3>
   </a>
 
   {post.data.description && (
-    <p class="mt-1 text-sm text-base-subtle leading-relaxed">{post.data.description}</p>
+    <p class:list={["mt-1 text-sm leading-relaxed", descCls]}>{post.data.description}</p>
   )}
 
   <div class="mt-4">
