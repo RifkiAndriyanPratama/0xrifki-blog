@@ -1,5 +1,7 @@
 // scripts/generate-og.mjs
 // Generates a unique 1200x630 OG image per post into public/og/<slug>.png
+// and a slug → {from,to} dominant-color map into public/post-colors.json
+// (used to tint the featured card on the homepage).
 // Run before `astro build` (wired in package.json build script).
 import { readdirSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -11,6 +13,7 @@ import { hashSeed, mulberry32, COVER_PALETTE, COVER_DIM } from "../src/lib/cover
 const root = dirname(fileURLToPath(import.meta.url)) + "/..";
 const postsDir = join(root, "src/content/posts");
 const outDir = join(root, "public/og");
+const publicDir = join(root, "public");
 
 function parseFrontmatter(src) {
   const m = src.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -20,6 +23,88 @@ function parseFrontmatter(src) {
   } catch {
     return {};
   }
+}
+
+// ---------- dominant color extraction ----------
+function hslToRgb(h, s, l) {
+  if (s === 0) {
+    const v = l * 255;
+    return [v, v, v];
+  }
+  const hue2rgb = (p, q, t) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const r = hue2rgb(p, q, h + 1 / 3);
+  const g = hue2rgb(p, q, h);
+  const b = hue2rgb(p, q, h - 1 / 3);
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+/** Vivified average colour of two diagonal halves → [r,g,b] */
+function vivify(rgb) {
+  let [r, g, b] = rgb.map((v) => v / 255);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let l = (max + min) / 2;
+  let h = 0;
+  let s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h /= 6;
+  }
+  s = Math.min(1, s * 1.55 + 0.06);
+  l = Math.min(0.62, l);
+  return hslToRgb(h, s, l);
+}
+
+async function dominantColors(filePath) {
+  try {
+    const { data, info } = await sharp(filePath)
+      .rotate()
+      .resize({ width: 32, height: 32, fit: "cover" })
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const { width, height, channels } = info;
+    const avg = (sel) => {
+      let r = 0, g = 0, b = 0, n = 0;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (!sel(x, y)) continue;
+          const i = (y * width + x) * channels;
+          r += data[i];
+          g += data[i + 1];
+          b += data[i + 2];
+          n++;
+        }
+      }
+      return n ? [r / n, g / n, b / n] : [70, 70, 70];
+    };
+    return {
+      from: vivify(avg((x, y) => x <= width / 2 && y <= height / 2)),
+      to:   vivify(avg((x, y) => x >= width / 2 && y >= height / 2)),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function resolveImagePath(raw, filePath) {
+  const p = String(raw);
+  if (/^https?:\/\//.test(p)) return null;
+  if (p.startsWith("/")) return join(root, "public", p);
+  return join(dirname(filePath), p);
 }
 
 function esc(s) {
@@ -159,10 +244,33 @@ function buildOgSvg({ seed, title, category }) {
 
 mkdirSync(outDir, { recursive: true });
 
-for (const file of readdirSync(postsDir).filter((f) => f.endsWith(".md"))) {
-  const slug = file.replace(/\.md$/, "");
-  const src = readFileSync(join(postsDir, file), "utf8");
+const mdFiles = [];
+function walk(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) walk(p);
+    else if (entry.name.endsWith(".md")) mdFiles.push(p);
+  }
+}
+walk(postsDir);
+
+const postColors = {};
+
+for (const filePath of mdFiles) {
+  let slug = filePath.slice(postsDir.length + 1).replace(/\.md$/, "");
+  if (slug.endsWith("/index")) slug = slug.slice(0, -"/index".length);
+  const src = readFileSync(filePath, "utf8");
   const fm = parseFrontmatter(src);
+
+  const leadRaw = fm.type === "foto" ? fm.photos?.[0] : fm.cover;
+  if (leadRaw) {
+    const resolved = resolveImagePath(leadRaw, filePath);
+    if (resolved) {
+      const colors = await dominantColors(resolved);
+      if (colors) postColors[slug] = colors;
+    }
+  }
+
   if (fm.draft) continue;
   if (fm.type === "foto") continue; // photo posts use the actual photo as OG image
   const title = fm.title || slug;
@@ -173,5 +281,8 @@ for (const file of readdirSync(postsDir).filter((f) => f.endsWith(".md"))) {
   writeFileSync(join(outDir, `${slug}.png`), png);
   console.log("og:", slug);
 }
+
+writeFileSync(join(publicDir, "post-colors.json"), JSON.stringify(postColors));
+console.log("colors:", Object.keys(postColors).length);
 
 console.log("done:", outDir);

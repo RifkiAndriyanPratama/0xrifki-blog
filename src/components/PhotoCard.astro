@@ -7,13 +7,20 @@ import type { CollectionEntry } from "astro:content";
 
 interface Props {
   post: CollectionEntry<"posts">;
+  tint?: { from: number[]; to: number[] };
 }
 
 const { post } = Astro.props;
 const photos = post.data.photos ?? [];
+const tintStyle = Astro.props.tint
+  ? `linear-gradient(135deg, rgba(${Astro.props.tint.from.join(",")},0.30), rgba(${Astro.props.tint.to.join(",")},0.16))`
+  : undefined;
 ---
 
-<div class="rounded-2xl border border-base-overlay p-4 transition-colors hover:border-base-teal sm:p-5">
+<div
+  class="rounded-2xl border border-base-overlay p-4 transition-colors hover:border-base-teal sm:p-5"
+  style={tintStyle}
+>
   <div class="flex flex-wrap items-center gap-1.5 text-xs text-base-muted sm:gap-2 sm:text-sm">
     <span class="rounded-full border border-base-overlay px-2 py-0.5 capitalize sm:px-2.5">{post.data.category}</span>
     <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
