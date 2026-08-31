@@ -3,24 +3,27 @@
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import { sortPosts, readingTime, formatDate, isoDate, isFoto } from "@/lib/utils";
+import { siteConfig } from "@/config/site";
 import PostCover from "@/components/PostCover.astro";
 import PhotoCard from "@/components/PhotoCard.astro";
-import ThreadCard from "@/components/ThreadCard.astro";
+import FrameCard from "@/components/FrameCard.astro";
 import PostRow from "@/components/PostRow.astro";
 import SidebarLeft from "@/components/SidebarLeft.astro";
 import SidebarRight from "@/components/SidebarRight.astro";
-import { tintBg, isLightTint } from "@/lib/tint";
+import { tintBg } from "@/lib/tint";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 const featuredPost = posts[0];
-const latestPosts = posts.filter((p) => p !== featuredPost).slice(0, 6);
-const threads = posts.filter((p) => isFoto(p));
+const articles = posts.filter((p) => !isFoto(p));
+const frames = posts.filter((p) => isFoto(p));
+const latestPosts = (featuredPost && !isFoto(featuredPost) ? articles.filter((p) => p !== featuredPost) : articles).slice(0, 5);
+const latestFrames = frames.slice(0, 6);
 const popularPosts = [...posts]
   .sort((a, b) => b.data.readingTime - a.data.readingTime)
   .slice(0, 5);
-const popularThreads = [...threads].slice(0, 3);
+const popularThreads = [...frames].slice(0, 3);
 
 // Dominant colours per post, generated at build time (scripts/generate-og.mjs)
 function loadPostColors(): Record<string, { from: number[]; to: number[] }> {
@@ -32,11 +35,12 @@ function loadPostColors(): Record<string, { from: number[]; to: number[] }> {
 }
 const postColors = loadPostColors();
 const featuredTint = featuredPost ? postColors[featuredPost.slug] : undefined;
-const featuredLight = featuredTint ? isLightTint(featuredTint) : false;
-const fMeta = featuredTint ? (featuredLight ? "text-black/70" : "text-white/75") : "text-base-muted";
-const fChip = featuredTint ? (featuredLight ? "border-black/25 text-black/80" : "border-white/40 text-white/90") : "border-base-overlay";
-const fTitle = featuredTint ? (featuredLight ? "text-black" : "text-white") : "text-base-heading group-hover:text-base-teal";
-const fDesc = featuredTint ? (featuredLight ? "text-black/80" : "text-white/85") : "text-base-subtle";
+const featuredIsFoto = featuredPost ? isFoto(featuredPost) : false;
+
+// Spec: bagian pertama judul featured diwarna aksen
+const titleParts = featuredPost?.data.title.split(" ") ?? [];
+const titleHead = titleParts[0] ?? "";
+const titleRest = titleParts.slice(1).join(" ");
 
 // Group by category
 const categoryCounts = posts.reduce((acc, post) => {
@@ -66,7 +70,7 @@ const tags = Object.entries(tagCounts)
     <!-- Kolom kiri -->
     <div class="hidden lg:block">
       <div class="lg:sticky lg:top-20">
-        <SidebarLeft categories={categories} postCount={posts.filter((p) => !isFoto(p)).length} threadCount={threads.length} />
+        <SidebarLeft categories={categories} postCount={articles.length} threadCount={frames.length} />
       </div>
     </div>
 
@@ -76,41 +80,41 @@ const tags = Object.entries(tagCounts)
       <!-- Featured -->
       {featuredPost && (
         <section data-animate>
-          <h2 class="mb-4 text-sm font-semibold uppercase tracking-widest text-base-muted">Postingan terbaik</h2>
-          {isFoto(featuredPost) ? (
+          <h2 class="mb-4 text-xs font-semibold uppercase tracking-widest text-base-subtle">Postingan terbaik</h2>
+          {featuredIsFoto ? (
             <PhotoCard post={featuredPost} tint={featuredTint} />
           ) : (
-          <a href={`/blog/${featuredPost.slug}/`} class:list={[
-              "group grid grid-cols-1 gap-5 rounded-2xl border p-4 transition-all sm:items-center sm:grid-cols-[1fr_280px] sm:gap-6 sm:p-6 card-lift",
-              featuredTint
-                ? (featuredLight ? "border-transparent" : "border-white/15")
-                : "border-base-overlay",
-            ]}
-             style={featuredTint ? { background: tintBg(featuredTint) } : undefined}>
-            <div>
-              <div class:list={["mb-2 flex flex-wrap items-center gap-1.5 text-xs sm:mb-3 sm:gap-2 sm:text-sm", fMeta]}>
-                <span class:list={["rounded-full border px-2 py-0.5 capitalize sm:px-2.5", fChip]}>{featuredPost.data.category}</span>
-                <time datetime={isoDate(featuredPost.data.date)}>{formatDate(featuredPost.data.date)}</time>
-                <span aria-hidden="true">·</span>
-                <span>{featuredPost.data.readingTime ?? readingTime(featuredPost.body)} min read</span>
-              </div>
-              <h3 class:list={["font-serif text-xl font-bold leading-snug tracking-tight transition-colors sm:text-2xl lg:text-3xl", fTitle]}>
-                {featuredPost.data.title}
-              </h3>
-              <p class:list={["mt-2 text-sm leading-relaxed line-clamp-3 sm:mt-3 sm:text-base", fDesc]}>
-                {featuredPost.data.description}
-              </p>
-            </div>
-            {featuredPost.data.cover && (
-              <div class="overflow-hidden rounded-xl">
+          <a href={`/blog/${featuredPost.slug}/`} class="card-hover group block overflow-hidden rounded-2xl border border-base-overlay bg-base-surface shadow-[var(--shadow-soft)]">
+            <div class="h-44 overflow-hidden bg-gradient-to-r from-base-accent-light to-base-accent-light sm:h-52">
+              {featuredTint ? (
+                <div class="h-full w-full" style={{ background: tintBg(featuredTint) }}></div>
+              ) : featuredPost.data.cover ? (
                 <PostCover
                   src={featuredPost.data.cover}
                   alt={featuredPost.data.coverAlt ?? featuredPost.data.title}
                   mode="featured"
-                  class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] sm:h-[200px]"
+                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                 />
+              ) : null}
+            </div>
+            <div class="space-y-4 p-6 sm:p-8">
+              <span class="inline-block rounded-full bg-base-bg-alt px-3 py-1 text-xs font-medium uppercase tracking-wider text-base-teal">
+                {featuredPost.data.category}
+              </span>
+              <h1 class="hero-title font-serif leading-tight tracking-tight text-base-heading sm:text-3xl lg:text-4xl">
+                {titleRest ? <>{titleHead} <span class="text-base-teal">{titleRest}</span></> : titleHead}
+              </h1>
+              <p class="max-w-2xl text-base leading-relaxed text-base-subtle sm:text-lg">
+                {featuredPost.data.description}
+              </p>
+              <div class="flex items-center gap-3 border-t border-base-overlay pt-4 text-sm text-base-muted">
+                <span class="font-medium text-base-heading">{siteConfig.name}</span>
+                <span aria-hidden="true">·</span>
+                <time datetime={isoDate(featuredPost.data.date)}>{formatDate(featuredPost.data.date)}</time>
+                <span aria-hidden="true">·</span>
+                <span>{featuredPost.data.readingTime ?? readingTime(featuredPost.body)} min read</span>
               </div>
-            )}
+            </div>
           </a>
           )}
         </section>
@@ -120,7 +124,7 @@ const tags = Object.entries(tagCounts)
       {categories.length > 0 && (
         <section data-animate aria-label="Kategori populer">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="mr-1 text-xs font-semibold uppercase tracking-widest text-base-muted">Topik:</span>
+            <span class="mr-1 text-xs font-semibold uppercase tracking-widest text-base-subtle">Topik:</span>
             {categories.slice(0, 4).map((cat) => (
               <a
                 key={cat.name}
@@ -136,34 +140,26 @@ const tags = Object.entries(tagCounts)
         </section>
       )}
 
-      <!-- Latest blog posts -->
+      <!-- Latest posts -->
       <section data-animate>
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-sm font-semibold uppercase tracking-widest text-base-muted">Latest Blog Posts</h2>
+          <h2 class="font-serif text-xl text-base-heading">Latest Posts</h2>
           <a href="/blog" class="text-sm font-medium text-base-teal transition-colors hover:underline">Lihat semua →</a>
         </div>
-        <div class="flex flex-col">
-          {latestPosts.map((post) =>
-            isFoto(post) ? (
-              <div class="py-3 sm:py-3.5">
-                <PhotoCard post={post} />
-              </div>
-            ) : (
-              <PostRow post={post} />
-            )
-          )}
+        <div class="flex flex-col gap-4">
+          {latestPosts.map((post) => <PostRow post={post} />)}
         </div>
       </section>
 
-      <!-- Threads / Frame Hari Ini -->
-      {threads.length > 0 && (
+      <!-- Latest Frames -->
+      {latestFrames.length > 0 && (
         <section data-animate>
           <div class="mb-4 flex items-center justify-between">
-            <h2 class="text-sm font-semibold uppercase tracking-widest text-base-muted">Frame Hari Ini</h2>
-            <a href="/threads" class="text-sm font-medium text-base-teal transition-colors hover:underline">Lihat semua →</a>
+            <h2 class="font-serif text-xl text-base-heading">📸 Latest Frames</h2>
+            <a href="/frames" class="text-sm font-medium text-base-teal transition-colors hover:underline">Lihat semua →</a>
           </div>
-          <div class="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
-            {threads.map((thread) => <ThreadCard thread={thread} />)}
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+            {latestFrames.map((thread) => <FrameCard thread={thread} />)}
           </div>
         </section>
       )}
@@ -197,11 +193,9 @@ const tags = Object.entries(tagCounts)
 
     </div>
 
-    <!-- Kolom kanan -->
-    <div class="hidden lg:block">
-      <div class="lg:sticky lg:top-20">
-        <SidebarRight popularPosts={popularPosts} popularThreads={popularThreads} tags={tags} />
-      </div>
+    <!-- Kolom kanan (tablet: full-width 2-kolom di bawah konten) -->
+    <div class="hidden min-w-0 md:block lg:sticky lg:top-20">
+      <SidebarRight popularPosts={popularPosts} popularThreads={popularThreads} tags={tags} />
     </div>
 
   </div>

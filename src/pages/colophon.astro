@@ -4,13 +4,13 @@ import Layout from "@/layouts/Layout.astro";
 import { siteConfig } from "@/config/site";
 
 const swatches = [
-  { name: "bg",        hex: "#faf9f6" },
-  { name: "surface",   hex: "#faf9f6" },
-  { name: "overlay",   hex: "#e2dfd6" },
-  { name: "text",      hex: "#3d3a33" },
-  { name: "heading",   hex: "#1a1814" },
-  { name: "accent",    hex: "#ca7420" },
-  { name: "accent-2",  hex: "#e0572f" },
+  { name: "bg",        hex: "#faf8f5" },
+  { name: "surface",   hex: "#ffffff" },
+  { name: "overlay",   hex: "#e8e2da" },
+  { name: "text",      hex: "#1a1816" },
+  { name: "muted",     hex: "#8a8076" },
+  { name: "accent",    hex: "#b4533a" },
+  { name: "accent-2",  hex: "#8f3e2e" },
 ];
 ---
 
@@ -42,8 +42,8 @@ const swatches = [
       <div data-animate>
         <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Tipografi</h2>
         <ul class="mt-3 flex flex-col gap-1.5 text-sm text-base-text">
-          <li><span class="font-serif"><strong>Source Serif 4</strong></span> — body artikel. Bacaan panjang terasa editorial.</li>
-          <li><span class="font-sans"><strong>Inter</strong></span> — judul & elemen UI. Bersih dan modern.</li>
+          <li><span class="font-serif"><strong>Literata</strong></span> — judul & body artikel. Bacaan panjang terasa editorial.</li>
+          <li><span class="font-sans"><strong>Inter</strong></span> — elemen UI & navigasi. Bersih dan modern.</li>
           <li><span class="font-mono"><strong>JetBrains Mono</strong></span> — label teknis & detail.</li>
           <li><span class="font-signature"><strong>Dancing Script</strong></span> — tanda tangan & sentuhan personal.</li>
         </ul>
@@ -52,7 +52,7 @@ const swatches = [
       <div data-animate>
         <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Warna</h2>
         <p class="mt-2 text-sm text-base-subtle">
-          Latar krem (bukan putih murni), teks hangat gelap, aksen senja (amber → oranye) menggantikan hijau agar lebih personal dan sesuai tema "senja & doa".
+          Latar krem hangat, teks coklat tua, dan aksen terakota (merah bata) — personal, mediterania, menggantikan hijau agar terasa lebih hangat dan sesuai tema "senja & doa".
         </p>
         <div class="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-7">
           {swatches.map((s) => (

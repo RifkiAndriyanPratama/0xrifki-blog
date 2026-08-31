@@ -1,0 +1,72 @@
+---
+// src/pages/frames.astro
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import { sortPosts } from "@/lib/utils";
+import ThreadCard from "@/components/ThreadCard.astro";
+
+const threads = sortPosts(await getCollection("posts", ({ data }) => !data.draft && data.type === "foto"));
+const entries = await Promise.all(
+  threads.map(async (t) => {
+    const { Content } = await t.render();
+    return { t, Content };
+  })
+);
+const perPage = 6;
+---
+
+<Layout title="Frames" description="Feed ringan & singkat — foto post, capaian kecil, cuplikan kehidupan.">
+
+  <div class="mx-auto max-w-2xl py-8 sm:py-12">
+    <header class="mb-6 sm:mb-8" data-animate>
+      <h1 class="font-serif text-3xl font-bold tracking-tight text-base-heading sm:text-4xl">Frames</h1>
+      <p class="mt-2 text-sm leading-relaxed text-base-subtle sm:text-base">
+        Frame Hari Ini — cuplikan kecil, capaian, dan foto. {entries.length} frame.
+      </p>
+    </header>
+
+    <div id="frames-feed" class="flex flex-col gap-5">
+      {entries.length === 0 && (
+        <p class="rounded-2xl border border-dashed border-base-overlay p-8 text-center text-sm text-base-muted">
+          Belum ada frame. Post foto dengan <code class="font-code">type: "foto"</code> untuk mulai.
+        </p>
+      )}
+      {entries.map(({ t, Content }, idx) => (
+        <div class="frame-item" data-index={idx} style={idx >= perPage ? "display:none" : undefined}>
+          <ThreadCard thread={t} full={true} body={Content} />
+        </div>
+      ))}
+    </div>
+
+    {entries.length > perPage && (
+      <div class="mt-6 text-center">
+        <button
+          id="frames-load-more"
+          class="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-base-overlay bg-base-surface px-6 text-sm font-semibold text-base-subtle transition-colors hover:border-base-teal hover:text-base-heading"
+        >
+          Muat lebih banyak
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+    )}
+  </div>
+
+</Layout>
+
+<script is:inline define:vars={{ perPage }}>
+  // "Infinite scroll" ringan: semua frame sudah dirender statik,
+  // tombol ini hanya menampilkan sisanya bertahap.
+  (() => {
+    const feed = document.getElementById("frames-feed");
+    const btn = document.getElementById("frames-load-more");
+    if (!feed || !btn) return;
+    let shown = perPage;
+    btn.addEventListener("click", () => {
+      shown += perPage;
+      feed.querySelectorAll(".frame-item").forEach((item) => {
+        if (Number(item.dataset.index) < shown) item.style.display = "";
+      });
+      if (shown >= feed.querySelectorAll(".frame-item").length) btn.remove();
+    });
+  })();
+</script>

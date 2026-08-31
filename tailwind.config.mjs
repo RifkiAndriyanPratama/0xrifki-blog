@@ -16,6 +16,7 @@ export default {
           subtle:   "var(--color-subtle)",
           text:     "var(--color-text)",
           heading:  "var(--color-heading)",
+          "accent-light": "var(--color-accent-light)",
           red:      "var(--color-red)",
           orange:   "var(--color-orange)",
           yellow:   "var(--color-yellow)",
@@ -28,7 +29,7 @@ export default {
       fontFamily: {
         mono: ["'JetBrains Mono'", "'Fira Code'", ...defaultTheme.fontFamily.mono],
         sans: ["'Inter'", ...defaultTheme.fontFamily.sans],
-        serif: ["'Source Serif 4'", "Georgia", "serif"],
+        serif: ["'Literata'", "'Merriweather'", "Georgia", "serif"],
       },
     },
   },

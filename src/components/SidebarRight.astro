@@ -1,6 +1,7 @@
 ---
 // src/components/SidebarRight.astro
-// Kolom kanan: about, popular posts, tags, popular threads, moodboard.
+// Kolom kanan: about, popular, tags, popular frames, moodboard.
+// Pada tablet (md→lg) kolom ini jadi grid 2-kolom full-width; di lg+ jadi kolom kanan.
 import PostCover from "./PostCover.astro";
 import { siteConfig } from "@/config/site";
 import { readingTime, isFoto } from "@/lib/utils";
@@ -15,11 +16,11 @@ interface Props {
 const { popularPosts, popularThreads, tags } = Astro.props;
 ---
 
-<aside class="flex flex-col gap-8" aria-label="Samping (about, populer)">
+<aside class="grid gap-8 md:grid-cols-2 md:content-start min-w-0 lg:grid-cols-1" aria-label="Samping (about, populer)">
   <!-- About -->
-  <section class="rounded-2xl border border-base-overlay p-4">
-    <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Tentang</h2>
-    <p class="mt-2 text-sm leading-relaxed text-base-subtle">{siteConfig.about.text}</p>
+  <section class="rounded-xl border border-base-overlay bg-base-surface p-5">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-base-subtle">Tentang</h2>
+    <p class="mt-3 text-sm leading-relaxed text-base-subtle">{siteConfig.about.text}</p>
     <a href="/about" class="mt-3 inline-block text-sm font-medium text-base-teal transition-colors hover:underline">
       Selengkapnya →
     </a>
@@ -27,45 +28,42 @@ const { popularPosts, popularThreads, tags } = Astro.props;
 
   <!-- Popular posts -->
   <section>
-    <h2 class="mb-3 text-xs font-semibold uppercase tracking-widest text-base-muted">Popular Posts</h2>
-    <ol class="flex flex-col">
+    <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-subtle">🔥 Popular</h2>
+    <div class="flex flex-col">
       {popularPosts.map((post, i) => (
-        <li key={post.slug} class="border-b border-base-overlay last:border-b-0">
-          <a href={`/blog/${post.slug}/`} class="group flex items-center gap-3 py-2.5">
-            <span class="font-serif text-xl font-bold text-base-overlay">{i + 1}</span>
-            <div class="min-w-0 flex-1">
-              <p class="text-sm font-semibold leading-snug text-base-heading transition-colors group-hover:text-base-teal line-clamp-2">
-                {post.data.title}
-              </p>
-              <p class="mt-0.5 text-xs text-base-muted">
-                {post.data.readingTime ?? readingTime(post.body)} min
-                {isFoto(post) ? " · thread" : ""}
-              </p>
-            </div>
-            {!isFoto(post) && post.data.cover && (
-              <PostCover
-                src={post.data.cover}
-                alt={post.data.coverAlt ?? post.data.title}
-                mode="thumb"
-                class="h-10 w-10 shrink-0 rounded-lg object-cover"
-              />
-            )}
-          </a>
-        </li>
+        <a key={post.slug} href={`/blog/${post.slug}/`} class="group flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-base-bg-alt">
+          <span class="w-5 shrink-0 font-code text-xs font-bold text-base-teal">{String(i + 1).padStart(2, "0")}</span>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-medium leading-snug text-base-heading line-clamp-1 transition-colors group-hover:text-base-teal">
+              {post.data.title}
+            </p>
+            <p class="text-xs text-base-muted">
+              {post.data.readingTime ?? readingTime(post.body)} min{isFoto(post) ? " · frame" : ""}
+            </p>
+          </div>
+          {!isFoto(post) && post.data.cover && (
+            <PostCover
+              src={post.data.cover}
+              alt={post.data.coverAlt ?? post.data.title}
+              mode="thumb"
+              class="h-10 w-10 shrink-0 rounded-lg object-cover"
+            />
+          )}
+        </a>
       ))}
-    </ol>
+    </div>
   </section>
 
   <!-- Tags -->
   <section>
-    <h2 class="mb-3 text-xs font-semibold uppercase tracking-widest text-base-muted">Tags</h2>
+    <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-subtle">🏷️ Tags</h2>
     <div class="flex flex-wrap gap-1.5">
       {tags.map((tag) => (
         <a
           key={tag.name}
           href={`/search?q=${encodeURIComponent(tag.name)}`}
           class="tag-chip text-xs"
-          style={`--tag-color:var(--color-teal)`}
+          style="--tag-color:var(--color-teal)"
         >
           #{tag.name}
           <span class="ml-1 text-[10px] text-base-muted">{tag.count}</span>
@@ -74,23 +72,23 @@ const { popularPosts, popularThreads, tags } = Astro.props;
     </div>
   </section>
 
-  <!-- Popular threads -->
+  <!-- Popular frames -->
   {popularThreads.length > 0 && (
     <section>
-      <h2 class="mb-3 text-xs font-semibold uppercase tracking-widest text-base-muted">Popular Frames</h2>
+      <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-subtle">Foto Terpopuler</h2>
       <div class="flex flex-col gap-3">
         {popularThreads.map((t) => {
           const photos = t.data.photos ?? [];
           const photo = photos[0];
           return (
             <a key={t.slug} href={`/blog/${t.slug}/`} class="group flex items-center gap-3">
-              <div class="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-base-overlay">
+              <div class="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-base-accent-light">
                 {photo
                   ? <img src={photo} alt="" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
                   : <div class="flex h-full w-full items-center justify-center text-base-teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>}
               </div>
               <div class="min-w-0 flex-1">
-                <p class="text-sm font-semibold leading-snug text-base-heading line-clamp-2 transition-colors group-hover:text-base-teal">
+                <p class="text-sm font-medium leading-snug text-base-heading line-clamp-2 transition-colors group-hover:text-base-teal">
                   {t.data.description || t.data.title}
                 </p>
                 <p class="mt-0.5 text-xs text-base-muted">{photos.length} foto</p>
@@ -103,12 +101,12 @@ const { popularPosts, popularThreads, tags } = Astro.props;
   )}
 
   <!-- Moodboard -->
-  <section class="rounded-2xl border border-base-overlay border-l-2 border-l-base-teal p-4">
-    <h2 class="mb-2 text-xs font-semibold uppercase tracking-widest text-base-muted">Moodboard</h2>
+  <section class="accent-border">
+    <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-base-subtle">🌊 Moodboard</p>
     {siteConfig.moodboard.quotes.map((q, idx) => (
       <div class:list={["mood-quote", idx !== 0 && "hidden"]}>
         <blockquote class="font-serif text-sm italic leading-relaxed text-base-subtle">
-          “{q.quote}”
+          {q.quote}
         </blockquote>
         <cite class="mt-2 block font-code text-[11px] not-italic text-base-muted">— {q.source}</cite>
       </div>

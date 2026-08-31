@@ -3,15 +3,15 @@
 export const siteConfig = {
   name:       "Rifki Andriyan",
   username:   "@thestoriesrifki",
-  role:       "Writing code, capturing sunsets, and the quiet in between.",
+  role:       "Membangun, merenung, lalu berbagi.",
   bio:        "Menulis tentang programming, produktivitas, dan kehidupan. Tempat menulis dalam dan berbagi bebas.",
   avatarLetter: "R",
 
   // Kalimat berputar di bawah profil (typing effect). Kalimat pertama jadi statis kalau user menonaktifkan animasi.
   typewriter: [
-    "Writing code, capturing sunsets, and the quiet in between.",
-    "Menulis kode, menangkap senja, dan hening di antaranya.",
     "Membangun, merenung, lalu berbagi.",
+    "Menulis kode di siang, menangkap senja di ujung hari.",
+    "Tempat menulis dalam, dan berbagi bebas.",
   ],
 
   socials: [
@@ -68,7 +68,7 @@ export const siteConfig = {
   },
 
   about: {
-    text: "Personal website — tempat menulis panjang dan berbagi bebas. Artikel untuk pemikiran yang butuh ruang, Threads untuk hal-hal kecil yang tetap layak dikenang.",
+    text: "Personal website — tempat menulis panjang dan berbagi bebas. Artikel untuk pemikiran yang butuh ruang, Frames untuk hal-hal kecil yang tetap layak dikenang.",
   },
 
   colophon: {

@@ -1,6 +1,6 @@
 ---
 // src/components/SidebarLeft.astro
-// Kolom kiri: profil singkat, menu navigasi, kategori, newsletter, currently reading.
+// Kolom kiri: profil singkat, kategori, newsletter, currently reading.
 import Avatar from "./Avatar.astro";
 import { siteConfig } from "@/config/site";
 
@@ -10,14 +10,7 @@ interface Props {
   threadCount: number;
 }
 
-const { categories, postCount, threadCount } = Astro.props;
-const path = Astro.url.pathname;
-const menu = [
-  { label: "Semua tulisan", desc: `Artikel & frame (${postCount + threadCount})`, href: "/blog" },
-  { label: "Frames", desc: "Foto posts & cuplikan", href: "/threads" },
-  { label: "Kategori", desc: `${categories.length} kategori`, href: "/categories" },
-  { label: "Tentang", desc: "Profil & short bio", href: "/about" },
-];
+const { categories } = Astro.props;
 
 const socialIcons: Record<string, string> = {
   GitHub:
@@ -26,20 +19,20 @@ const socialIcons: Record<string, string> = {
     '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>',
   RSS: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>',
 };
+
+const newsletterRss = siteConfig.newsletter.rssHref;
 ---
 
 <aside class="flex flex-col gap-8" aria-label="Profil dan navigasi">
   <!-- Profil -->
   <section class="flex items-start gap-4">
-    <Avatar size="lg" letter={siteConfig.avatarLetter} ring={true} />
+    <Avatar size="lg" letter={siteConfig.avatarLetter} />
     <div class="min-w-0">
-      <h1 class="text-lg font-bold leading-tight text-base-heading">{siteConfig.name}</h1>
+      <h1 class="font-serif text-xl font-semibold leading-tight text-base-heading">{siteConfig.name}</h1>
       <p class="text-sm text-base-muted">{siteConfig.username}</p>
-      <p id="typed-role" class="mt-1 min-h-4 text-xs italic leading-snug text-base-teal">{siteConfig.typewriter[0]}</p>
+      <p id="typed-role" class="mt-1 min-h-4 text-sm leading-snug text-base-subtle">{siteConfig.typewriter[0]}</p>
     </div>
   </section>
-
-  <p class="-mt-4 text-sm leading-relaxed text-base-subtle">{siteConfig.bio}</p>
 
   <div class="flex items-center gap-1">
     {siteConfig.socials.map((s) => s.label === "RSS" ? (
@@ -49,35 +42,19 @@ const socialIcons: Record<string, string> = {
     ))}
   </div>
 
-  <!-- Navigation -->
-  <nav aria-label="Menu" class="flex flex-col border-t border-base-overlay pt-6">
-    {menu.map((m) => (
-      <a
-        href={m.href}
-        aria-current={path.startsWith(m.href) ? "page" : undefined}
-        class:list={[
-          "group flex items-baseline justify-between gap-2 border-b border-base-overlay py-3 transition-colors",
-          path.startsWith(m.href) ? "text-base-teal" : "text-base-heading hover:text-base-teal",
-        ]}
-      >
-        <span class="text-sm font-semibold">{m.label}</span>
-        <span class="font-code text-[11px] text-base-muted">{m.desc}</span>
-      </a>
-    ))}
-  </nav>
-
   <!-- Kategori -->
   <section>
-    <h2 class="mb-3 text-xs font-semibold uppercase tracking-widest text-base-muted">Kategori</h2>
+    <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-subtle">Kategori</h2>
     <ul class="flex flex-col">
-      {categories.map((cat) => (
+      {categories.map((cat, i) => (
         <li key={cat.name}>
           <a
             href={`/blog/category/${cat.name}`}
-            class="group flex items-center justify-between border-b border-base-overlay py-2 text-sm text-base-subtle transition-colors hover:text-base-teal"
+            class="group flex items-center justify-between py-1.5 text-sm text-base-subtle transition-colors hover:text-base-teal"
+            style={`border-bottom: 1px solid ${i < categories.length - 1 ? "var(--color-overlay)" : "transparent"}`}
           >
             <span class="capitalize">{cat.name}</span>
-            <span class="rounded-full border border-base-overlay px-2 py-0.5 font-code text-[11px] text-base-muted group-hover:border-base-teal group-hover:text-base-teal">
+            <span class="rounded-full bg-base-bg-alt px-2 py-0.5 text-xs text-base-muted transition-colors group-hover:bg-base-accent-light group-hover:text-base-teal">
               {cat.count}
             </span>
           </a>
@@ -86,23 +63,48 @@ const socialIcons: Record<string, string> = {
     </ul>
   </section>
 
+  <!-- Newsletter -->
+  <section class="rounded-xl bg-base-bg-alt p-4">
+    <h3 class="text-sm font-semibold text-base-heading">📬 Langganan</h3>
+    <p class="mt-1 text-xs leading-relaxed text-base-subtle">Dapatkan tulisan terbaru via RSS.</p>
+    <form id="newsletter-form" class="mt-3 flex flex-col gap-2">
+      <input
+        type="email"
+        id="newsletter-email"
+        required
+        maxlength="254"
+        placeholder="email@domain.com"
+        class="h-10 w-full rounded-lg border border-base-overlay bg-base-surface px-3 text-sm text-base-text placeholder:text-base-muted focus:border-base-teal focus:outline-none"
+      />
+      <button
+        type="submit"
+        class="h-10 w-full rounded-lg bg-base-teal text-sm font-semibold text-white transition hover:bg-base-blue"
+      >
+        Subscribe
+      </button>
+    </form>
+    <p id="newsletter-msg" class="mt-2 hidden text-xs text-base-subtle">
+      Terima kasih! Situs ini berjalan tanpa backend — feed RSS-nya sudah terbuka untukmu.
+    </p>
+  </section>
+
   <!-- Currently reading -->
-  <section class="rounded-2xl border border-base-overlay p-4">
-    <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">{siteConfig.currentlyReading.title}</h2>
-    <p class="mt-2 text-sm font-semibold text-base-heading">{siteConfig.currentlyReading.book}</p>
+  <section class="accent-border space-y-1">
+    <p class="text-xs font-semibold uppercase tracking-wider text-base-subtle">Currently Reading</p>
+    <p class="text-sm font-semibold text-base-heading">{siteConfig.currentlyReading.book}</p>
     <p class="text-xs text-base-muted">oleh {siteConfig.currentlyReading.author}</p>
-    <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-base-bg-alt">
-      <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500" style={`width:${siteConfig.currentlyReading.progress}%`}></div>
+    <div class="mt-1 h-1 w-full overflow-hidden rounded-full bg-base-bg-alt">
+      <div class="h-full rounded-full bg-base-teal" style={`width:${siteConfig.currentlyReading.progress}%`}></div>
     </div>
-    <p class="mt-1.5 font-code text-[11px] text-base-muted">{siteConfig.currentlyReading.progress}% selesai</p>
+    <p class="text-xs text-base-muted">{siteConfig.currentlyReading.progress}% selesai</p>
   </section>
 
   <!-- Now playing -->
   {siteConfig.nowPlaying.enabled && (
-    <section class="rounded-2xl border border-base-overlay p-4">
-      <h2 class="text-xs font-semibold uppercase tracking-widest text-base-muted">Now Playing</h2>
+    <section class="rounded-xl border border-base-overlay p-4">
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-base-subtle">Now Playing</h2>
       <div class="mt-2 flex items-center gap-3">
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 text-base-heading" aria-hidden="true">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-base-accent-light text-base-teal" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
         </div>
         <div class="min-w-0">
@@ -114,25 +116,12 @@ const socialIcons: Record<string, string> = {
     </section>
   )}
 
-  <!-- Newsletter -->
-  <section class="rounded-2xl border border-base-overlay bg-base-bg-alt p-4">
-    <h2 class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-base-muted">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
-      RSS · Backup Newsletter
-    </h2>
-    <p class="mt-2 text-sm leading-relaxed text-base-subtle">Konten ini jalan tanpa backend — langganan langsung lewat feed RSS yang selalu diperbarui.</p>
-    <a href={siteConfig.newsletter.rssHref} class="mt-3 inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-sm font-bold text-base-heading">
-      Langganan via RSS
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
-    </a>
-  </section>
-
   <!-- GitHub stats -->
   {siteConfig.githubStats.enabled && (
     <section>
-      <h2 class="mb-3 text-xs font-semibold uppercase tracking-widest text-base-muted">Kredit Coding</h2>
+      <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-subtle">Kredit Coding</h2>
       <img
-        src={`https://github-readme-stats.vercel.app/api/top-langs/?username=${siteConfig.githubStats.username}&layout=compact&hide_border=true&bg_color=00000000&title_color=ca7420&text_color=8a8578&icon_color=ca7420`}
+        src={`https://github-readme-stats.vercel.app/api/top-langs/?username=${siteConfig.githubStats.username}&layout=compact&hide_border=true&bg_color=00000000&title_color=b4533a&text_color=8a8076&icon_color=b4533a`}
         alt={`Bahasa yang paling sering dipakai ${siteConfig.githubStats.username}`}
         loading="lazy"
         width="260"
@@ -143,7 +132,9 @@ const socialIcons: Record<string, string> = {
   )}
 </aside>
 
-<script is:inline define:vars={{ phrases: siteConfig.typewriter }}>
+<form id="newsletter-msg-form" class="hidden" aria-hidden="true"></form>
+
+<script is:inline define:vars={{ phrases: siteConfig.typewriter, rssHref: newsletterRss }}>
   // Typing effect untuk tagline yang berputar.
   (() => {
     const el = document.getElementById("typed-role");
@@ -165,5 +156,20 @@ const socialIcons: Record<string, string> = {
       setTimeout(tick, deleting ? 26 : 55);
     };
     tick();
+  })();
+
+  // Newsletter tanpa backend: tampilkan pesan konfirmasi + buka feed RSS.
+  (() => {
+    const form = document.getElementById("newsletter-form");
+    const msg = document.getElementById("newsletter-msg");
+    if (!form) return;
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) return;
+      if (rssHref) window.open(rssHref, "_blank", "noopener");
+      form.querySelector("button").disabled = true;
+      form.querySelector("button").textContent = "✓ Terlanggan";
+      msg.classList.remove("hidden");
+    });
   })();
 </script>
