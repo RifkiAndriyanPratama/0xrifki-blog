@@ -51,11 +51,6 @@ export const siteConfig = {
     source: "arked bawah",
   },
 
-  githubStats: {
-    enabled: true,
-    username: "RifkiAndriyanPratama",
-  },
-
   rootNote: {
     label: "notes",
     href:  "/search?q=",

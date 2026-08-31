@@ -89,21 +89,6 @@ const socialIcons: Record<string, string> = {
       </div>
     </section>
   )}
-
-  <!-- GitHub stats -->
-  {siteConfig.githubStats.enabled && (
-    <section>
-      <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-base-subtle">Kredit Coding</h2>
-      <img
-        src={`https://github-readme-stats.vercel.app/api/top-langs/?username=${siteConfig.githubStats.username}&layout=compact&hide_border=true&bg_color=00000000&title_color=b4533a&text_color=8a8076&icon_color=b4533a`}
-        alt={`Bahasa yang paling sering dipakai ${siteConfig.githubStats.username}`}
-        loading="lazy"
-        width="260"
-        height="120"
-        class="w-full rounded-xl border border-base-overlay"
-      />
-    </section>
-  )}
 </aside>
 
 <script is:inline define:vars={{ phrases: siteConfig.typewriter }}>
