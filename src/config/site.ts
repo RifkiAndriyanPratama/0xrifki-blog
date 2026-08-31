@@ -20,12 +20,6 @@ export const siteConfig = {
     { label: "RSS",        href: "/rss.xml" },
   ],
 
-  newsletter: {
-    title: "Newsletter",
-    desc:  "Belum ada backend — untuk sekarang pakai RSS tertulis cantik di bawah kalau ini. Kolom ini placeholder.",
-    rssHref: "/rss.xml",
-  },
-
   currentlyReading: {
     title:    "Currently Reading",
     book:     "Coders at Work",
