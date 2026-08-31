@@ -2,7 +2,7 @@
 // src/pages/categories.astro
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { sortPosts, formatDate, isoDate, isFoto } from "@/lib/utils";
+import { sortPosts, formatDate, isoDate } from "@/lib/utils";
 
 const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
 
@@ -42,7 +42,6 @@ const categories = Object.entries(buckets)
               <li key={post.slug}>
                 <a href={`/blog/${post.slug}/`} class="group flex items-baseline justify-between gap-3 border-t border-base-overlay py-2.5 first:border-t-0">
                   <span class="text-sm font-medium text-base-text line-clamp-1 transition-colors group-hover:text-base-teal sm:text-base">
-                    {isFoto(post) ? <span aria-hidden="true">📷 </span> : null}
                     {post.data.title}
                   </span>
                   <time datetime={isoDate(post.data.date)} class="shrink-0 font-code text-xs text-base-muted">

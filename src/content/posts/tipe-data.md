@@ -94,4 +94,4 @@ C++ nggak punya safety net itu. Kamu yang deklarasi, kamu yang tentuin ukurannya
 
 Menyakitkan di awal. Tapi setelah terbiasa, kamu bakal ngeliatin kode PHP atau JavaScript dengan perspektif yang beda, kamu tau apa yang sebenarnya terjadi di balik semua "kemudahan" itu.
 
-**Dan programmer yang tau apa yang terjadi di balik layar, itu yang susah digantiin.** 🔥
+**Dan programmer yang tau apa yang terjadi di balik layar, itu yang susah digantiin.**

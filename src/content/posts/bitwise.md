@@ -85,4 +85,4 @@ Kalau kamu cuma tau lapisan paling atas, kamu programmer yang bisa pakai tools. 
 
 Bitwise operator bukan skill jadul yang mau digantikan teknologi baru. Dia adalah fondasi yang nggak akan kemana-mana selama komputer masih bekerja dengan binary, yang berarti selamanya.
 
-Belajar bitwise bukan biar kamu nulis `5 << 1` instead of `5 * 2` di kode sehari-hari. Belajar bitwise biar kamu ngerti kenapa komputer bekerja secepat itu, dan kapan kamu perlu turun ke level itu untuk squeeze out performa yang orang lain nggak bisa. 🔥
+Belajar bitwise bukan biar kamu nulis `5 << 1` instead of `5 * 2` di kode sehari-hari. Belajar bitwise biar kamu ngerti kenapa komputer bekerja secepat itu, dan kapan kamu perlu turun ke level itu untuk squeeze out performa yang orang lain nggak bisa.

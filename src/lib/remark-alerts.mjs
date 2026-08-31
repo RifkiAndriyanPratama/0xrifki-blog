@@ -3,11 +3,11 @@
 import { visit } from "unist-util-visit";
 
 const ALERTS = {
-  "note":    { cls: "alert-note",    icon: "ℹ" },
-  "tip":     { cls: "alert-tip",     icon: "💡" },
-  "warning": { cls: "alert-warning", icon: "⚠" },
-  "caution": { cls: "alert-danger",  icon: "🔥" },
-  "danger":  { cls: "alert-danger",  icon: "🔥" },
+  "note":    { cls: "alert-note",    label: "NOTE" },
+  "tip":     { cls: "alert-tip",     label: "TIP" },
+  "warning": { cls: "alert-warning", label: "WARNING" },
+  "caution": { cls: "alert-danger",  label: "CAUTION" },
+  "danger":  { cls: "alert-danger",  label: "DANGER" },
 };
 
 const RE = /^\s*\[!(NOTE|TIP|WARNING|CAUTION|DANGER)\]\s*/i;
@@ -28,7 +28,7 @@ export default function remarkAlerts() {
       textNode.value = textNode.value.replace(RE, "");
       first.children.unshift({
         type: "text",
-        value: alert.icon + " ",
+        value: alert.label + " ",
       });
       node.data = node.data || {};
       node.data.hProperties = node.data.hProperties || {};

@@ -48,12 +48,12 @@ export const siteConfig = {
   },
 
   about: {
-    text: "Personal website — tempat menulis panjang dan berbagi bebas. Artikel untuk pemikiran yang butuh ruang, Frames untuk hal-hal kecil yang tetap layak dikenang.",
+    text: "Personal website: tempat menulis panjang dan berbagi bebas. Artikel untuk pemikiran yang butuh ruang, Frames untuk hal-hal kecil yang tetap layak dikenang.",
   },
 
   colophon: {
     label: "Colophon",
     href:  "/colophon",
-    text:  "Astro · Tailwind · Vercel — kenapa dibangun begini, font & warna apa, semuanya ada di halaman ini.",
+    text:  "Astro · Tailwind · Vercel: kenapa dibangun begini, font & warna apa, semuanya ada di halaman ini.",
   },
 };

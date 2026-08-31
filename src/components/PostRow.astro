@@ -32,7 +32,7 @@ const firstPhoto = (post.data.photos ?? [])[0];
     ) : foto && firstPhoto ? (
       <img src={firstPhoto} alt="" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
     ) : (
-      <span class="flex h-full w-full items-center justify-center text-2xl text-base-teal/70">📷</span>
+      <span class="flex h-full w-full items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-base-teal/70"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span>
     )}
   </a>
   <a href={`/blog/${post.slug}/`} class="min-w-0 flex-1 space-y-1.5">

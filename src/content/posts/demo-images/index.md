@@ -1,7 +1,7 @@
 ---
 title: "Cara Kerja Internet: Dari Klik Sampai Tampil"
 date: 2026-08-26
-description: "Pernah penasaran apa yang terjadi setelah kamu klik link? Ini penjelasan sederhananya — dari DNS, TCP, TLS, sampai data sampai di layar kamu."
+description: "Pernah penasaran apa yang terjadi setelah kamu klik link? Ini penjelasan sederhananya: dari DNS, TCP, TLS, sampai data sampai di layar kamu."
 category: coding
 lang: "id"
 tags: [networking, internet, dns, how-it-works]
@@ -12,7 +12,7 @@ draft: false
 
 Halo! Kali ini kita bahas sesuatu yang kita pakai setiap hari tapi jarang dipikirin: **internet**.
 
-Setiap kali kamu buka browser dan ketik URL, ada serangkaian proses yang terjadi di balik layar — dan semuanya terjadi dalam hitungan milidetik.
+Setiap kali kamu buka browser dan ketik URL, ada serangkaian proses yang terjadi di balik layar, dan semuanya terjadi dalam hitungan milidetik.
 
 ## Ilustrasi
 
@@ -48,11 +48,11 @@ Kalau situsnya pakai HTTPS (yang sekarang hampir semua), ada satu step lagi sebe
 
 ![Timeline latency setiap step](./images/latency-timeline.svg)
 
-TLS handshake ini biasanya jadi **bottleneck paling lambat** — bisa makan 40-100ms tergantung jarak dan sertifikat.
+TLS handshake ini biasanya jadi **bottleneck paling lambat**: bisa makan 40-100ms tergantung jarak dan sertifikat.
 
 ### 4. HTTP Request
 
-Baru deh, setelah koneksi terenkripsi jadi, browser kirim **HTTP request** — biasanya `GET / HTTP/1.1` untuk minta halaman utama.
+Baru deh, setelah koneksi terenkripsi jadi, browser kirim **HTTP request**: biasanya `GET / HTTP/1.1` untuk minta halaman utama.
 
 Server terima request, proses (ambil dari database, render template, dll), dan kirim **HTTP response** berisi HTML, CSS, JavaScript, dan aset lainnya.
 
@@ -60,17 +60,17 @@ Server terima request, proses (ambil dari database, render template, dll), dan k
 
 Memahami cara kerja internet bantu kamu:
 
-- **Debug lebih cepat** — kalau loading lambat, kamu tahu mana yang mungkin jadi bottleneck
-- **Bikin aplikasi lebih baik** — mengerti kenapa HTTP/2, CDN, dan caching itu penting
-- **Interview lebih pede** — pertanyaan "jelaskan apa yang terjadi setelah kamu ketik URL" itu pertanyaan klasik
+- **Debug lebih cepat**: kalau loading lambat, kamu tahu mana yang mungkin jadi bottleneck
+- **Bikin aplikasi lebih baik**: mengerti kenapa HTTP/2, CDN, dan caching itu penting
+- **Interview lebih pede**: pertanyaan "jelaskan apa yang terjadi setelah kamu ketik URL" itu pertanyaan klasik
 
 ## Kesimpulan
 
 Internet itu kompleks, tapi proses dasarnya bisa dipahami langkah demi langkah. Yang paling penting untuk diingat:
 
-1. **DNS** — translate nama ke IP
-2. **TCP** — bikin koneksi yang reliable
-3. **TLS** — bikin koneksi yang aman
-4. **HTTP** — kirim dan terima data
+1. **DNS**: translate nama ke IP
+2. **TCP**: bikin koneksi yang reliable
+3. **TLS**: bikin koneksi yang aman
+4. **HTTP**: kirim dan terima data
 
 Kalau ada pertanyaan, langsung aja tanya di kolom komentar!

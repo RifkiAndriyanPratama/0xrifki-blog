@@ -312,7 +312,7 @@ const otherPosts = sameCategory.length >= 3
     }
 
     const pageUrl = encodeURIComponent(window.location.href);
-    const pageTitle = encodeURIComponent(document.title.replace(/ — .*$/, ""));
+    const pageTitle = encodeURIComponent(document.title.replace(/ · .*$/, ""));
 
     // Table of contents (h2/h3 dari artikel, dibangun di sisi klien)
     const toc = document.getElementById("toc");

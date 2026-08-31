@@ -33,7 +33,7 @@ const {
 } = Astro.props;
 
 const siteTitle = "thestoriesrifki";
-const fullTitle = title === siteTitle ? siteTitle : `${title} — ${siteTitle}`;
+const fullTitle = title === siteTitle ? siteTitle : `${title} · ${siteTitle}`;
 const canonical = canonicalUrl ?? Astro.url.href;
 ---
 

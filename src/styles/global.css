@@ -5,7 +5,7 @@
 
 /* ============================================================
    Palette
-   accent terracotta: #b4533a (merah bata) — identitas "mediterania hangat"
+   accent terracotta: #b4533a (merah bata): identitas "mediterania hangat"
    ============================================================ */
 
 /* Light theme */
@@ -59,7 +59,7 @@
     line-height: 1.65;
   }
 
-  /* Grain/noise tipis seperti kertas — aksen "journal" */
+  /* Grain/noise tipis seperti kertas: aksen "journal" */
   body::before {
     content: "";
     position: fixed;

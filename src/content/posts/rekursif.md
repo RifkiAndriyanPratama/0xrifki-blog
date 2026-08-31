@@ -101,4 +101,4 @@ Di low level programming, ini bukan pilihan estetika. Ini engineering decision y
 
 Rekursif itu bukan tentang kelihatan pintar. Rekursif itu tentang memilih tool yang tepat untuk struktur masalah yang tepat, sambil sadar penuh akan biayanya.
 
-Programmer yang pakai rekursif karena kelihatan keren, dan programmer yang pakai rekursif karena memang itu solusi terbaik untuk masalah itu, keduanya nulis kode yang sama. Tapi cara berpikirnya beda kelas. 🔥
+Programmer yang pakai rekursif karena kelihatan keren, dan programmer yang pakai rekursif karena memang itu solusi terbaik untuk masalah itu, keduanya nulis kode yang sama. Tapi cara berpikirnya beda kelas.

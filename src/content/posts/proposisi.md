@@ -22,8 +22,8 @@ Ternyata jawabannya: setiap kompiler, setiap CPU, dan setiap `if` statement yang
 
 Proposisi adalah pernyataan yang bisa dinilai **benar atau salah**, nggak ada di antaranya.
 
-- "Langit berwarna biru" → proposisi ✓
-- "Tolong tutup pintunya" → bukan proposisi ✓
+- "Langit berwarna biru" → proposisi
+- "Tolong tutup pintunya" → bukan proposisi
 - "x + 2 = 5" → belum proposisi (tergantung nilai x)
 
 Kenapa ini penting? Karena komputer hanya bisa bekerja dengan dua nilai: **true (1) dan false (0)**. Propositional logic adalah bahasa formal yang mendeskripsikan cara kerja itu, jauh sebelum ada bahasa pemrograman, jauh sebelum ada transistor.
@@ -126,4 +126,4 @@ Bitwise operator yang kita bahas sebelumnya? Itu propositional logic yang diapli
 
 Propositional logic bukan materi kuliah yang bisa dilupakan setelah ujian. Dia adalah cara berpikir yang tertanam di setiap kondisi yang kamu tulis, setiap bug yang kamu debug, setiap algoritma yang kamu rancang.
 
-Hukum De Morgan khususnya. Bukan karena dosen minta, tapi karena suatu hari kamu akan debugging kondisi yang kompleks jam 2 pagi, dan De Morgan adalah yang akan menyelamatkan kamu. 🔥
+Hukum De Morgan khususnya. Bukan karena dosen minta, tapi karena suatu hari kamu akan debugging kondisi yang kompleks jam 2 pagi, dan De Morgan adalah yang akan menyelamatkan kamu.

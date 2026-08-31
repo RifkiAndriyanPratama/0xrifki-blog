@@ -107,4 +107,4 @@ Semua itu terasa oke waktu kamu nulis sendiri dan masih inget semua konteksnya. 
 
 Biasain dari awal untuk nulis kode yang *jelas*, bukan yang *cepat*. Karena kode itu lebih sering dibaca daripada ditulis.
 
-Dan `std::cout` itu bukan ribet, itu **dokumentasi satu baris** yang bilang: *"ini dari standard library, bukan dari tempat lain."* 🔥
+Dan `std::cout` itu bukan ribet, itu **dokumentasi satu baris** yang bilang: *"ini dari standard library, bukan dari tempat lain."*

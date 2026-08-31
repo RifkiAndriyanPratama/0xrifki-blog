@@ -1,5 +1,5 @@
 // src/pages/search-index.json.ts
-// Static JSON endpoint — generated at build time for client-side Fuse.js search
+// Static JSON endpoint: generated at build time for client-side Fuse.js search
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { sortPosts, formatDate } from "@/lib/utils";

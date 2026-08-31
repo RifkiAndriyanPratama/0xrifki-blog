@@ -101,4 +101,4 @@ Prosedural bukan jelek, OOP bukan selalu lebih baik, generik bukan harus selalu 
 
 Yang penting adalah kamu ngerti *kenapa* kamu pilih pendekatan tertentu, bukan karena tutorial-nya pakai itu, tapi karena kamu ngerti masalahnya dan tau paradigma mana yang paling cocok.
 
-Itu bedanya programmer yang ngoding autopilot dan programmer yang beneran mikir. 🔥
+Itu bedanya programmer yang ngoding autopilot dan programmer yang beneran mikir.

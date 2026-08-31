@@ -1,5 +1,5 @@
 // src/content/config.ts
-// Zod-powered content schema — strongly typed frontmatter enforcement
+// Zod-powered content schema: strongly typed frontmatter enforcement
 import { z, defineCollection } from "astro:content";
 
 const CATEGORIES = [

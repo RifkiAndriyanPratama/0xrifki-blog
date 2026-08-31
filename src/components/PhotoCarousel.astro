@@ -22,7 +22,7 @@ const { photos, alt } = Astro.props;
         <figure class="shrink-0 snap-center overflow-hidden rounded-xl border border-base-overlay bg-base-bg-alt">
           <PostCover
             src={p}
-            alt={`${alt} — ${i + 1}/${photos.length}`}
+            alt={`${alt} (${i + 1}/${photos.length})`}
             mode={i === 0 ? "hero" : "wide"}
             class="block max-h-[60vh] w-[min(80vw,520px)] object-contain"
           />

@@ -127,4 +127,4 @@ Tiap level dibangun dari level sebelumnya. Baru kerasa masuk akal kenapa Nand2Te
 
 Ini baru night 1, belum sampai nulis semua file HDL-nya secara lengkap. Tapi bedanya kerasa jauh dibanding percobaan pertama dulu yang berhenti di tengah jalan. Kuncinya ternyata bukan "materinya susah", tapi jangan buru-buru pindah topik sebelum konsep sebelumnya bener-bener nempel.
 
-Lanjut nulis `Not.hdl`, `And.hdl`, `Or.hdl`, `Xor.hdl` beneran abis ini. Semoga besok progress-nya nambah, bukan malah lupa lagi. 🔥
+Lanjut nulis `Not.hdl`, `And.hdl`, `Or.hdl`, `Xor.hdl` beneran abis ini. Semoga besok progress-nya nambah, bukan malah lupa lagi.

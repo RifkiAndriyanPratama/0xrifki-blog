@@ -1,7 +1,7 @@
 ---
 title: "Building a Zero-Downtime Deploy Pipeline with GitHub Actions"
 date: 2024-07-20
-description: "How I wired up a blue-green deployment pipeline using GitHub Actions, Docker, and a $6/mo VPS — no Kubernetes required."
+description: "How I wired up a blue-green deployment pipeline using GitHub Actions, Docker, and a $6/mo VPS, no Kubernetes required."
 category: teknologi
 tags: [github-actions, docker, nginx, ci-cd, vps]
 draft: false
@@ -9,7 +9,7 @@ draft: false
 
 ## The Problem
 
-Rolling deploys on a single VPS are a solved problem — until you've been burned by
+Rolling deploys on a single VPS are a solved problem, until you've been burned by
 a mid-deploy nginx reload that drops in-flight connections. This post documents the
 exact pipeline I use across several hobby projects to get **true zero-downtime deploys**
 without the operational overhead of Kubernetes.
@@ -32,7 +32,7 @@ without the operational overhead of Kubernetes.
 └─────────────────────────────────┘
 ```
 
-The trick is **nginx's `upstream` block** — it lets you hot-swap which container
+The trick is **nginx's `upstream` block**: it lets you hot-swap which container
 handles traffic without reloading the main config.
 
 ## The Workflow
@@ -145,9 +145,9 @@ After running this for 6 months across 4 projects:
 
 - **Deploy time**: ~45s from push to live
 - **Downtime**: 0ms (verified with [oha](https://github.com/hatoo/oha) during deploys)
-- **Rollback**: `swap.sh <previous-sha>` — done in 30s
+- **Rollback**: `swap.sh <previous-sha>`, done in 30s
 
 The whole thing is ~80 lines of bash and a YAML file. No Helm, no ArgoCD, no weekend
-learning Kubernetes — just `nginx -s reload` doing exactly what it says.
+learning Kubernetes, just `nginx -s reload` doing exactly what it says.
 
 > If your scale doesn't justify Kubernetes, don't run Kubernetes.
