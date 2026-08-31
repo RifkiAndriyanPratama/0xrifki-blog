@@ -245,18 +245,6 @@
   /* ---------- Accent border (spesifikasi) ---------- */
   .accent-border { border-left: 2px solid var(--color-teal); padding-left: 1rem; }
 
-  /* ---------- Reading mode (sepia) ---------- */
-  .sepia-mode article { background-color: #f6edd9; }
-  .sepia-mode article .prose { color: #3d3527; }
-  .sepia-mode article h1,
-  .sepia-mode article h2,
-  .sepia-mode article h3,
-  .sepia-mode article h4 { color: #241d12; }
-  .sepia-mode article .prose blockquote { color: #5b4f3a; }
-  .sepia-mode article .prose strong,
-  .sepia-mode article .prose a:hover { color: #231b0e; }
-  .sepia-mode article .prose a { color: #a0482e; }
-
   /* ---------- Share circle ---------- */
   .share-circle {
     display: inline-flex;

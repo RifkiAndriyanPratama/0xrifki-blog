@@ -54,16 +54,6 @@ const otherPosts = sameCategory.length >= 3
 
   <div id="reading-bar" class="fixed left-0 top-0 z-[60] h-1 bg-base-teal transition-[width] duration-75"></div>
 
-  <!-- Mode baca fokus (sepia) -->
-  <button
-    id="sepia-toggle"
-    class="fixed bottom-[8.5rem] right-1 z-[55] flex h-10 w-10 items-center justify-center rounded-full border border-base-overlay bg-base-surface text-base-subtle transition-colors hover:border-base-teal hover:text-base-heading sm:bottom-[10.5rem] sm:right-2"
-    aria-label="Mode baca fokus (sepia)"
-    title="Mode baca fokus"
-  >
-    <span class="font-serif text-sm font-bold">Aa</span>
-  </button>
-
   <!-- Desktop: two-column layout -->
   <div class="lg:flex lg:justify-center lg:gap-16">
 
@@ -343,14 +333,6 @@ const otherPosts = sameCategory.length >= 3
         });
         toc.classList.remove("hidden");
       }
-    }
-
-    // Mode baca fokus (sepia)
-    const sepia = document.getElementById("sepia-toggle");
-    if (sepia) {
-      sepia.onclick = () => {
-        sepia.classList.toggle("bg-base-bg-alt", document.body.classList.toggle("sepia-mode"));
-      };
     }
 
     // Desktop share buttons
