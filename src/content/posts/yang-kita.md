@@ -2,9 +2,11 @@
 title: "Ketika Kita Mulai Menginginkan Sesuatu Hanya Karena Semua Orang Menginginkannya"
 date: 2026-08-31
 description: "Renungan soal keinginan yang sebenarnya bukan datang dari diri sendiri, tapi dari apa yang orang lain kejar."
-category: renungan
+category: kehidupan
 lang: "id"
 tags: [refleksi, keinginan, sosial, kehidupan]
+cover: /uploads/yang-kita.jpg
+coverAlt: "Foto: refleksi soal keinginan yang ikut arus"
 draft: false
 ---
 Pernah gak sih, tiba-tiba pengen banget sama sesuatu, terus begitu direnungin lagi, kita sendiri bingung ini pengennya dari mana. Bukan karena butuh, bukan karena emang suka dari dulu, tapi karena semua orang di sekitar kita lagi ngejar hal yang sama.
