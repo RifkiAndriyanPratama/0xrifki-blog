@@ -1,7 +1,7 @@
 // src/config/site.ts
 // Semua data pribadi/placeholder yang bisa diedit tanpa nyentuh markup.
 export const siteConfig = {
-  name:       "Rifki Andriyan",
+  name:       "Rifki Andriyan Pratama",
   username:   "@thestoriesrifki",
   role:       "Membangun, merenung, lalu berbagi.",
   bio:        "Menulis tentang programming, produktivitas, dan kehidupan. Tempat menulis dalam dan berbagi bebas.",
