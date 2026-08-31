@@ -16,7 +16,6 @@ const latestFrames = frames.slice(0, 6);
 const popularPosts = [...posts]
   .sort((a, b) => b.data.readingTime - a.data.readingTime)
   .slice(0, 5);
-const popularThreads = [...frames].slice(0, 3);
 
 // Group by category
 const categoryCounts = posts.reduce((acc, post) => {
@@ -128,7 +127,7 @@ const tags = Object.entries(tagCounts)
 
     <!-- Kolom kanan (tablet: full-width 2-kolom di bawah konten) -->
     <div class="hidden min-w-0 md:block lg:sticky lg:top-20">
-      <SidebarRight popularPosts={popularPosts} popularThreads={popularThreads} tags={tags} />
+      <SidebarRight popularPosts={popularPosts} tags={tags} />
     </div>
 
   </div>

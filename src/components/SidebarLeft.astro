@@ -1,6 +1,6 @@
 ---
 // src/components/SidebarLeft.astro
-// Kolom kiri: profil singkat, kategori, newsletter, currently reading.
+// Kolom kiri: profil singkat, kategori, currently reading.
 import Avatar from "./Avatar.astro";
 import { siteConfig } from "@/config/site";
 
@@ -72,23 +72,6 @@ const socialIcons: Record<string, string> = {
     </div>
     <p class="text-xs text-base-muted">{siteConfig.currentlyReading.progress}% selesai</p>
   </section>
-
-  <!-- Now playing -->
-  {siteConfig.nowPlaying.enabled && (
-    <section class="rounded-xl border border-base-overlay p-4">
-      <h2 class="text-xs font-semibold uppercase tracking-wider text-base-subtle">Now Playing</h2>
-      <div class="mt-2 flex items-center gap-3">
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-base-accent-light text-base-teal" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        </div>
-        <div class="min-w-0">
-          <p class="truncate text-sm font-semibold text-base-heading">{siteConfig.nowPlaying.title}</p>
-          <p class="truncate text-xs text-base-muted">{siteConfig.nowPlaying.artist}</p>
-          <p class="truncate font-code text-[10px] text-base-teal">{siteConfig.nowPlaying.note}</p>
-        </div>
-      </div>
-    </section>
-  )}
 </aside>
 
 <script is:inline define:vars={{ phrases: siteConfig.typewriter }}>

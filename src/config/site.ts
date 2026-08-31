@@ -27,15 +27,6 @@ export const siteConfig = {
     progress: 42,
   },
 
-  // Manual. Kalau mau real-time, ganti enabled=false dan pasang Spotify API nanti.
-  nowPlaying: {
-    enabled: true,
-    title:   "Ngelock",
-    artist:  "Jinnybug · Ena / \u201cJangan Lupa\u201d Session",
-    album:   "lock outside",
-    note:    "penyegar menulis",
-  },
-
   moodboard: {
     title: "Moodboard",
     quotes: [
