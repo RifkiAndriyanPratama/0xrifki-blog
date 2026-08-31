@@ -76,16 +76,8 @@ const canonical = canonicalUrl ?? Astro.url.href;
 
     <ViewTransitions />
     <script is:inline>
-    (function () {
-      try {
-        var saved = localStorage.getItem('tsr-theme');
-        if (saved === 'dark') {
-          document.documentElement.dataset.theme = 'dark';
-          document.documentElement.style.colorScheme = 'dark';
-        }
-      } catch (e) {}
-    })();
     document.addEventListener('astro:page-load', () => {
+      document.documentElement.style.colorScheme = 'light';
       document.querySelectorAll('[data-animate]').forEach(el => {
         el.style.animationPlayState = 'running';
       });

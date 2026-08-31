@@ -37,29 +37,6 @@
   --shadow-soft: 0px 4px 24px rgba(26, 24, 22, 0.06);
 }
 
-/* Dark theme */
-:root[data-theme="dark"] {
-  --color-bg:      #171310;
-  --color-bg-alt:  #241d19;
-  --color-surface: #1d1915;
-  --color-overlay: #3a302b;
-  --color-muted:   #8a7d71;
-  --color-subtle:  #c5b8a9;
-  --color-text:    #e8e2d8;
-  --color-heading: #f5f0e8;
-  --color-teal:    #d98a6b;
-  --color-blue:    #e07658;
-  --color-accent-light: #3a2620;
-  --color-green:    #8fb26a;
-  --color-yellow:   #d9a03a;
-  --color-orange:  #df8a52;
-  --color-red:     #e06760;
-  --color-purple:  #a78fb8;
-  --shadow-soft: 0px 4px 24px rgba(0, 0, 0, 0.35);
-  --shiki-light:   #e2d9c9;
-  --shiki-light-bg: #1d1915;
-}
-
 /* Base resets */
 @layer base {
   *, *::before, *::after { @apply box-border; }
