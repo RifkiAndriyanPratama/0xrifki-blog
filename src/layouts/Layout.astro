@@ -335,6 +335,17 @@ const canonical = canonicalUrl ?? Astro.url.href;
   document.addEventListener("DOMContentLoaded", initAll);
   document.addEventListener("astro:page-load", initAll);
 
+  // Rekam halaman asal saat user mengeklik tautan ke sebuah post,
+  // supaya tombol "kembali" di halaman post bisa kontekstual (beranda vs semua tulisan).
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("a[href^='/blog/']");
+    if (!a || !a.closest("#main-content")) return;
+    const from = window.location.pathname;
+    if (from === "/" || from === "/blog/") {
+      try { sessionStorage.setItem("tsr-post-from", from); } catch {}
+    }
+  }, true);
+
   document.addEventListener("keydown", (e) => {
     const searchOverlay  = document.getElementById("search-overlay");
 

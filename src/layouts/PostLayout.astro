@@ -72,9 +72,9 @@ const otherPosts = sameCategory.length >= 3
 
       <!-- Back link -->
       <nav class="pt-8 pb-4 sm:pt-10 sm:pb-6" aria-label="Breadcrumb">
-        <a href="/blog" class="inline-flex items-center gap-1.5 text-sm text-base-muted transition-colors hover:text-base-heading">
+        <a href="/blog" data-back-link class="inline-flex items-center gap-1.5 text-sm text-base-muted transition-colors hover:text-base-heading">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          semua tulisan
+          <span data-back-label>semua tulisan</span>
         </a>
       </nav>
 
@@ -154,8 +154,8 @@ const otherPosts = sameCategory.length >= 3
       )}
 
       <!-- Back -->
-      <a href="/blog" class="inline-block text-sm text-base-muted underline underline-offset-4 transition-colors hover:text-base-heading mb-16">
-        ← semua tulisan
+      <a href="/blog" data-back-link class="inline-block text-sm text-base-muted underline underline-offset-4 transition-colors hover:text-base-heading mb-16">
+        ← <span data-back-label>semua tulisan</span>
       </a>
 
     </article>
@@ -271,9 +271,31 @@ const otherPosts = sameCategory.length >= 3
 </Layout>
 
 <script is:inline>
+  function initBackLink() {
+    const links = document.querySelectorAll("[data-back-link]");
+    if (!links.length) return;
+    let href = "/blog";
+    let label = "semua tulisan";
+    try {
+      const from = sessionStorage.getItem("tsr-post-from");
+      if (from === "/") {
+        href = "/";
+        label = "beranda";
+      }
+      sessionStorage.removeItem("tsr-post-from");
+    } catch {}
+    links.forEach((a) => {
+      a.href = href;
+      const lbl = a.querySelector("[data-back-label]");
+      if (lbl) lbl.textContent = label;
+    });
+  }
+
   function initPost() {
     const article = document.querySelector("main article");
     if (!article) return;
+
+    initBackLink();
 
     const bar = document.getElementById("reading-bar");
     if (bar) {
