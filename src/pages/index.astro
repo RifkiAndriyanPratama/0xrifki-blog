@@ -2,45 +2,21 @@
 // src/pages/index.astro
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
-import { sortPosts, readingTime, formatDate, isoDate, isFoto } from "@/lib/utils";
-import { siteConfig } from "@/config/site";
-import PostCover from "@/components/PostCover.astro";
-import PhotoCard from "@/components/PhotoCard.astro";
+import { sortPosts, isFoto } from "@/lib/utils";
 import FrameCard from "@/components/FrameCard.astro";
 import PostRow from "@/components/PostRow.astro";
 import SidebarLeft from "@/components/SidebarLeft.astro";
 import SidebarRight from "@/components/SidebarRight.astro";
-import { tintBg } from "@/lib/tint";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 
 const posts = sortPosts(await getCollection("posts", ({ data }) => !data.draft));
-const featuredPost = posts[0];
 const articles = posts.filter((p) => !isFoto(p));
 const frames = posts.filter((p) => isFoto(p));
-const latestPosts = (featuredPost && !isFoto(featuredPost) ? articles.filter((p) => p !== featuredPost) : articles).slice(0, 5);
+const latestPosts = articles.slice(0, 5);
 const latestFrames = frames.slice(0, 6);
 const popularPosts = [...posts]
   .sort((a, b) => b.data.readingTime - a.data.readingTime)
   .slice(0, 5);
 const popularThreads = [...frames].slice(0, 3);
-
-// Dominant colours per post, generated at build time (scripts/generate-og.mjs)
-function loadPostColors(): Record<string, { from: number[]; to: number[] }> {
-  try {
-    return JSON.parse(readFileSync(new URL("../../public/post-colors.json", import.meta.url), "utf8"));
-  } catch {
-    return {};
-  }
-}
-const postColors = loadPostColors();
-const featuredTint = featuredPost ? postColors[featuredPost.slug] : undefined;
-const featuredIsFoto = featuredPost ? isFoto(featuredPost) : false;
-
-// Spec: bagian pertama judul featured diwarna aksen
-const titleParts = featuredPost?.data.title.split(" ") ?? [];
-const titleHead = titleParts[0] ?? "";
-const titleRest = titleParts.slice(1).join(" ");
 
 // Group by category
 const categoryCounts = posts.reduce((acc, post) => {
@@ -76,49 +52,6 @@ const tags = Object.entries(tagCounts)
 
     <!-- Kolom tengah -->
     <div class="flex min-w-0 flex-col gap-12">
-
-      <!-- Featured -->
-      {featuredPost && (
-        <section data-animate>
-          <h2 class="mb-4 text-xs font-semibold uppercase tracking-widest text-base-subtle">Postingan terbaik</h2>
-          {featuredIsFoto ? (
-            <PhotoCard post={featuredPost} tint={featuredTint} />
-          ) : (
-          <a href={`/blog/${featuredPost.slug}/`} class="card-hover group block overflow-hidden rounded-2xl border border-base-overlay bg-base-surface shadow-[var(--shadow-soft)]">
-            <div class="h-44 overflow-hidden bg-gradient-to-r from-base-accent-light to-base-accent-light sm:h-52">
-              {featuredTint ? (
-                <div class="h-full w-full" style={{ background: tintBg(featuredTint) }}></div>
-              ) : featuredPost.data.cover ? (
-                <PostCover
-                  src={featuredPost.data.cover}
-                  alt={featuredPost.data.coverAlt ?? featuredPost.data.title}
-                  mode="featured"
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                />
-              ) : null}
-            </div>
-            <div class="space-y-4 p-6 sm:p-8">
-              <span class="inline-block rounded-full bg-base-bg-alt px-3 py-1 text-xs font-medium uppercase tracking-wider text-base-teal">
-                {featuredPost.data.category}
-              </span>
-              <h1 class="hero-title font-serif leading-tight tracking-tight text-base-heading sm:text-3xl lg:text-4xl">
-                {titleRest ? <>{titleHead} <span class="text-base-teal">{titleRest}</span></> : titleHead}
-              </h1>
-              <p class="max-w-2xl text-base leading-relaxed text-base-subtle sm:text-lg">
-                {featuredPost.data.description}
-              </p>
-              <div class="flex items-center gap-3 border-t border-base-overlay pt-4 text-sm text-base-muted">
-                <span class="font-medium text-base-heading">{siteConfig.name}</span>
-                <span aria-hidden="true">·</span>
-                <time datetime={isoDate(featuredPost.data.date)}>{formatDate(featuredPost.data.date)}</time>
-                <span aria-hidden="true">·</span>
-                <span>{featuredPost.data.readingTime ?? readingTime(featuredPost.body)} min read</span>
-              </div>
-            </div>
-          </a>
-          )}
-        </section>
-      )}
 
       <!-- Kategori populer sebagai pill -->
       {categories.length > 0 && (
